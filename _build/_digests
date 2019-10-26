@@ -1,0 +1,4 @@
+"Resource: /mnt/c/Users/thefa/OneDrive/Documents/3110/Crossy-Caml/GraphicsTest.ml": "q\244\217\222\252D\214\214T\019$c\240\165%&"
+"Rule: ocaml dependencies ml (%=GraphicsTest )": "t\2434\014\023\003\200\127\136:\235\250\168\233\176\r"
+"Rule: ocaml: ml -> cmo & cmi (%=GraphicsTest )": "\138\255\\\176\"\240\254\212\148\181en\208\130\028\225"
+"Rule: ocaml: cmo* -> byte (%=GraphicsTest )": "\r\145F\208\208\2424\254N\138J\243\152S\255C"
