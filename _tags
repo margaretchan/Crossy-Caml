@@ -1,1 +1,1 @@
-true: package(vg),package(gg),package(vg.svg)
+true: package(graphics),package(oUnit),package(ANSITerminal)

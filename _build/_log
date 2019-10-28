@@ -1,8 +1,10 @@
 ### Starting build.
-# Target: GraphicsTest.ml.depends, tags: { package(gg), package(vg), package(vg.svg), extension:ml, file:GraphicsTest.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package vg -package gg -package vg.svg -modules GraphicsTest.ml > GraphicsTest.ml.depends
-# Target: GraphicsTest.cmo, tags: { package(gg), package(vg), package(vg.svg), byte, compile, extension:cmo, extension:ml, file:GraphicsTest.cmo, file:GraphicsTest.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package vg -package gg -package vg.svg -o GraphicsTest.cmo GraphicsTest.ml
-# Target: GraphicsTest.byte, tags: { package(gg), package(vg), package(vg.svg), byte, dont_link_with, extension:byte, file:GraphicsTest.byte, link, ocaml, program, quiet, traverse }
-ocamlfind ocamlc -linkpkg -package vg -package gg -package vg.svg GraphicsTest.cmo -o GraphicsTest.byte
+# Target: main.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:main.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules main.ml > main.ml.depends
+# Target: draw.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:draw.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends
+# Target: draw.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
+# Target: main.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmo main.ml
 # Compilation successful.
