@@ -5,14 +5,15 @@ let init_window () =
   open_graph " 700x700";
   set_window_title "Crossy Caml"
 
-(** [update_window player_dir old_pos ] is the x position of the player 
-    avatar after drawing the updated game graphics 
+(** [update_window player_dir old_pos update_obstacles] is the 
+    x position of the player avatar after drawing the updated game graphics 
     [player_dir] is the direction the player moves in:
     | -1 -> left
     | 0 -> no movement
     | 1 -> right 
-    [old_pos] is the x position of the player avatar prior to update *)
-let update_window player_dir old_pos = 
+    [old_pos] is the x position of the player avatar prior to update 
+    [update_obstacles] is whether the obstacle positions should be updated *)
+let update_window player_dir old_pos update_obstacles = 
   let light_blue = rgb 109 156 243; in
   let rose = rgb 209 105 154 in
   (* There is currently no way to set foreground and background colors?? 
