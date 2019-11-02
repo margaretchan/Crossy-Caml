@@ -10,6 +10,7 @@ let grid_y = (size_y ()) / 50
 (** Colors *)
 let light_blue = rgb 109 156 243
 let rose = rgb 209 105 154 
+
 let update_window player_dir old_pos update_obstacles = 
   (* There is currently no way to set foreground and background colors?? 
      Filling a rectangle is so janky *)
@@ -24,11 +25,18 @@ let update_window player_dir old_pos update_obstacles =
   fill_circle new_pos ((size_y ()) / 7) 50;
   pos
 
-let game_over = 
+let game_over () = 
+  clear_graph ();
   set_text_size 20;
-  let (x_size, y_size) = text_size "Game Over" in
-  moveto (size_x () / 2 - x_size) (size_y () / 2 - y_size);
+  let (txt_size_x, txt_size_y) = text_size "Game Over" in
+  moveto (size_x () / 2 - txt_size_x) (size_y () / 2 - txt_size_y);
   draw_string "Game Over";
+  moveto (size_x () / 2 - txt_size_x) (size_y () / 2 - txt_size_y*2);
+  draw_string "Press 'R' to Restart";
+
+
+
+
 
 
 
