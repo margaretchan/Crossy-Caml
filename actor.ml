@@ -1,4 +1,4 @@
-type dir = Up | Down | Left | Right
+type dir = Down | Left | Right
 
 type pos = int * int
 
