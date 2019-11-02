@@ -28,3 +28,11 @@ let update_window player_dir old_pos =
   fill_circle new_pos ((size_y ()) / 7) 50;
   pos
 
+let game_over = 
+  let light_blue = rgb 109 156 243 in 
+  set_color light_blue;
+  fill_rect 0 0 (size_x ()) (size_y ());
+
+
+
+

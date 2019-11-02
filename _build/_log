@@ -1,10 +1,17 @@
 ### Starting build.
 # Target: main.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:main.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules main.ml > main.ml.depends # cached
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules main.ml > main.ml.depends
 # Target: draw.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:draw.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends # cached
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends
 # Target: draw.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml # cached
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
 # Target: main.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmo main.ml # cached
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmo main.ml
++ ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmo main.ml
+File "main.ml", line 13, characters 10-13:
+13 |       let dir = 
+               ^^^
+Warning 26: unused variable dir.
+# Target: main.byte, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, dont_link_with, extension:byte, file:main.byte, link, ocaml, program, quiet, traverse }
+ocamlfind ocamlc -linkpkg -package graphics -package oUnit -package ANSITerminal draw.cmo main.cmo -o main.byte
 # Compilation successful.

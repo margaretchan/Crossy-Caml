@@ -21,10 +21,12 @@ let update_window player_dir old_pos =
   fill_rect 0 0 (size_x ()) (size_y ());
   set_color rose;
   (* Player avator movement logic *)
-  let new_pos = old_pos + (player_dir * 5) in
+  let new_pos = old_pos + (player_dir * (size_x ()) / 25) in
   (* keeps avatar in screen, loops around *)
   let pos = if new_pos > (size_x ()) then 0 else (
       if new_pos < 0 then size_x () else new_pos) in
   fill_circle new_pos ((size_y ()) / 7) 50;
   pos
+
+
 
