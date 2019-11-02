@@ -1,10 +1,10 @@
 open Graphics
 
-(** [init_window ()] opens the game window *)
 let init_window () = 
   open_graph " 700x700";
   set_window_title "Crossy Caml"
 
+<<<<<<< HEAD
 (** colors *)
 let light_blue = rgb 109 156 243
 let rose = rgb 209 105 154
@@ -17,13 +17,22 @@ let rose = rgb 209 105 154
     | 1 -> right 
     [old_pos] is the x position of the player avatar prior to update *)
 let update_window player_dir old_pos = 
+=======
+let grid_x = (size_x ()) / 25
+
+let grid_y = (size_y ()) / 50
+
+let update_window player_dir old_pos update_obstacles = 
+  let light_blue = rgb 109 156 243; in
+  let rose = rgb 209 105 154 in
+>>>>>>> 885c0997cfbcd2bdfa3f7a0c67600f6eecdb178b
   (* There is currently no way to set foreground and background colors?? 
      Filling a rectangle is so janky *)
   set_color light_blue;
   fill_rect 0 0 (size_x ()) (size_y ());
   set_color rose;
   (* Player avator movement logic *)
-  let new_pos = old_pos + (player_dir * (size_x ()) / 25) in
+  let new_pos = old_pos + (player_dir * grid_x) in
   (* keeps avatar in screen, loops around *)
   let pos = if new_pos > (size_x ()) then 0 else (
       if new_pos < 0 then size_x () else new_pos) in
