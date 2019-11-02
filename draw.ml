@@ -1,5 +1,4 @@
 open Graphics
-open Camlimages
 
 let init_window () = 
   open_graph " 700x700";
@@ -15,6 +14,7 @@ let update_window player_dir old_pos update_obstacles =
   let grid_x = (size_x ()) / 25 in 
   (* [grid_y] is the number of pixels in one vertical unit of the screen grid *)
   let grid_y = (size_y ()) / 50 in 
+
   (* There is currently no way to set foreground and background colors?? 
      Filling a rectangle is so janky *)
   set_color background_color;
@@ -27,4 +27,14 @@ let update_window player_dir old_pos update_obstacles =
       if new_pos < 0 then size_x () else new_pos) in
   fill_circle new_pos ((size_y ()) / 7) 50;
   pos
+
+let game_over = 
+  set_text_size 20;
+  let (x_size, y_size) = text_size "Game Over" in
+  moveto (size_x () / 2 - x_size) (size_y () / 2 - y_size);
+  draw_string "Game Over";
+
+
+
+
 
