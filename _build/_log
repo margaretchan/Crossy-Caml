@@ -1,10 +1,20 @@
 ### Starting build.
+# Target: main.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:main.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules main.mli > main.mli.depends # cached
+# Target: main.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:main.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmi main.mli # cached
 # Target: main.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:main.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules main.ml > main.ml.depends
-# Target: draw.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:draw.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends
-# Target: draw.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules main.ml > main.ml.depends # cached
+# Target: draw.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:draw.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.mli > draw.mli.depends # cached
+# Target: draw.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:draw.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmi draw.mli # cached
 # Target: main.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmo main.ml # cached
+# Target: draw.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:draw.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends # cached
+# Target: draw.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml # cached
+# Target: main.byte, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, dont_link_with, extension:byte, file:main.byte, link, ocaml, program, quiet, traverse }
+ocamlfind ocamlc -linkpkg -package graphics -package oUnit -package ANSITerminal draw.cmo main.cmo -o main.byte # cached
 # Compilation successful.
