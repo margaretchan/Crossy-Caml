@@ -1,7 +1,18 @@
 type obj
 
-type collidable = Player of obj | Block of obj
+type collidable = 
+  | Player of obj 
+  | Block of Actor.block_type * obj
 
+(** [check_collision c1 c2] is true if collidable [c2] has overlapped pixels 
+    with collidable [c1], false otherwise.
+    Requires: 
+    - [c1] is a collidable of Player
+    - [c2] is a collidable of Block
+    Raises: failwith "Failed requirement"
+       *)
 val check_collision : collidable -> collidable -> bool
 
-val check_on_screen : collidable -> bool
+(** [check_on_screen c xbound] is true if any part of collidable [c] is within the 
+    window. The window is defined as a rectangle of (0,0) to (xbound,_).   *)
+val check_on_screen : collidable -> int -> bool
