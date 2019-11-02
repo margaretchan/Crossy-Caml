@@ -10,9 +10,15 @@ let display last_update_time fps =
   let rec loop last_update_time fps curr_pos = 
     (* Check for time based update *)
     if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
+      let dir = 
+        if (key_pressed ()) then (
+          let key = read_key () in
+          if key = 'a' then -1 else (
+            if key = 'd' then 1 else 0)) 
+        else 0 in 
       match Draw.update_window 0 curr_pos with 
       | p -> loop (Sys.time ()) fps p
-      (* could also throw some key press cases in here, also need to change /
+      (* also need to change /
          update_window parameters to know when its being updated by 
          time vs keyboard input. This will be important for moving obstacles *)
     )
