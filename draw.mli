@@ -16,3 +16,6 @@ val grid_y : int
     [old_pos] is the x position of the player avatar prior to update 
     [update_obstacles] is whether the obstacle positions should be updated *)
 val update_window : int -> int -> bool -> int
+
+(** Erases the current game window and draws the game over screen *)
+val game_over : unit -> unit 
