@@ -12,7 +12,7 @@ let display last_update_time fps =
     if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
       match Draw.update_window 0 curr_pos with 
       | p -> loop (Sys.time ()) fps p
-      (* could also throw some key press cases in here, also need to change 
+      (* could also throw some key press cases in here, also need to change /
          update_window parameters to know when its being updated by 
          time vs keyboard input. This will be important for moving obstacles *)
     )
