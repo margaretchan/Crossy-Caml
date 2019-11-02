@@ -4,28 +4,13 @@ let init_window () =
   open_graph " 700x700";
   set_window_title "Crossy Caml"
 
-<<<<<<< HEAD
-(** colors *)
-let light_blue = rgb 109 156 243
-let rose = rgb 209 105 154
-
-(** [update_window player_dir old_pos ] is the x position of the player 
-    avatar after drawing the updated game graphics 
-    [player_dir] is the direction the player moves in:
-    | -1 -> left
-    | 0 -> no movement
-    | 1 -> right 
-    [old_pos] is the x position of the player avatar prior to update *)
-let update_window player_dir old_pos = 
-=======
 let grid_x = (size_x ()) / 25
-
 let grid_y = (size_y ()) / 50
 
+(** Colors *)
+let light_blue = rgb 109 156 243
+let rose = rgb 209 105 154 
 let update_window player_dir old_pos update_obstacles = 
-  let light_blue = rgb 109 156 243; in
-  let rose = rgb 209 105 154 in
->>>>>>> 885c0997cfbcd2bdfa3f7a0c67600f6eecdb178b
   (* There is currently no way to set foreground and background colors?? 
      Filling a rectangle is so janky *)
   set_color light_blue;
@@ -44,7 +29,6 @@ let game_over =
   let (x_size, y_size) = text_size "Game Over" in
   moveto (size_x () / 2 - x_size) (size_y () / 2 - y_size);
   draw_string "Game Over";
-
 
 
 
