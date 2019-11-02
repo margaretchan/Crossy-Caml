@@ -15,6 +15,4 @@ ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o ma
 ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends # cached
 # Target: draw.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml # cached
-# Target: main.byte, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, dont_link_with, extension:byte, file:main.byte, link, ocaml, program, quiet, traverse }
-ocamlfind ocamlc -linkpkg -package graphics -package oUnit -package ANSITerminal draw.cmo main.cmo -o main.byte # cached
 # Compilation successful.
