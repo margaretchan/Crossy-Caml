@@ -16,7 +16,7 @@ let display last_update_time fps =
           if key = 'a' then -1 else (
             if key = 'd' then 1 else 0)) 
         else 0 in 
-      match Draw.update_window 0 curr_pos true with 
+      match Draw.update_window dir curr_pos true with 
       | p -> loop (Sys.time ()) fps p
     ) 
     else (

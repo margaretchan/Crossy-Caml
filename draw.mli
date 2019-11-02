@@ -1,11 +1,13 @@
+open Graphics
+
 (** [init_window ()] opens the game window *)
 val init_window : unit -> unit
 
-(** [grid_x] is the number of pixels in one horizontal unit of the screen grid*)
-val grid_x : int
+(** [background_color] is the color of the screen background *)
+val background_color : Graphics.color
 
-(** [grid_y] is the number of pixels in one vertical unit of the screen grid *)
-val grid_y : int
+(** [player_color] is the color of the player on the screen *)
+val player_color : Graphics.color
 
 (** [update_window player_dir old_pos update_obstacles] is the 
     x position of the player avatar after drawing the updated game graphics 

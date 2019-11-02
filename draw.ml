@@ -1,21 +1,25 @@
 open Graphics
+open Camlimages
 
 let init_window () = 
   open_graph " 700x700";
   set_window_title "Crossy Caml"
 
-let grid_x = (size_x ()) / 25
+let background_color = rgb 109 156 243
 
-let grid_y = (size_y ()) / 50
+let player_color = rgb 209 105 154
 
 let update_window player_dir old_pos update_obstacles = 
-  let light_blue = rgb 109 156 243; in
-  let rose = rgb 209 105 154 in
+  (* [grid_x] is the number of pixels in one horizontal unit of the 
+     screen grid *)
+  let grid_x = (size_x ()) / 25 in 
+  (* [grid_y] is the number of pixels in one vertical unit of the screen grid *)
+  let grid_y = (size_y ()) / 50 in 
   (* There is currently no way to set foreground and background colors?? 
      Filling a rectangle is so janky *)
-  set_color light_blue;
+  set_color background_color;
   fill_rect 0 0 (size_x ()) (size_y ());
-  set_color rose;
+  set_color player_color;
   (* Player avator movement logic *)
   let new_pos = old_pos + (player_dir * grid_x) in
   (* keeps avatar in screen, loops around *)
