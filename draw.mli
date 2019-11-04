@@ -19,5 +19,7 @@ val player_color : Graphics.color
     [update_obstacles] is whether the obstacle positions should be updated *)
 val update_window : int -> int -> bool -> int
 
+val start_page : unit -> unit
+
 (** Erases the current game window and draws the game over screen *)
 val game_over : unit -> unit 
