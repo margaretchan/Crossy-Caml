@@ -1,4 +1,12 @@
-type obj
+type obj = {
+  position: Actor.pos;
+  velocity: Actor.dir * int;
+  id: int;
+  to_kill: bool;
+  score: int;
+  height: int;
+  width: int;
+}
 
 type collidable = 
   | Player of obj 

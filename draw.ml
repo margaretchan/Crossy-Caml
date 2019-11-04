@@ -1,4 +1,6 @@
 open Graphics
+open Actor
+open Object
 
 let init_window () = 
   open_graph " 700x700";
@@ -36,6 +38,8 @@ let game_over () =
   draw_string "Game Over";
   moveto (size_x () / 2 - txt_size_x) (size_y () / 2 - txt_size_y*2);
   draw_string "Press 'R' to Restart";
+
+
 
 
 
