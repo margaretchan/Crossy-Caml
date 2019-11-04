@@ -1,6 +1,8 @@
 open Actor
 open Object
 
+(** [generate_block coord grid_size typ] is a collidable object with position 
+[coord], type [typ], height and width = 2 * [grid_size]. *)
 let generate_block coord grid_size typ : collidable = 
   match coord with
   | (x, y) -> Block (typ, {
@@ -14,6 +16,9 @@ let generate_block coord grid_size typ : collidable =
   })
   | _ -> failwith "generate_pass given invalid coordinate"
 
+(** [gen_helper coord x_bound y_bound cur_pass num_pass grid_size list] is a 
+collidable list that has generated collidable objects filling up all the blocks
+from x = 0 to x = [x_bound].*)
 let rec gen_helper coord x_bound y_bound cur_pass num_pass grid_size list 
 : collidable list =
   match coord with
