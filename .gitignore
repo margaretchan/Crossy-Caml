@@ -1,3 +1,7 @@
+# assignment
+doc.public
+doc.private
+
 # ocaml
 *.cmo
 *.cma
