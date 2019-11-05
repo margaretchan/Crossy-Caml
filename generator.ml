@@ -3,6 +3,7 @@ open Object
 
 (** [generate_block coord grid_size typ] is a collidable object with position 
 [coord], type [typ], height and width = 2 * [grid_size]. *)
+(* doesn't have unique id, no score, height and width are all the same *)
 let generate_block coord grid_size typ : collidable = 
   match coord with
   | (x, y) -> Block (typ, {
@@ -19,6 +20,7 @@ let generate_block coord grid_size typ : collidable =
 (** [gen_helper coord x_bound y_bound cur_pass num_pass grid_size list] is a 
 collidable list that has generated collidable objects filling up all the blocks
 from x = 0 to x = [x_bound].*)
+(* Doesn't ensure that list has num_pass amount of pass_blocks, doesn't update curr_y *)
 let rec gen_helper coord x_bound y_bound cur_pass num_pass grid_size list 
 : collidable list =
   match coord with
