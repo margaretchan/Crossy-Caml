@@ -4,32 +4,32 @@ ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modul
 # Target: main.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:main.mli, interf, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmi main.mli # cached
 # Target: main.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:main.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules main.ml > main.ml.depends
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules main.ml > main.ml.depends # cached
 # Target: draw.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:draw.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.mli > draw.mli.depends
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.mli > draw.mli.depends # cached
 # Target: draw.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:draw.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmi draw.mli
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmi draw.mli # cached
 # Target: main.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmo main.ml
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmo main.ml # cached
 # Target: draw.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:draw.ml, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends
-# Target: draw.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
-+ ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
-File "draw.ml", line 16, characters 6-12:
-16 |   let grid_y = (size_y ()) / 50 in 
-           ^^^^^^
-Warning 26: unused variable grid_y.
-# Target: object.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:object.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules object.mli > object.mli.depends
 # Target: actor.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:actor.mli, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules actor.mli > actor.mli.depends
+# Target: object.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:object.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules object.mli > object.mli.depends
 # Target: actor.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:actor.mli, interf, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o actor.cmi actor.mli
 # Target: object.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:object.mli, interf, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o object.cmi object.mli
+# Target: draw.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
++ ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
+File "draw.ml", line 18, characters 6-12:
+18 |   let grid_y = (size_y ()) / 50 in 
+           ^^^^^^
+Warning 26: unused variable grid_y.
 # Target: object.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:object.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules object.ml > object.ml.depends
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules object.ml > object.ml.depends # cached
 # Target: object.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:object.cmo, file:object.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o object.cmo object.ml
 # Target: actor.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:actor.ml, ocaml, ocamldep, quiet, traverse }
