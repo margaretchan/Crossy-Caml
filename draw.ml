@@ -35,12 +35,37 @@ let draw_collidable blk_width blk_height collide =
   | Block (goodbad_type, obj) -> 
     set_color (if goodbad_type = GoodB then good_blk_color else bad_blk_color);
     fill_rect (fst obj.position) (snd obj.position) blk_width blk_height;
-  | _ -> failwith "player block type is unimplemented"
+  | Player obj -> 
+    set_color player_color;
+    fill_rect (fst obj.position) (snd obj.position) blk_width blk_height 
 
-let update_window player_dir old_pos update_obstacles = 
+(** [move_player dir step player] is [player] but moved [step] in [dir] 
+    Generalize to move_collidable later*)
+let move_player (dir : int) (step : int) (player : collidable) : collidable =
+  match player with 
+  | Player obj ->
+    Player {
+      position = ((fst obj.position) + dir*step , (snd obj.position));
+      velocity = obj.velocity;
+      id = obj.id;
+      to_kill = obj.to_kill;
+      score = obj.score;
+      height = obj.height;
+      width = obj.width;
+    }
+  | Block _ -> failwith "Collidable is not a Player"
+
+(** [get pos c] is the position of [c] *)
+let get_pos (c : collidable) = 
+  match c with 
+  | Player obj -> obj.position
+  | Block (_, obj) -> obj.position
+
+let update_window player_dir (player : collidable) update_obstacles = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
   let grid_x = (size_x ()) / 30 in
+
   (* [grid_y] is the number of pixels in one vertical unit of the screen grid *)
   let grid_y = (size_y ()) / 50 in
 
@@ -51,19 +76,20 @@ let update_window player_dir old_pos update_obstacles =
   fill_rect 0 0 (size_x ()) (size_y ());
   set_color player_color;
 
-  (* Draw player *)
-  let new_pos = old_pos + (player_dir * grid_x) in
-  (* keeps avatar in screen, loops around *)
-  let player_pos = if new_pos > (size_x ()) then 0 else (
-      if new_pos < 0 then size_x () else new_pos) in
-  fill_circle new_pos ((size_y ()) / 7) 50;
-
   (* Draw block objects *)
   let collidable_lst = Generator.generate (size_x ()) 500 3 grid_x grid_y in 
   List.iter (draw_collidable (2 * grid_x) (2 * grid_y)) collidable_lst;
 
-  (* Return new position of player *)
-  player_pos
+  (* Draw and Return new player collidable *)
+  let new_player = move_player player_dir grid_x player in
+  let new_pos_x = fst (get_pos new_player) in
+  if (new_pos_x < 0 || new_pos_x >= size_x()) then 
+    let () = draw_collidable (2*(size_y () / 50)) (2*(size_x () / 30)) player in  
+    player
+  else
+    let () = draw_collidable (2*(size_y () / 50)) (2*(size_x () / 30)) new_player in 
+    new_player
+
 
 let start_page () = 
   clear_graph ();
