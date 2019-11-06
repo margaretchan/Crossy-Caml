@@ -39,13 +39,20 @@ let draw_collidable blk_width blk_height collide =
     set_color player_color;
     fill_rect (fst obj.position) (snd obj.position) blk_width blk_height 
 
-(** [move_player dir step player] is [player] but moved [step] in [dir] 
-    Generalize to move_collidable later*)
-let move_player (dir : int) (step : int) (player : collidable) : collidable =
+(** [moved_player dir step x_bound player] is [player] but 
+    moved one [step] in [dir] on a screen with x limit [x_bound]
+    Generalize to move_collidable later *)
+let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable)  
+  : collidable =
   match player with 
-  | Player obj ->
+  | Player obj -> 
+    (* Loops player position around screen *)
+    let pos_after_step = (fst obj.position) + (dir * step) in
+    let new_x_pos = if pos_after_step > x_bound then 0 else
+        (if (pos_after_step + step) < 0 then (x_bound - step) 
+         else pos_after_step) in
     Player {
-      position = ((fst obj.position) + dir*step , (snd obj.position));
+      position = (new_x_pos , (snd obj.position));
       velocity = obj.velocity;
       id = obj.id;
       to_kill = obj.to_kill;
@@ -74,21 +81,16 @@ let update_window player_dir (player : collidable) update_obstacles =
      Filling a rectangle is so janky *)
   set_color background_color;
   fill_rect 0 0 (size_x ()) (size_y ());
-  set_color player_color;
 
   (* Draw block objects *)
-  let collidable_lst = Generator.generate (size_x ()) 500 3 grid_x grid_y in 
-  List.iter (draw_collidable (2 * grid_x) (2 * grid_y)) collidable_lst;
+  let block_lst = Generator.generate (size_x ()) 500 3 grid_x grid_y in 
+  List.iter (draw_collidable (2 * grid_x) (2 * grid_y)) block_lst;
 
   (* Draw and Return new player collidable *)
-  let new_player = move_player player_dir grid_x player in
-  let new_pos_x = fst (get_pos new_player) in
-  if (new_pos_x < 0 || new_pos_x >= size_x()) then 
-    let () = draw_collidable (2*(size_y () / 50)) (2*(size_x () / 30)) player in  
-    player
-  else
-    let () = draw_collidable (2*(size_y () / 50)) (2*(size_x () / 30)) new_player in 
-    new_player
+  set_color player_color;
+  let new_player = moved_player player_dir grid_x (size_x ()) player in
+  draw_collidable (2 * grid_x) (4 * grid_y) new_player;  
+  new_player
 
 
 let start_page () = 
@@ -96,7 +98,7 @@ let start_page () =
   set_color start_page_color;
   fill_rect 0 0 (size_x ()) (size_y ());
   set_color text_color;
-  (**  set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1"; *) (** causes error on windows *)
+  set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1";  (** causes error on windows *)
   let (x1, y1) = text_size "Welcome to Crossy Caml!" in
   moveto ((size_x () - x1) / 2) ((size_y () - y1) / 2);
   draw_string "Welcome to Crossy Caml!";

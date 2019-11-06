@@ -2,8 +2,6 @@ open Graphics
 open Draw
 open Object
 
-
-
 (** [display_loop last_update_time fps] controls the window refresh updates 
     [last_update_time] is the time the window was last redrawn 
                        not including refreshing from user input
@@ -33,6 +31,7 @@ let display last_update_time fps =
       )
       else loop last_update_time fps player
     ) in 
+
   (* Initialize player at center of screen *)
   let player : collidable = Player {
       position = (size_x () / 2 , size_y () / 7);
@@ -43,6 +42,7 @@ let display last_update_time fps =
       height = 2*(size_y () / 50); 
       width = 2*(size_x () / 30);
     } in
+
   loop last_update_time fps player
 
 let rec wait_for_start () = 
