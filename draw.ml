@@ -4,7 +4,7 @@ open Object
 open Generator
 
 let init_window () = 
-  open_graph " 700x700";
+  open_graph " 750x750";
   set_window_title "Crossy Caml"
 
 (** [start_page_color] is the background color of the start screen *)
@@ -25,6 +25,11 @@ let bad_blk_color = rgb 23 97 62
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = rgb 255 207 57
 
+(** [draw_collidable blk_width blk_height collide] draws the 
+    collidable object [collide] on the screen as a rectangle with 
+    width [blk_width] and height [blk_height].
+    The color of the rectangle is dependant whether [collide] is a 
+    good or bad block type *)
 let draw_collidable blk_width blk_height collide = 
   match collide with 
   | Block (goodbad_type, obj) -> 
