@@ -39,6 +39,12 @@ let draw_collidable blk_width blk_height collide =
     set_color player_color;
     fill_rect (fst obj.position) (snd obj.position) blk_width blk_height 
 
+(** [get pos c] is the position of [c] *)
+let get_pos (c : collidable) = 
+  match c with 
+  | Player obj -> obj.position
+  | Block (_, obj) -> obj.position
+
 (** [moved_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
     Generalize to move_collidable later *)
@@ -61,12 +67,6 @@ let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable)
       width = obj.width;
     }
   | Block _ -> failwith "Collidable is not a Player"
-
-(** [get pos c] is the position of [c] *)
-let get_pos (c : collidable) = 
-  match c with 
-  | Player obj -> obj.position
-  | Block (_, obj) -> obj.position
 
 let update_window player_dir (player : collidable) update_obstacles = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
@@ -91,7 +91,6 @@ let update_window player_dir (player : collidable) update_obstacles =
   let new_player = moved_player player_dir grid_x (size_x ()) player in
   draw_collidable (2 * grid_x) (4 * grid_y) new_player;  
   new_player
-
 
 let start_page () = 
   clear_graph ();
