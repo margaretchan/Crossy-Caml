@@ -33,8 +33,14 @@ let display last_update_time fps =
   (* Initialize player at center of screen *)
   loop last_update_time fps ((size_x ()) / 2)
 
+let rec wait_for_start () = 
+  match wait_next_event [Key_pressed] with 
+  | status -> if read_key () = ' ' 
+    then display (Sys.time ()) 30.0 
+    else wait_for_start ()
 
 (** Initializes game *)
 let () = 
   Draw.init_window ();
-  display (Sys.time ()) 30.0
+  Draw.start_page ();
+  wait_for_start ()

@@ -12,28 +12,33 @@ ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o dr
 # Target: main.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o main.cmo main.ml # cached
 # Target: draw.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:draw.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules draw.ml > draw.ml.depends # cached
 # Target: actor.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:actor.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules actor.mli > actor.mli.depends
-# Target: object.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:object.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules object.mli > object.mli.depends
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules actor.mli > actor.mli.depends # cached
 # Target: actor.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:actor.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o actor.cmi actor.mli
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o actor.cmi actor.mli # cached
+# Target: generator.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:generator.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules generator.mli > generator.mli.depends # cached
+# Target: object.mli.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:mli, file:object.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules object.mli > object.mli.depends # cached
 # Target: object.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:object.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o object.cmi object.mli
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o object.cmi object.mli # cached
+# Target: generator.cmi, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:mli, file:generator.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o generator.cmi generator.mli # cached
 # Target: draw.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
-+ ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml
-File "draw.ml", line 18, characters 6-12:
-18 |   let grid_y = (size_y ()) / 50 in 
-           ^^^^^^
-Warning 26: unused variable grid_y.
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o draw.cmo draw.ml # cached
+# Target: actor.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:actor.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules actor.ml > actor.ml.depends # cached
+# Target: actor.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:actor.cmo, file:actor.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o actor.cmo actor.ml # cached
+# Target: generator.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:generator.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules generator.ml > generator.ml.depends # cached
+# Target: generator.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:generator.cmo, file:generator.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o generator.cmo generator.ml # cached
 # Target: object.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:object.ml, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules object.ml > object.ml.depends # cached
 # Target: object.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:object.cmo, file:object.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o object.cmo object.ml
-# Target: actor.ml.depends, tags: { package(ANSITerminal), package(graphics), package(oUnit), extension:ml, file:actor.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package graphics -package oUnit -package ANSITerminal -modules actor.ml > actor.ml.depends
-# Target: actor.cmo, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, compile, extension:cmo, extension:ml, file:actor.cmo, file:actor.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o actor.cmo actor.ml
+ocamlfind ocamlc -c -package graphics -package oUnit -package ANSITerminal -o object.cmo object.ml # cached
+# Target: main.byte, tags: { package(ANSITerminal), package(graphics), package(oUnit), byte, dont_link_with, extension:byte, file:main.byte, link, ocaml, program, quiet, traverse }
+ocamlfind ocamlc -linkpkg -package graphics -package oUnit -package ANSITerminal actor.cmo object.cmo generator.cmo draw.cmo main.cmo -o main.byte # cached
 # Compilation successful.
