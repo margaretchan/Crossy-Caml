@@ -7,7 +7,8 @@ open Object
 let generate_block coord grid_size typ : collidable = 
   match coord with
   | (x, y) -> Block (typ, {
-      position = (x, y);
+      x_pos = x;
+      y_pos = y;
       velocity = (No, 0);
       id = 0;
       to_kill = false;

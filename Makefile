@@ -1,4 +1,4 @@
-MODULES=main draw object actor generator
+MODULES=main draw object actor generator state screen
 OBJECTS=$(MODULES:=.cmo)
 MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind

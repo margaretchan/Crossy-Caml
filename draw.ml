@@ -34,10 +34,10 @@ let draw_collidable blk_width blk_height collide =
   match collide with 
   | Block (goodbad_type, obj) -> 
     set_color (if goodbad_type = GoodB then good_blk_color else bad_blk_color);
-    fill_rect (fst obj.position) (snd obj.position) blk_width blk_height;
+    fill_rect (obj.x_pos) (obj.y_pos) blk_width blk_height;
   | Player obj -> 
     set_color player_color;
-    fill_rect (fst obj.position) (snd obj.position) blk_width blk_height 
+    fill_rect (obj.x_pos) (obj.y_pos) blk_width blk_height 
 
 (** [moved_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
@@ -47,12 +47,13 @@ let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable)
   match player with 
   | Player obj -> 
     (* Loops player position around screen *)
-    let pos_after_step = (fst obj.position) + (dir * step) in
+    let pos_after_step = (obj.x_pos) + (dir * step) in
     let new_x_pos = if pos_after_step > x_bound then 0 else
         (if (pos_after_step + step) < 0 then (x_bound - step) 
          else pos_after_step) in
     Player {
-      position = (new_x_pos , (snd obj.position));
+      x_pos = new_x_pos;
+      y_pos = obj.y_pos;
       velocity = obj.velocity;
       id = obj.id;
       to_kill = obj.to_kill;
@@ -65,8 +66,8 @@ let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable)
 (** [get pos c] is the position of [c] *)
 let get_pos (c : collidable) = 
   match c with 
-  | Player obj -> obj.position
-  | Block (_, obj) -> obj.position
+  | Player obj -> (obj.x_pos, obj.y_pos)
+  | Block (_, obj) -> (obj.x_pos, obj.y_pos)
 
 let update_window player_dir (player : collidable) update_obstacles = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 

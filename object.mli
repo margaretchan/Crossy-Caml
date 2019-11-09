@@ -1,5 +1,6 @@
 type obj = {
-  position: Actor.pos;
+  mutable x_pos: int;
+  mutable y_pos: int;
   velocity: Actor.dir * int;
   id: int;
   to_kill: bool;
@@ -11,6 +12,8 @@ type obj = {
 type collidable = 
   | Player of obj 
   | Block of Actor.block_type * obj
+
+val get_block : collidable -> Actor.block_type 
 
 (** [check_collision c1 c2] is true if collidable [c2] has overlapped pixels 
     with collidable [c1], false otherwise.
