@@ -45,11 +45,16 @@ let get_pos (c : collidable) =
   | Player obj -> obj.position
   | Block (_, obj) -> obj.position
 
+let extract_obj (c : collidable) = 
+  match c with 
+  | Player obj -> obj 
+  | Block (_, obj) -> obj
+
 (** [moved_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
     Generalize to move_collidable later *)
-let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable)  
-  : collidable =
+let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable) 
+  : collidable  =
   match player with 
   | Player obj -> 
     (* Loops player position around screen *)
@@ -57,15 +62,9 @@ let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable)
     let new_x_pos = if pos_after_step > x_bound then 0 else
         (if (pos_after_step + step) < 0 then (x_bound - step) 
          else pos_after_step) in
-    Player {
-      position = (new_x_pos , (snd obj.position));
-      velocity = obj.velocity;
-      id = obj.id;
-      to_kill = obj.to_kill;
-      score = obj.score;
-      height = obj.height;
-      width = obj.width;
-    }
+    let old_player = extract_obj player in 
+    old_player.position <- new_x_pos, snd old_player.position;
+    player 
   | Block _ -> failwith "Collidable is not a Player"
 
 let update_window player_dir (player : collidable) update_obstacles = 
