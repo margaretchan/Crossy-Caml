@@ -4,7 +4,7 @@ type obj = {
   velocity: Actor.dir * int;
   id: int;
   to_kill: bool;
-  score: int;
+  mutable score: int;
   height: int;
   width: int;
 }
@@ -20,8 +20,8 @@ val get_block : collidable -> Actor.block_type
     Requires: 
     - [c1] is a collidable of Player
     - [c2] is a collidable of Block
-    Raises: failwith "Failed requirement"
-       *)
+      Raises: failwith "Failed requirement"
+*)
 val check_collision : collidable -> collidable -> bool
 
 (** [check_on_screen c xbound] is true if any part of collidable [c] is within the 
