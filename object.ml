@@ -1,7 +1,7 @@
 open Actor
 
 type obj = {
-  position: pos;
+  mutable position: pos;
   velocity: dir * int;
   id: int;
   to_kill: bool;

@@ -97,7 +97,7 @@ let start_page () =
   set_color start_page_color;
   fill_rect 0 0 (size_x ()) (size_y ());
   set_color text_color;
-  set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1";  (** causes error on windows *)
+  (* set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1";  causes error on windows *)
   let (x1, y1) = text_size "Welcome to Crossy Caml!" in
   moveto ((size_x () - x1) / 2) ((size_y () - y1) / 2);
   draw_string "Welcome to Crossy Caml!";
