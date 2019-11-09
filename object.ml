@@ -5,7 +5,7 @@ type obj = {
   velocity: dir * int;
   id: int;
   to_kill: bool;
-  score: int;
+  mutable score: int;
   height: int;
   width: int;
 }

@@ -39,12 +39,7 @@ let draw_collidable blk_width blk_height collide =
     set_color player_color;
     fill_rect (fst obj.position) (snd obj.position) blk_width blk_height 
 
-(** [get pos c] is the position of [c] *)
-let get_pos (c : collidable) = 
-  match c with 
-  | Player obj -> obj.position
-  | Block (_, obj) -> obj.position
-
+(**[extract_obj c] extracts the Object from collidable [c] *)
 let extract_obj (c : collidable) = 
   match c with 
   | Player obj -> obj 
@@ -89,7 +84,16 @@ let update_window player_dir (player : collidable) update_obstacles =
   set_color player_color;
   let new_player = moved_player player_dir grid_x (size_x ()) player in
   draw_collidable (2 * grid_x) (4 * grid_y) new_player;  
-  new_player
+
+  (** Update Score*)
+  let p_obj = extract_obj new_player in 
+  set_color text_color;
+  moveto 50 50;
+  draw_string ("Score: " ^ (string_of_int p_obj.score));
+  p_obj.score <- p_obj.score + 1;
+
+  (**Return new player object *)
+  new_player  
 
 let start_page () = 
   clear_graph ();
