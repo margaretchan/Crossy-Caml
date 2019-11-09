@@ -1,5 +1,6 @@
 open Graphics
 open Draw
+open Object
 
 (** [display_loop last_update_time fps] controls the window refresh updates 
     [last_update_time] is the time the window was last redrawn 
@@ -7,7 +8,7 @@ open Draw
     [fps] is the number of update frames per second (gauranteed minimum)
     The game is exited by closing the window *)
 let display last_update_time fps = 
-  let rec loop last_update_time fps curr_pos = 
+  let rec loop last_update_time fps player = 
     (* Check for time based update *)
     if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
       let dir = 
@@ -16,7 +17,7 @@ let display last_update_time fps =
           if key = 'a' then -1 else (
             if key = 'd' then 1 else 0)) 
         else 0 in 
-      match Draw.update_window dir curr_pos true with 
+      match Draw.update_window dir player true with 
       | p -> loop (Sys.time ()) fps p
     ) 
     else (
@@ -25,13 +26,24 @@ let display last_update_time fps =
         let key = read_key () in
         let dir = if key = 'a' then -1 else (
             if key = 'd' then 1 else 0 ) in 
-        match Draw.update_window dir curr_pos false with 
+        match Draw.update_window dir player false with 
         | p -> loop last_update_time fps p
       )
-      else loop last_update_time fps curr_pos
+      else loop last_update_time fps player
     ) in 
+
   (* Initialize player at center of screen *)
-  loop last_update_time fps ((size_x ()) / 2)
+  let player : collidable = Player {
+      position = (size_x () / 2 , size_y () / 7);
+      velocity = No, 0 ;
+      id = 0;
+      to_kill = false;
+      score = 0;
+      height = 2*(size_y () / 50); 
+      width = 2*(size_x () / 30);
+    } in
+
+  loop last_update_time fps player
 
 let rec wait_for_start () = 
   match wait_next_event [Key_pressed] with 

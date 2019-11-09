@@ -11,7 +11,7 @@ val init_window : unit -> unit
     | 1 -> right 
     [old_pos] is the x position of the player avatar prior to update 
     [update_obstacles] is whether the obstacle positions should be updated *)
-val update_window : int -> int -> bool -> int
+val update_window : int -> Object.collidable -> bool -> Object.collidable
 
 (** [start_page ()] draws the start screen of the game *)
 val start_page : unit -> unit
