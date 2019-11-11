@@ -3,7 +3,7 @@ open Object
 open Generator
 open State
 
-module GameScreen = struct
+module Screen = struct
 
   open Queue
 
@@ -31,8 +31,8 @@ module GameScreen = struct
       match lst with 
       | [] -> ()
       | h :: t -> (match h with
-        | Block (_, obj) -> obj.y_pos <- (obj.y_pos - obj.height)
-        | Player _ -> failwith "List can't contain player");
+          | Block (_, obj) -> obj.y_pos <- (obj.y_pos - obj.height)
+          | Player _ -> failwith "List can't contain player");
         helper t in 
     helper collidable_lst
 
@@ -40,10 +40,10 @@ module GameScreen = struct
     match collidable_lst with
     | [] -> failwith "List is empty"
     | h :: t -> (match h with
-      | Block (_, obj) -> obj.y_pos
-      | Player _ -> failwith "Should have no player in list")
+        | Block (_, obj) -> obj.y_pos
+        | Player _ -> failwith "Should have no player in list")
 
-  let update s b x_bound y_bound num_pass grid_x grid_y = 
+  let update s x_bound y_bound num_pass grid_x grid_y = 
     (* shift down *)
     Queue.iter (shift_down) s;
     (* shift_down s;  *)
@@ -53,5 +53,7 @@ module GameScreen = struct
     (* check to remove bottom *)
     let bottom_row = Queue.peek s in
     let bottom_y = check_y bottom_row in
-    if bottom_y < 0 then Queue.pop s else Queue.peek s
+    let bottom = if bottom_y < 0 then Queue.pop s else Queue.peek s in 
+    match bottom with 
+    | _ -> s
 end

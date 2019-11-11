@@ -65,6 +65,13 @@ let get_pos (c : collidable) =
   | Player obj -> (obj.x_pos, obj.y_pos)
   | Block (_, obj) -> (obj.x_pos, obj.y_pos)
 
+let draw_row collidable_lst =
+  let rec helper lst = 
+    match lst with
+    | [] -> ()
+    | h :: t -> draw_collidable h; helper t in 
+  helper collidable_lst
+
 let update_window player_dir (player : collidable) update_obstacles screen 
     seq_bad_rows = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
@@ -80,25 +87,36 @@ let update_window player_dir (player : collidable) update_obstacles screen
   set_color background_color;
   fill_rect 0 0 (size_x ()) (size_y ());
 
-  (* Update block locations on screen *)
-  let next_row_good = if seq_bad_rows > 0 then true else false in
-  let seq_bad_rows' = if next_row_good then 0 else seq_bad_rows + 1 in
-  Screen.update screen next_row_good;
+  (* Update screen *)
+  let screen' = 
+    if update_obstacles then (
+      let next_row_good = if seq_bad_rows > 0 then true else false in
+      let num_good_blks = if next_row_good then 30 else 5 in
+      Screen.update screen (size_x ()) (size_y ()) num_good_blks grid_x grid_y)
+    else screen in
+
+  (* Draw blocks *)
+  Queue.iter draw_row screen';
+
+  (* Update number of sequential bad rows *)
+  let seq_bad_rows' = if update_obstacles 
+    then (if (seq_bad_rows > 0) then 0 else seq_bad_rows + 1) 
+    else seq_bad_rows in
 
   (* Update and Draw Player Collidable *)
   set_color player_color;
   moves_player player_dir grid_x (size_x ()) player;
   draw_collidable (2 * grid_x) (4 * grid_y) player;  
 
-  (** Update Score*)
+  (** Update Score *)
   let p_obj = extract_obj player in 
   set_color text_color;
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
   p_obj.score <- p_obj.score + 1;
 
-  (**Return player object *)
-  (player, screen, seq_bad_rows')
+  (** Return tuple of player object, screen, and number of sequential bad rows*)
+  (player, screen', seq_bad_rows')
 
 let start_page () = 
   clear_graph ();

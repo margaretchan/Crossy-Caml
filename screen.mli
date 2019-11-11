@@ -6,6 +6,6 @@ module Screen : sig
     -> State.state
 
   val update : Object.collidable list Queue.t -> int -> int -> int -> int -> int 
-    -> Object.collidable list
+    -> Object.collidable list Queue.t
 
 end

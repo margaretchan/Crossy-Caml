@@ -19,7 +19,7 @@ let display last_update_time fps =
           if key = 'a' then -1 else (
             if key = 'd' then 1 else 0)) 
         else 0 in 
-      match (Draw.update_window dir player true screen) with 
+      match (Draw.update_window dir player true screen seq_bad_rows) with 
       | (p, s, bad) -> loop (Sys.time ()) fps p s bad
     ) 
     else (
@@ -28,7 +28,7 @@ let display last_update_time fps =
         let key = read_key () in
         let dir = if key = 'a' then -1 else (
             if key = 'd' then 1 else 0 ) in 
-        match Draw.update_window dir player false screen with 
+        match (Draw.update_window dir player false screen seq_bad_rows) with 
         | (p, s, bad) -> loop last_update_time fps p s bad
       )
       else loop last_update_time fps player screen seq_bad_rows
