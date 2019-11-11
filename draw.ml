@@ -70,15 +70,15 @@ let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable)
   | Block _ -> failwith "Collidable is not a Player"
 
 (** [get pos c] is the position of [c] *)
-let get_pos (c : collidable) = 
+let get_pos (c : collidable) =  
   match c with 
   | Player obj -> (obj.x_pos, obj.y_pos)
   | Block (_, obj) -> (obj.x_pos, obj.y_pos)
-
+(* 
 let old_player = extract_obj player in 
 old_player.position <- new_x_pos, snd old_player.position;
 player 
-| Block _ -> failwith "Collidable is not a Player"
+| Block _ -> failwith "Collidable is not a Player" *)
 
 let update_window player_dir (player : collidable) update_obstacles = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
