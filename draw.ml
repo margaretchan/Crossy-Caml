@@ -60,7 +60,7 @@ let moves_player (dir : int) (step : int) (x_bound : int) (player : collidable)
   obj.x_pos <- new_x_pos
 
 (** [get pos c] is the position of [c] *)
-let get_pos (c : collidable) = 
+let get_pos (c : collidable) =  
   match c with 
   | Player obj -> (obj.x_pos, obj.y_pos)
   | Block (_, obj) -> (obj.x_pos, obj.y_pos)
