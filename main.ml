@@ -34,7 +34,8 @@ let display last_update_time fps =
 
   (* Initialize player at center of screen *)
   let player : collidable = Player {
-      position = (size_x () / 2 , size_y () / 7);
+      x_pos = (size_x () / 2); 
+      y_pos = (size_y () / 7);
       velocity = No, 0 ;
       id = 0;
       to_kill = false;

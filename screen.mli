@@ -1,4 +1,4 @@
-module type Screen = sig 
+module Screen : sig 
 
   val empty : Object.collidable list Queue.t 
 

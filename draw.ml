@@ -48,37 +48,21 @@ let extract_obj (c : collidable) =
 (** [moved_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
     Generalize to move_collidable later *)
-let moved_player (dir : int) (step : int) (x_bound : int) (player : collidable) 
-  : collidable  =
-  match player with 
-  | Player obj -> 
-    (* Loops player position around screen *)
-    let pos_after_step = (obj.x_pos) + (dir * step) in
-    let new_x_pos = if pos_after_step > x_bound then 0 else
-        (if (pos_after_step + step) < 0 then (x_bound - step) 
-         else pos_after_step) in
-    Player {
-      x_pos = new_x_pos;
-      y_pos = obj.y_pos;
-      velocity = obj.velocity;
-      id = obj.id;
-      to_kill = obj.to_kill;
-      score = obj.score;
-      height = obj.height;
-      width = obj.width;
-    }
-  | Block _ -> failwith "Collidable is not a Player"
+let moves_player (dir : int) (step : int) (x_bound : int) (player : collidable) 
+  : unit  =
+  let obj = extract_obj player in 
+  (** Loop player position around screen *)
+  let pos_after_step = (obj.x_pos) + (dir * step) in
+  let new_x_pos = if pos_after_step > x_bound then 0 else
+      (if (pos_after_step + step) < 0 then (x_bound - step) 
+       else pos_after_step) in
+  obj.x_pos <- new_x_pos
 
 (** [get pos c] is the position of [c] *)
 let get_pos (c : collidable) =  
   match c with 
   | Player obj -> (obj.x_pos, obj.y_pos)
   | Block (_, obj) -> (obj.x_pos, obj.y_pos)
-(* 
-let old_player = extract_obj player in 
-old_player.position <- new_x_pos, snd old_player.position;
-player 
-| Block _ -> failwith "Collidable is not a Player" *)
 
 let update_window player_dir (player : collidable) update_obstacles = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
@@ -98,20 +82,20 @@ let update_window player_dir (player : collidable) update_obstacles =
   let block_lst = Generator.generate (size_x ()) 500 3 grid_x grid_y in 
   List.iter (draw_collidable (2 * grid_x) (2 * grid_y)) block_lst;
 
-  (* Draw and Return new player collidable *)
+  (* Update and Draw Player Collidable *)
   set_color player_color;
-  let new_player = moved_player player_dir grid_x (size_x ()) player in
-  draw_collidable (2 * grid_x) (4 * grid_y) new_player;  
+  moves_player player_dir grid_x (size_x ()) player;
+  draw_collidable (2 * grid_x) (4 * grid_y) player;  
 
   (** Update Score*)
-  let p_obj = extract_obj new_player in 
+  let p_obj = extract_obj player in 
   set_color text_color;
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
   p_obj.score <- p_obj.score + 1;
 
-  (**Return new player object *)
-  new_player  
+  (**Return player object *)
+  player
 
 let start_page () = 
   clear_graph ();
