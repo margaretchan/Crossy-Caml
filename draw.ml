@@ -2,6 +2,7 @@ open Graphics
 open Actor
 open Object
 open Generator
+open Screen
 
 let init_window () = 
   open_graph " 750x750";
@@ -64,7 +65,8 @@ let get_pos (c : collidable) =
   | Player obj -> (obj.x_pos, obj.y_pos)
   | Block (_, obj) -> (obj.x_pos, obj.y_pos)
 
-let update_window player_dir (player : collidable) update_obstacles = 
+let update_window player_dir (player : collidable) update_obstacles screen 
+    seq_bad_rows = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
   let grid_x = (size_x ()) / 30 in
@@ -78,9 +80,10 @@ let update_window player_dir (player : collidable) update_obstacles =
   set_color background_color;
   fill_rect 0 0 (size_x ()) (size_y ());
 
-  (* Draw block objects *)
-  let block_lst = Generator.generate (size_x ()) 500 3 grid_x grid_y in 
-  List.iter (draw_collidable (2 * grid_x) (2 * grid_y)) block_lst;
+  (* Update block locations on screen *)
+  let next_row_good = if seq_bad_rows > 0 then true else false in
+  let seq_bad_rows' = if next_row_good then 0 else seq_bad_rows + 1 in
+  Screen.update screen next_row_good;
 
   (* Update and Draw Player Collidable *)
   set_color player_color;
@@ -95,7 +98,7 @@ let update_window player_dir (player : collidable) update_obstacles =
   p_obj.score <- p_obj.score + 1;
 
   (**Return player object *)
-  player
+  (player, screen, seq_bad_rows')
 
 let start_page () = 
   clear_graph ();
