@@ -7,7 +7,8 @@ open Screen
 (** [display_loop last_update_time fps] controls the window refresh updates 
     [last_update_time] is the time the window was last redrawn 
                        not including refreshing from user input
-    [fps] is the number of update frames per second (gauranteed minimum)
+    [fps] is the number of times per second a new row is drawn on the screen
+          (independant of keyboard update)
     The game is exited by closing the window *)
 let display last_update_time fps = 
   let rec loop last_update_time fps player screen seq_bad_rows = 
@@ -53,7 +54,7 @@ let display last_update_time fps =
 let rec wait_for_start () = 
   match wait_next_event [Key_pressed] with 
   | status -> if read_key () = ' ' 
-    then display (Sys.time ()) 30.0 
+    then display (Sys.time ()) 3.0 
     else wait_for_start ()
 
 (** Initializes game *)
