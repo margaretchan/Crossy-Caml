@@ -25,19 +25,18 @@ let bad_blk_color = rgb 23 97 62
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = rgb 255 207 57
 
-(** [draw_collidable blk_width blk_height collide] draws the 
-    collidable object [collide] on the screen as a rectangle with 
-    width [blk_width] and height [blk_height].
+(** [draw_collidable collide] draws the collidable object [collide] on the 
+    screen as a rectangle with its fields width and height.
     The color of the rectangle is dependant whether [collide] is a 
     good or bad block type *)
-let draw_collidable blk_width blk_height collide = 
+let draw_collidable collide = 
   match collide with 
   | Block (goodbad_type, obj) -> 
     set_color (if goodbad_type = GoodB then good_blk_color else bad_blk_color);
-    fill_rect (obj.x_pos) (obj.y_pos) blk_width blk_height;
+    fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
   | Player obj -> 
     set_color player_color;
-    fill_rect (obj.x_pos) (obj.y_pos) blk_width blk_height 
+    fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height) 
 
 (**[extract_obj c] extracts the Object from collidable [c] *)
 let extract_obj (c : collidable) = 
@@ -80,12 +79,12 @@ let update_window player_dir (player : collidable) update_obstacles =
 
   (* Draw block objects *)
   let block_lst = Generator.generate (size_x ()) 500 3 grid_x grid_y in 
-  List.iter (draw_collidable (2 * grid_x) (2 * grid_y)) block_lst;
+  List.iter (draw_collidable) block_lst;
 
   (* Update and Draw Player Collidable *)
   set_color player_color;
   moves_player player_dir grid_x (size_x ()) player;
-  draw_collidable (2 * grid_x) (4 * grid_y) player;  
+  draw_collidable player;  
 
   (** Update Score*)
   let p_obj = extract_obj player in 
