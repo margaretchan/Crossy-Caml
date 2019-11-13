@@ -3,7 +3,7 @@ open Object
 open Generator
 open State
 
-module GameScreen = struct
+module Screen = struct
 
   open Queue
 
@@ -26,6 +26,9 @@ module GameScreen = struct
     ) with
     | _ -> State.Game 
 
+  (** [shift_down col_lst] is a unit. It modifies all the collidables in 
+      [col_lst] to have their position shifted down by their height. 
+      Requires: [col_lst] contains no players*)
   let shift_down (collidable_lst : collidable list) =
     let rec helper lst = 
       match lst with 
@@ -36,22 +39,21 @@ module GameScreen = struct
         helper t in 
     helper collidable_lst
 
-  let check_y collidable_lst = 
+  (** [get_obj col_lst] is the object of the first colllidable of [col_lst]
+      Requires: [col_lst] is not empty with no player collidables*)
+  let get_obj collidable_lst = 
     match collidable_lst with
     | [] -> failwith "List is empty"
     | h :: t -> (match h with
-      | Block (_, obj) -> obj.y_pos
+      | Block (_, obj) -> obj
       | Player _ -> failwith "Should have no player in list")
 
-  let update s b x_bound y_bound num_pass grid_x grid_y = 
-    (* shift down *)
+  let update s x_bound y_bound num_pass grid_x grid_y = 
     Queue.iter (shift_down) s;
-    (* shift_down s;  *)
-    (* add top *)
     let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
     Queue.push new_list s; 
-    (* check to remove bottom *)
     let bottom_row = Queue.peek s in
-    let bottom_y = check_y bottom_row in
-    if bottom_y < 0 then Queue.pop s else Queue.peek s
+    let bottom_y = (get_obj bottom_row).y_pos in
+    if bottom_y < 0 then Queue.pop s else Queue.peek s;
+    ()
 end
