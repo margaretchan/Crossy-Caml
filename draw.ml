@@ -2,6 +2,7 @@ open Graphics
 open Actor
 open Object
 open Generator
+open Screen
 
 let init_window () = 
   open_graph " 750x750";
@@ -25,19 +26,18 @@ let bad_blk_color = rgb 23 97 62
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = rgb 255 207 57
 
-(** [draw_collidable blk_width blk_height collide] draws the 
-    collidable object [collide] on the screen as a rectangle with 
-    width [blk_width] and height [blk_height].
+(** [draw_collidable collide] draws the collidable object [collide] on the 
+    screen as a rectangle with its fields width and height.
     The color of the rectangle is dependant whether [collide] is a 
     good or bad block type *)
-let draw_collidable blk_width blk_height collide = 
+let draw_collidable collide = 
   match collide with 
   | Block (goodbad_type, obj) -> 
     set_color (if goodbad_type = GoodB then good_blk_color else bad_blk_color);
-    fill_rect (obj.x_pos) (obj.y_pos) blk_width blk_height;
+    fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
   | Player obj -> 
     set_color player_color;
-    fill_rect (obj.x_pos) (obj.y_pos) blk_width blk_height 
+    fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height) 
 
 (**[extract_obj c] extracts the Object from collidable [c] *)
 let extract_obj (c : collidable) = 
@@ -64,7 +64,16 @@ let get_pos (c : collidable) =
   | Player obj -> (obj.x_pos, obj.y_pos)
   | Block (_, obj) -> (obj.x_pos, obj.y_pos)
 
-let update_window player_dir (player : collidable) update_obstacles = 
+let draw_row collidable_lst =
+  let rec helper lst = 
+    match lst with
+    | [] -> ()
+    | h :: t -> draw_collidable h; 
+      helper t in 
+  helper collidable_lst
+
+let update_window player_dir (player : collidable) update_obstacles screen 
+    seq_bad_rows = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
   let grid_x = (size_x ()) / 30 in
@@ -78,24 +87,36 @@ let update_window player_dir (player : collidable) update_obstacles =
   set_color background_color;
   fill_rect 0 0 (size_x ()) (size_y ());
 
-  (* Draw block objects *)
-  let block_lst = Generator.generate (size_x ()) 500 3 grid_x grid_y in 
-  List.iter (draw_collidable (2 * grid_x) (2 * grid_y)) block_lst;
+  (* Update screen *)
+  let screen' = 
+    if update_obstacles then (
+      let next_row_good = if seq_bad_rows > 0 then true else false in
+      let num_good_blks = if next_row_good then 30 else 5 in
+      Screen.update screen (size_x ()) (size_y ()) num_good_blks grid_x grid_y)
+    else screen in
+
+  (* Draw blocks *)
+  Queue.iter draw_row screen';
+
+  (* Update number of sequential bad rows *)
+  let seq_bad_rows' = if update_obstacles 
+    then (if (seq_bad_rows > 0) then 0 else seq_bad_rows + 1) 
+    else seq_bad_rows in
 
   (* Update and Draw Player Collidable *)
   set_color player_color;
   moves_player player_dir grid_x (size_x ()) player;
-  draw_collidable (2 * grid_x) (4 * grid_y) player;  
+  draw_collidable player;  
 
-  (** Update Score*)
+  (** Update Score *)
   let p_obj = extract_obj player in 
   set_color text_color;
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
   p_obj.score <- p_obj.score + 1;
 
-  (**Return player object *)
-  player
+  (** Return tuple of player object, screen, and number of sequential bad rows*)
+  (player, screen', seq_bad_rows')
 
 let start_page () = 
   clear_graph ();
