@@ -39,7 +39,7 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : collidable list = 
   let start_coord = (0, y_bound) in
-  let first_row = gen_helper start_coord x_bound 0 num_pass grid_x [] in
-  let second_coord = (0, y_bound + 2 * grid_y) in
-  let num_blocks = x_bound / (2 * grid_x) in
-  gen_helper second_coord x_bound 0 num_blocks grid_x first_row
+  gen_helper start_coord x_bound 0 num_pass grid_x [] 
+(* let second_coord = (0, y_bound + 2 * grid_y) in
+   let num_blocks = x_bound / (2 * grid_x) in
+   gen_helper second_coord x_bound 0 num_blocks grid_x first_row *)
