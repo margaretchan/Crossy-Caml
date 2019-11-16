@@ -18,7 +18,8 @@ module Screen = struct
       let rec helper block_lst col_lst = 
         match block_lst, col_lst with
         | [], [] -> State.Game
-        | h1 :: t1, h2 :: t2 -> if h2 then if (Object.get_block h1) <> GoodB 
+        | h1 :: t1, h2 :: t2 -> if h2 then 
+            if (Actor.is_good (Object.get_block h1))
             then State.Lose else State.Game
           else helper t1 t2
         | _ -> failwith "Oh no" in 
@@ -40,19 +41,19 @@ module Screen = struct
         helper t in 
     helper col_lst
 
-  (** [shift_down col_lst] is a unit. It modifies all the collidables in 
+  (** [shift_side col_lst] is a unit. It modifies all the collidables in 
       [col_lst] to have their position shifted either left or right 
       (determined pseudo-randomly) by their width. 
       Requires: [col_lst] contains no players *)
   let shift_side (col_lst : collidable list) = 
+    let move_dir = if (Random.bool ()) then -1 else 1 in 
     let rec helper lst = 
       match lst with 
       | [] -> ()
-      | row :: t -> begin
-          let move_dir = if (Random.bool ()) then -1 else 1 in 
-          match row with 
+      | b :: t -> begin
+          match b with 
           | Block (_, obj) -> 
-            obj.x_pos <- (obj.x_pos - (move_dir * obj.width)); 
+            obj.x_pos <- (obj.x_pos + (move_dir * obj.width)); 
             helper t
           | Player _ -> failwith "List can't contain player"
         end in 

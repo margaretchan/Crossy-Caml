@@ -26,20 +26,18 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list
   | (x, y) -> 
     let blocks_left = (x_bound - x) / (2 * grid_size) in 
     let pass_left = num_pass - cur_pass in
-    if (blocks_left <= 0) then list 
+
+    if (blocks_left <= 0) then list
     else let rand = Random.int (x_bound / (2 * grid_size)) in 
       if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
-      then let pass_block = generate_block coord grid_size GoodB in
-        gen_helper (x + grid_size*2, y) x_bound (cur_pass + 1) num_pass 
+      then let pass_block = generate_block coord grid_size (GoodB Nothing) in
+        gen_helper (x + grid_size * 2, y) x_bound (cur_pass + 1) num_pass 
           grid_size (pass_block :: list)
       else let new_block = generate_block coord grid_size LargeB in
-        gen_helper (x + grid_size*2, y) x_bound cur_pass num_pass grid_size 
+        gen_helper (x + grid_size * 2, y) x_bound cur_pass num_pass grid_size 
           (new_block :: list) 
 
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : collidable list = 
   let start_coord = (0, y_bound) in
-  let first_row = gen_helper start_coord x_bound 0 num_pass grid_x [] in
-  let second_coord = (0, y_bound + 2 * grid_y) in
-  let num_blocks = x_bound / (2 * grid_x) in
-  gen_helper second_coord x_bound 0 num_blocks grid_x first_row
+  gen_helper start_coord x_bound 0 num_pass grid_x []
