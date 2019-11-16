@@ -24,7 +24,8 @@ module Screen = struct
         | _ -> failwith "Oh no" in 
       helper bottom_list collision_list
     ) with
-    | _ -> State.Game 
+    | _ ->              
+      State.Game 
 
   (** [shift_down col_lst] is a unit. It modifies all the collidables in 
       [col_lst] to have their position shifted down by their height. 

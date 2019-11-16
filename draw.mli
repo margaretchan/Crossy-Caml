@@ -26,4 +26,6 @@ val start_page : unit -> unit
 
 (** [game_over ()] erases the current game window and draws the 
     game over screen *)
-val game_over : unit -> unit 
+val game_over : int -> int -> unit 
+
+val extract_obj : Object.collidable -> Object.obj
