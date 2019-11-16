@@ -17,3 +17,7 @@ type block_type =
 let get_effect = function
   | GoodB e -> e
   | _ -> failwith "No effect"
+
+let is_good = function 
+  | GoodB _ -> true
+  | _ -> false

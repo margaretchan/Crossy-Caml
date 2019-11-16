@@ -29,7 +29,7 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list
     if (blocks_left <= 0) then list 
     else let rand = Random.int (x_bound / (2 * grid_size)) in 
       if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
-      then let pass_block = generate_block coord grid_size GoodB in
+      then let pass_block = generate_block coord grid_size (GoodB Nothing) in
         gen_helper (x + grid_size*2, y) x_bound (cur_pass + 1) num_pass 
           grid_size (pass_block :: list)
       else let new_block = generate_block coord grid_size LargeB in

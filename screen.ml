@@ -18,7 +18,8 @@ module Screen = struct
       let rec helper block_lst col_lst = 
         match block_lst, col_lst with
         | [], [] -> State.Game
-        | h1 :: t1, h2 :: t2 -> if h2 then if (Object.get_block h1) <> GoodB 
+        | h1 :: t1, h2 :: t2 -> if h2 then 
+            if Actor.is_good (Object.get_block h1)
             then State.Lose else State.Game
           else helper t1 t2
         | _ -> failwith "Oh no" in 
@@ -42,7 +43,7 @@ module Screen = struct
 
   (** [get_obj col_lst] is the object of the first colllidable of [col_lst]
       Requires: [col_lst] is not empty with no player collidables*)
-      (* DOESN'T MATCH SPECIFICATION *)
+  (* DOESN'T MATCH SPECIFICATION *)
   let get_obj collidable_lst = 
     match collidable_lst with
     | [] -> failwith "List is empty"

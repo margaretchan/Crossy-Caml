@@ -33,7 +33,7 @@ let good_blk_color = background_color
 let draw_collidable collide = 
   match collide with 
   | Block (goodbad_type, obj) -> 
-    set_color (if goodbad_type = GoodB then good_blk_color else bad_blk_color);
+    set_color (if Actor.is_good goodbad_type then good_blk_color else bad_blk_color);
     fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
   | Player obj -> 
     set_color player_color;
