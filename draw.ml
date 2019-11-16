@@ -114,7 +114,7 @@ let update_window player_dir (player : collidable) update_obstacles screen
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
 
-  (* Return tuple of player object, screen, and number of sequential bad rows*)
+  (* return tuple: (player object * screen * number of sequential good rows) *)
   (player, screen', seq_good_rows')
 
 let start_page () = 
@@ -134,17 +134,21 @@ let game_over (score : int) (high_score : int) : unit =
   clear_graph ();
   set_color start_page_color;
   fill_rect 0 0 (size_x ()) (size_y ());
+
   set_color text_color;
   (* set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1";  causes error on windows *)
   let (x1, y1) = text_size "Game Over" in
   moveto ((size_x () - x1) / 2) ((size_y () - y1) / 2);
   draw_string "Game Over";
+
   let (x2, y2) = text_size ("Your Score was " ^ string_of_int score) in
   moveto ((size_x () - x2) / 2) (size_y () / 2 - y1 - y2);
   draw_string ("Your Score was " ^ string_of_int score);
+
   let (x3, y3) = text_size ("Your High Score is " ^ string_of_int high_score) in
   moveto ((size_x () - x3) / 2) (size_y () / 2 - y1 - y2 - y3);
   draw_string ("Your High Score is " ^ string_of_int high_score);
+
   let (x4, y4) = text_size "Press 'R' twice to Reset" in
   moveto ((size_x () - x4) / 2) (size_y () / 2 - y1 - y2 - y3 - y4);
   draw_string "Press 'R' twice to Reset"
