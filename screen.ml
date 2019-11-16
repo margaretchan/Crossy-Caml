@@ -29,8 +29,8 @@ module Screen = struct
 
   (** [shift_down col_lst] is a unit. It modifies all the collidables in 
       [col_lst] to have their position shifted down by their height. 
-      Requires: [col_lst] contains no players*)
-  let shift_down (collidable_lst : collidable list) =
+      Requires: [col_lst] contains no players *)
+  let shift_down (col_lst : collidable list) =
     let rec helper lst = 
       match lst with 
       | [] -> ()
@@ -38,11 +38,28 @@ module Screen = struct
           | Block (_, obj) -> obj.y_pos <- (obj.y_pos - obj.height)
           | Player _ -> failwith "List can't contain player");
         helper t in 
-    helper collidable_lst
+    helper col_lst
+
+  (** [shift_down col_lst] is a unit. It modifies all the collidables in 
+      [col_lst] to have their position shifted either left or right 
+      (determined pseudo-randomly) by their width. 
+      Requires: [col_lst] contains no players *)
+  let shift_side (col_lst : collidable list) = 
+    let rec helper lst = 
+      match lst with 
+      | [] -> ()
+      | row :: t -> begin
+          let move_dir = if (Random.bool ()) then -1 else 1 in 
+          match row with 
+          | Block (_, obj) -> 
+            obj.x_pos <- (obj.x_pos - (move_dir * obj.width)); 
+            helper t
+          | Player _ -> failwith "List can't contain player"
+        end in 
+    helper col_lst
 
   (** [get_obj col_lst] is the object of the first colllidable of [col_lst]
-      Requires: [col_lst] is not empty with no player collidables*)
-      (* DOESN'T MATCH SPECIFICATION *)
+      Requires: [col_lst] is not empty with no player collidables *)
   let get_obj collidable_lst = 
     match collidable_lst with
     | [] -> failwith "List is empty"
@@ -53,6 +70,9 @@ module Screen = struct
   let update s x_bound y_bound num_pass grid_x grid_y = 
     (* shift down *)
     Queue.iter (shift_down) s;
+    (* shift side *)
+    Queue.iter (shift_side) s;
+    (* generate new row on top *)
     let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
     Queue.push new_list s; 
     let bottom_row = Queue.peek s in
