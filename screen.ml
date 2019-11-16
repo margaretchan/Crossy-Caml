@@ -24,7 +24,8 @@ module Screen = struct
         | _ -> failwith "Oh no" in 
       helper bottom_list collision_list
     ) with
-    | _ -> State.Game 
+    | _ ->              
+      State.Game 
 
   let shift_down (collidable_lst : collidable list) =
     let rec helper lst = 
