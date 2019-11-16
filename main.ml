@@ -5,35 +5,27 @@ open Generator
 open Screen
 open State
 
-
-(** Initializes state *)
-let state = ref Start
-
-(** Initialize High Score *)
-let high_score = ref 0
-
-(** Very janky implementation *)
-let current_score = ref 0
-
 (** Initialize fps *)
 let set_fps = 3.0
 
-(** [display_loop last_update_time fps] controls the window refresh updates 
+(** [display_loop last_update_time fps st high_score] controls the window 
+    refresh updates 
     [last_update_time] is the time the window was last redrawn 
                        not including refreshing from user input
     [fps] is the number of times per second a new row is drawn on the screen
           (independant of keyboard update)
+    [st] is the current Game State
+    [High Score] is the current high score      
     The game is exited by closing the window *)
-let rec display last_update_time fps = 
+let rec display last_update_time fps st high_score = 
 
   (** Start State Logic *)
-  if (!state = Start) then (
+  if (st = Start) then (
 
     let rec wait_for_start () = 
       match wait_next_event [Key_pressed] with 
       | status -> if read_key () = ' ' then 
-          let () = (state := Game) in 
-          display (Sys.time ()) set_fps
+          display (Sys.time ()) set_fps Game high_score
         else wait_for_start () in
 
     Draw.start_page ();
@@ -42,18 +34,22 @@ let rec display last_update_time fps =
   ) else 
 
     (** Game State Logic *)
-  if (!state = Game) then (
+  if (st = Game) then (
 
     let rec loop last_update_time fps player screen seq_bad_rows = 
 
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
-      state := Screen.collision_process player screen;
-      if (!state = Lose) then 
+      if (Screen.collision_process player screen = Lose) then 
         let () = Queue.clear screen in
         let obj = Draw.extract_obj player in 
-        if obj.score > !high_score then high_score := obj.score; 
-        Draw.game_over obj.score !high_score;
-        display (Sys.time ()) set_fps
+        if obj.score > high_score then  (
+          Draw.game_over obj.score obj.score;
+          display (Sys.time ()) set_fps Lose obj.score
+        )
+        else (
+          Draw.game_over obj.score high_score;
+          display (Sys.time ()) set_fps Lose high_score
+        )
       else
 
         (* Check for time based update *)
@@ -102,13 +98,12 @@ let rec display last_update_time fps =
   ) else 
 
     (** Lose State Logic *)
-  if (!state = Lose) then (
+  if (st = Lose) then (
 
     let rec wait_for_reset () = 
       match wait_next_event [Key_pressed] with 
       | status -> if read_key () = 'r' then 
-          let () = (state := Start) in 
-          display (Sys.time ()) set_fps
+          display (Sys.time ()) set_fps Start high_score
         else wait_for_reset () in
 
     wait_for_reset();
@@ -117,4 +112,4 @@ let rec display last_update_time fps =
 (** Initializes game *)
 let () = 
   Draw.init_window ();
-  display (Sys.time ()) set_fps
+  display (Sys.time ()) set_fps Start 0
