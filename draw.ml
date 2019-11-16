@@ -15,7 +15,7 @@ let start_page_color = rgb 113 182 77
 let text_color = rgb 128 0 62
 
 (** [background_color] is the color of the screen background *)
-let background_color = rgb 109 156 243
+let background_color = rgb 255 207 57
 
 (** [player_color] is the color of the player on the screen *)
 let player_color = rgb 209 105 154
@@ -24,7 +24,7 @@ let player_color = rgb 209 105 154
 let bad_blk_color = rgb 23 97 62
 
 (** [good_blk_color] is the color of the passable blocks on the screen *)
-let good_blk_color = rgb 255 207 57
+let good_blk_color = background_color
 
 (** [draw_collidable collide] draws the collidable object [collide] on the 
     screen as a rectangle with its fields width and height.
@@ -73,7 +73,7 @@ let draw_row collidable_lst =
   helper collidable_lst
 
 let update_window player_dir (player : collidable) update_obstacles screen 
-    seq_bad_rows = 
+    seq_good_rows = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
   let grid_x = (size_x ()) / 30 in
@@ -90,7 +90,7 @@ let update_window player_dir (player : collidable) update_obstacles screen
   (* Update screen *)
   let screen' = 
     if update_obstacles then (
-      let next_row_good = if seq_bad_rows > 0 then true else false in
+      let next_row_good = if seq_good_rows < 3 then true else false in
       let num_good_blks = if next_row_good then 30 else 5 in
       Screen.update screen (size_x ()) (size_y ()) num_good_blks grid_x grid_y)
     else screen in
@@ -98,24 +98,24 @@ let update_window player_dir (player : collidable) update_obstacles screen
   (* Draw blocks *)
   Queue.iter draw_row screen';
 
-  (* Update number of sequential bad rows *)
-  let seq_bad_rows' = if update_obstacles 
-    then (if (seq_bad_rows > 0) then 0 else seq_bad_rows + 1) 
-    else seq_bad_rows in
+  (* Update number of sequential good rows *)
+  let seq_good_rows' = if update_obstacles 
+    then (if (seq_good_rows > 3) then 0 else seq_good_rows + 1) 
+    else seq_good_rows in
 
   (* Update and Draw Player Collidable *)
   set_color player_color;
   moves_player player_dir grid_x (size_x ()) player;
   draw_collidable player;  
 
-  (** Update Score *)
+  (* Update Score *)
   let p_obj = extract_obj player in 
   set_color text_color;
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
 
-  (** Return tuple of player object, screen, and number of sequential bad rows*)
-  (player, screen', seq_bad_rows')
+  (* Return tuple of player object, screen, and number of sequential bad rows*)
+  (player, screen', seq_good_rows')
 
 let start_page () = 
   clear_graph ();

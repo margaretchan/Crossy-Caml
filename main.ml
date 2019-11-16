@@ -5,10 +5,13 @@ open Generator
 open Screen
 open State
 
-(** Initialize fps *)
-let set_fps = 3.0
+(** [set_fps] is the fps of the game screen *)
+let set_fps = 10.0
 
-(** [display_loop last_update_time fps st high_score] controls the window 
+(** [obj_fps] is the fps of the oject down movement *)
+let obj_fps = 1.5
+
+(** [display last_update_time fps st high_score] controls the window 
     refresh updates 
     [last_update_time] is the time the window was last redrawn 
                        not including refreshing from user input
@@ -36,7 +39,8 @@ let rec display last_update_time fps st high_score =
     (** Game State Logic *)
   if (st = Game) then (
 
-    let rec loop last_update_time fps player screen seq_bad_rows = 
+    let rec loop last_update_time fps player screen seq_good_rows 
+        last_obj_update_time = 
 
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
       if (Screen.collision_process player screen = Lose) then 
@@ -50,32 +54,38 @@ let rec display last_update_time fps st high_score =
           Draw.game_over obj.score high_score;
           display (Sys.time ()) set_fps Lose high_score
         )
-      else
+      else (
 
         (* Check for time based update *)
-      if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
-        let dir = 
-          if (key_pressed ()) then (
-            let key = read_key () in
-            if key = 'a' then -1 else (
-              if key = 'd' then 1 else 0)) 
-          else 0 in 
-        let obj = Draw.extract_obj player in 
-        obj.score <- obj.score + 1;
-        match (Draw.update_window dir player true screen seq_bad_rows) with 
-        | (p, s, bad) -> loop (Sys.time ()) fps p s bad
-      ) 
-      else (
-        (* Check for user input based update *)
-        if (key_pressed ()) then (
-          let key = read_key () in
-          let dir = if key = 'a' then -1 else (
-              if key = 'd' then 1 else 0 ) in 
-          match (Draw.update_window dir player false screen seq_bad_rows) with 
-          | (p, s, bad) -> loop last_update_time fps p s bad
+        if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
+          let dir = 
+            if (key_pressed ()) then (
+              let key = read_key () in
+              if key = 'a' then -1 else (
+                if key = 'd' then 1 else 0)) 
+            else 0 in 
+
+          let obj = Draw.extract_obj player in 
+          obj.score <- obj.score + 1;
+
+          let update_obstacles = 
+            if ((Sys.time ()) -. last_obj_update_time > (1.0 /. obj_fps)) 
+            then true else false in
+
+          let updated_window = Draw.update_window dir player 
+              update_obstacles screen seq_good_rows in 
+
+          match updated_window with 
+          | (p, s, good) -> 
+            let last_obj_update_time' = if update_obstacles 
+              then (Sys.time ()) else last_obj_update_time in 
+            loop (Sys.time ()) fps p s good last_obj_update_time'
+        ) 
+        else (
+          loop last_update_time fps player screen 
+            seq_good_rows last_obj_update_time
         )
-        else loop last_update_time fps player screen seq_bad_rows
-      ) in 
+      ) in
 
     (** Initialize screen to Empty *)
     let init_screen = Screen.empty in
@@ -93,7 +103,7 @@ let rec display last_update_time fps st high_score =
         width = 2*(size_x () / 30);
       } in
 
-    loop last_update_time fps init_player init_screen 0
+    loop last_update_time fps init_player init_screen 0 (Sys.time ())
 
   ) else 
 
