@@ -23,8 +23,13 @@ module Screen = struct
         match block_lst, col_lst with
         | [], [] -> State.Game
         | h1 :: t1, h2 :: t2 -> if h2 then 
+<<<<<<< HEAD
+            if Actor.is_good (Object.get_block h1)
+            then State.Game else State.Lose
+=======
             if (Actor.is_good (Object.get_block h1))
             then State.Lose else State.Game
+>>>>>>> 6c6597211a482bc4d51092de1644ed546fcf2404
           else helper t1 t2
         | _ -> failwith "Oh no" in 
       helper bottom_list collision_list
@@ -76,12 +81,20 @@ module Screen = struct
 
   let update s x_bound y_bound num_pass grid_x grid_y = 
     (* shift down *)
+<<<<<<< HEAD
+    Queue.iter (shift_down) s; 
+    if num_pass <= (30) 
+    then let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
+      Queue.push new_list s; 
+    else ();
+=======
     Queue.iter (shift_down) s;
     (* shift side *)
     Queue.iter (shift_side) s;
     (* generate new row on top *)
     let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
     Queue.push new_list s; 
+>>>>>>> 6c6597211a482bc4d51092de1644ed546fcf2404
     let bottom_row = Queue.peek s in
     let bottom_obj = get_obj bottom_row in
     let bottom = if bottom_obj.y_pos < 0 then Queue.pop s else Queue.peek s in 
