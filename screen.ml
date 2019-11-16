@@ -19,7 +19,7 @@ module Screen = struct
         match block_lst, col_lst with
         | [], [] -> State.Game
         | h1 :: t1, h2 :: t2 -> if h2 then 
-            if (Actor.is_good (Object.get_block h1))
+            if not (Actor.is_good (Object.get_block h1))
             then State.Lose else State.Game
           else helper t1 t2
         | _ -> failwith "Oh no" in 
