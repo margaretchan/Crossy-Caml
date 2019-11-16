@@ -47,7 +47,7 @@ module Screen = struct
     match collidable_lst with
     | [] -> failwith "List is empty"
     | h :: t -> (match h with
-        | Block (_, obj) -> obj.y_pos
+        | Block (_, obj) -> obj
         | Player _ -> failwith "Should have no player in list")
 
   let update s x_bound y_bound num_pass grid_x grid_y = 
@@ -56,8 +56,8 @@ module Screen = struct
     let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
     Queue.push new_list s; 
     let bottom_row = Queue.peek s in
-    let bottom_y = check_y bottom_row in
-    let bottom = if bottom_y < 0 then Queue.pop s else Queue.peek s in 
+    let bottom_obj = get_obj bottom_row in
+    let bottom = if bottom_obj.y_pos < 0 then Queue.pop s else Queue.peek s in 
     match bottom with 
     | _ -> s
 end
