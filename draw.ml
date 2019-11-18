@@ -3,6 +3,8 @@ open Actor
 open Object
 open Generator
 open Screen
+open Images
+open Png
 
 let init_window () = 
   open_graph " 750x750";
@@ -68,11 +70,13 @@ let draw_row collidable_lst =
   let rec helper lst = 
     match lst with
     | [] -> ()
-    | h :: t -> draw_collidable h; 
+    | h :: t -> 
+      draw_collidable h; 
       helper t in 
   helper (Screen.obj_lst_from_tup collidable_lst)
 
-let update_window player_dir (player : collidable) update_obstacles (screen : (Object.collidable list * bool) Queue.t) 
+let update_window player_dir (player : collidable) update_obstacles 
+    (screen : (Object.collidable list * bool) Queue.t) 
     seq_good_rows = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
@@ -89,23 +93,34 @@ let update_window player_dir (player : collidable) update_obstacles (screen : (O
 
   (* Update screen *)
   let screen' = 
-    if update_obstacles then (
-      let next_row_good = if seq_good_rows < 3 then true else false in
-      let num_good_blks = if next_row_good then 30 else 5 in
-      Screen.update screen (size_x ()) (size_y ()) num_good_blks grid_x grid_y)
+    if update_obstacles 
+    then
+      let next_row_good = 
+        if seq_good_rows < 3 
+        then true 
+        else false in
+      let num_good_blks = 
+        if next_row_good 
+        then 30 
+        else 5 in
+      Screen.update screen (size_x ()) (size_y ()) num_good_blks grid_x grid_y
     else screen in
 
   (* Draw blocks *)
   Queue.iter draw_row screen';
 
   (* Update number of sequential good rows *)
-  let seq_good_rows' = if update_obstacles 
-    then (if (seq_good_rows > 3) then 0 else seq_good_rows + 1) 
+  let seq_good_rows' = 
+    if update_obstacles 
+    then 
+      if (seq_good_rows > 3) 
+      then 0 
+      else seq_good_rows + 1
     else seq_good_rows in
 
   (* Update and Draw Player Collidable *)
   set_color player_color;
-  moves_player player_dir grid_x (size_x ()) player;
+  moves_player player_dir (grid_x) (size_x ()) player;
   draw_collidable player;  
 
   (* Update Score *)
@@ -128,7 +143,10 @@ let start_page () =
   draw_string "Welcome to Crossy Caml!";
   let (x2, y2) = text_size "Press the space bar twice to begin" in
   moveto ((size_x () - x2) / 2) (size_y () / 2 - y1 - y2);
-  draw_string "Press the space bar twice to begin"
+  draw_string "Press the space bar twice to begin";
+  let img = Png.load "image.png" [] in
+  let g = Graphic_image.of_image img in
+  Graphics.draw_image g (10) (10)
 
 let game_over (score : int) (high_score : int) : unit = 
   clear_graph ();

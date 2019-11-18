@@ -1,1 +1,1 @@
-true: package(graphics),package(oUnit),package(ANSITerminal)
+true: package(graphics),package(oUnit),package(ANSITerminal),package(camlimages.png),package(camlimages.graphics)

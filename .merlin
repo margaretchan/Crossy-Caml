@@ -1,3 +1,5 @@
 B _build
 PKG oUnit
 PKG ocamlbuild
+PKG camlimages.png
+PKG camlimages.graphics

@@ -6,10 +6,10 @@ open Screen
 open State
 
 (** [set_fps] is the fps of the game screen *)
-let set_fps = 10.0
+let set_fps = 30.0
 
 (** [obj_fps] is the fps of the oject down movement *)
-let obj_fps = 1.5
+let obj_fps = 2.0
 
 (** [display last_update_time fps st high_score] controls the window 
     refresh updates 
@@ -27,8 +27,9 @@ let rec display last_update_time fps st high_score =
 
     let rec wait_for_start () = 
       match wait_next_event [Key_pressed] with 
-      | status -> if read_key () = ' ' then 
-          display (Sys.time ()) set_fps Game high_score
+      | status -> 
+        if read_key () = ' ' 
+        then display (Sys.time ()) set_fps Game high_score
         else wait_for_start () in
 
     Draw.start_page ();
@@ -46,7 +47,8 @@ let rec display last_update_time fps st high_score =
       if (Screen.collision_process player screen = Lose) then 
         let () = Queue.clear screen in
         let obj = Draw.extract_obj player in 
-        if obj.score > high_score then  (
+        if obj.score > high_score 
+        then (
           Draw.game_over obj.score obj.score;
           display (Sys.time ()) set_fps Lose obj.score
         )
@@ -59,31 +61,39 @@ let rec display last_update_time fps st high_score =
         (* Check for time based update *)
         if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
           let dir = 
-            if (key_pressed ()) then (
-              let key = read_key () in
-              if key = 'a' then -1 else (
-                if key = 'd' then 1 else 0)) 
+            if (key_pressed ()) 
+            then let key = read_key () in
+              if key = 'a' 
+              then -1 
+              else (if key = 'd' 
+                    then 1 
+                    else 0)
             else 0 in 
 
-          let obj = Draw.extract_obj player in 
-          obj.score <- obj.score + 1;
+
 
           let update_obstacles = 
             if ((Sys.time ()) -. last_obj_update_time > (1.0 /. obj_fps)) 
-            then true else false in
+            then          
+              let obj = Draw.extract_obj player in 
+              obj.score <- obj.score + 1; 
+              true 
+            else false in
 
           let updated_window = Draw.update_window dir player 
               update_obstacles screen seq_good_rows in 
 
           match updated_window with 
           | (p, s, good) -> 
-            let last_obj_update_time' = if update_obstacles 
-              then (Sys.time ()) else last_obj_update_time in 
+            let last_obj_update_time' = 
+              if update_obstacles 
+              then (Sys.time ()) 
+              else last_obj_update_time in 
             loop (Sys.time ()) fps p s good last_obj_update_time'
         ) 
         else (
-          loop last_update_time fps player screen 
-            seq_good_rows last_obj_update_time
+          loop last_update_time fps player screen seq_good_rows 
+            last_obj_update_time
         )
       ) in
 
@@ -94,12 +104,12 @@ let rec display last_update_time fps st high_score =
     let init_player : collidable =
       Player {
         x_pos = (size_x () / 2); 
-        y_pos = (size_y () / 7);
+        y_pos = (size_x () / 30);
         velocity = No, 0 ;
         id = 0;
         to_kill = false;
         score = 0;
-        height = 2*(size_y () / 50); 
+        height = (size_x () / 30); 
         width = 2*(size_x () / 30);
       } in
 
@@ -112,8 +122,9 @@ let rec display last_update_time fps st high_score =
 
     let rec wait_for_reset () = 
       match wait_next_event [Key_pressed] with 
-      | status -> if read_key () = 'r' then 
-          display (Sys.time ()) set_fps Start high_score
+      | status -> 
+        if read_key () = 'r' 
+        then display (Sys.time ()) set_fps Start high_score
         else wait_for_reset () in
 
     wait_for_reset();
