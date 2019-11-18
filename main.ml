@@ -70,12 +70,14 @@ let rec display last_update_time fps st high_score =
                     else 0)
             else 0 in 
 
-          let obj = Draw.extract_obj player in 
-          obj.score <- obj.score + 1;
+
 
           let update_obstacles = 
             if ((Sys.time ()) -. last_obj_update_time > (1.0 /. obj_fps)) 
-            then true 
+            then          
+              let obj = Draw.extract_obj player in 
+              obj.score <- obj.score + 1; 
+              true 
             else false in
 
           let updated_window = Draw.update_window dir player 
