@@ -27,7 +27,8 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list =
     let blocks_left = (x_bound - x) / (2 * grid_size) in 
     let pass_left = num_pass - cur_pass in
 
-    if (blocks_left <= 0) then (list, Random.bool ())
+    if (blocks_left <= 0) 
+    then (list, Random.bool ())
     else let rand = Random.int (x_bound / (2 * grid_size)) in 
       if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
       then let pass_block = generate_block coord grid_size (GoodB Nothing) in

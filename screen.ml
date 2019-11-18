@@ -19,7 +19,9 @@ module Screen = struct
       (* filter the list to be only the blocks near the player *)
       let collide_with_player = Object.check_collision player in
       let collision_list = List.filter collide_with_player bottom_list in
-      if collision_list = [] then State.Game else State.Lose
+      if collision_list = [] 
+      then State.Game 
+      else State.Lose
     ) with
     | Queue.Empty -> State.Game 
 
@@ -30,24 +32,41 @@ module Screen = struct
     let rec helper lst = 
       match lst with 
       | [] -> ()
-      | h :: t -> (match h with
+      | h :: t -> begin 
+          match h with
           | Block (_, obj) -> obj.y_pos <- (obj.y_pos - obj.height)
-          | Player _ -> failwith "List can't contain player");
+          | Player _ -> failwith "List can't contain player" end;
         helper t in 
     helper (obj_lst_from_tup col_lst)
 
-  (** [shift_side col_lst] is a unit. It modifies all the collidables in 
-      [col_lst] to have their position shifted either left or right 
+  (** [loop_around_helper x_bound normal] is the new position the 
+      bottom left corner of the block should be in after shifting to the side. 
+      This also checks for loop around functionality. 
+      [normal] is the position the block would've moved to if not accounting 
+      for loop around  *)
+  let loop_around_helper x_bound normal = 
+    if normal < 0 
+    then x_bound
+    else (
+      if normal >= x_bound
+      then 0
+      else normal
+    )
+  (** [shift_side x_bound col_lst] is a unit. It modifies all the collidables 
+      in [col_lst] to have their position shifted either left or right 
       (determined pseudo-randomly) by their width. 
+      [x_bound] is the screen bound in the x dimension.
       Requires: [col_lst] contains no players *)
-  let shift_side col_lst = 
+  let shift_side x_bound col_lst = 
     let rec helper lst move_dir = 
       match lst with 
       | [] -> ()
       | b :: t -> begin
           match b with 
           | Block (_, obj) -> 
-            obj.x_pos <- (obj.x_pos + (move_dir * obj.width)); 
+            let normal = obj.x_pos + (move_dir * obj.width) in
+            let new_loc = loop_around_helper x_bound normal in
+            obj.x_pos <- new_loc; 
             helper t move_dir
           | Player _ -> failwith "List can't contain player"
         end in 
@@ -61,15 +80,17 @@ module Screen = struct
   let get_obj collidable_lst = 
     match collidable_lst with
     | [], _ -> failwith "List is empty"
-    | h :: t, dir -> (match h with
+    | h :: t, dir -> begin 
+        match h with
         | Block (_, obj) -> obj
-        | Player _ -> failwith "Should have no player in list")
+        | Player _ -> failwith "Should have no player in list"
+      end
 
   let update s x_bound y_bound num_pass grid_x grid_y = 
     (* shift down *)
     Queue.iter (shift_down) s;
     (* shift side *)
-    Queue.iter (shift_side) s;
+    Queue.iter (shift_side x_bound) s;
     (* generate new row on top *)
     let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
     Queue.push new_list s; 

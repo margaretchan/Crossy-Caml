@@ -3,9 +3,10 @@ OBJECTS=$(MODULES:=.cmo)
 MAIN=main.byte
 TEST=test.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind
+PKGS=camlimages.png,camlimages.graphics
 
 build:
-	$(OCAMLBUILD) $(OBJECTS)
+	$(OCAMLBUILD) -package $(PKGS) $(OBJECTS)
 
 play:
 	$(OCAMLBUILD) $(MAIN) && ./$(MAIN)
