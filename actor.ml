@@ -1,4 +1,8 @@
-type dir = Down | Left | Right | No
+type dir = 
+  | Down 
+  | Left 
+  | Right 
+  | No
 
 type pos = int * int
 
@@ -10,14 +14,16 @@ type effect =
   | Nothing
 
 type block_type = 
-  | SmallB
-  | LargeB
-  | GoodB of effect
+  | SmallB 
+  | LargeB 
+  | GoodB of effect 
 
-let get_effect = function
+let get_effect b = 
+  match b with 
   | GoodB e -> e
   | _ -> failwith "No effect"
 
-let is_good = function 
+let is_good b = 
+  match b with 
   | GoodB _ -> true
   | _ -> false

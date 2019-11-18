@@ -1,4 +1,8 @@
-type dir =  Down | Left | Right | No
+type dir =  
+  | Down 
+  | Left 
+  | Right 
+  | No
 
 (** A tuple representing the x, y coordinates of an actor *)
 type pos = int * int
