@@ -1,1 +1,5 @@
-type state = Start | Game | Lose | Win
+type state = 
+  | Start 
+  | Game 
+  | Lose 
+  | Win

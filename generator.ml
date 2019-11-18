@@ -18,16 +18,16 @@ let generate_block coord grid_size typ : collidable =
     })
 
 (** [gen_helper coord x_bound y_bound cur_pass num_pass grid_size list] is a 
-    collidable list that has generated collidable objects filling up all the 
-    grid spaces from x = 0 to x = [x_bound].*)
-let rec gen_helper coord x_bound cur_pass num_pass grid_size list 
-  : collidable list =
+    (collidable list * bool) that has generated collidable objects filling up 
+    all the grid spaces from x = 0 to x = [x_bound]. 
+    The bool represents the direction the blocks in the row should move. *)
+let rec gen_helper coord x_bound cur_pass num_pass grid_size list =
   match coord with
   | (x, y) -> 
     let blocks_left = (x_bound - x) / (2 * grid_size) in 
     let pass_left = num_pass - cur_pass in
 
-    if (blocks_left <= 0) then list
+    if (blocks_left <= 0) then (list, Random.bool ())
     else let rand = Random.int (x_bound / (2 * grid_size)) in 
       if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
       then let pass_block = generate_block coord grid_size (GoodB Nothing) in
@@ -38,6 +38,6 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list
           (new_block :: list) 
 
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
-    (grid_y : int) : collidable list = 
+    (grid_y : int) : Object.collidable list * bool = 
   let start_coord = (0, y_bound) in
   gen_helper start_coord x_bound 0 num_pass grid_x []

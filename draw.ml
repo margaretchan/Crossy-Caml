@@ -70,9 +70,9 @@ let draw_row collidable_lst =
     | [] -> ()
     | h :: t -> draw_collidable h; 
       helper t in 
-  helper collidable_lst
+  helper (Screen.obj_lst_from_tup collidable_lst)
 
-let update_window player_dir (player : collidable) update_obstacles screen 
+let update_window player_dir (player : collidable) update_obstacles (screen : (Object.collidable list * bool) Queue.t) 
     seq_good_rows = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
@@ -105,7 +105,7 @@ let update_window player_dir (player : collidable) update_obstacles screen
 
   (* Update and Draw Player Collidable *)
   set_color player_color;
-  moves_player player_dir grid_x (size_x ()) player;
+  moves_player player_dir (grid_x) (size_x ()) player;
   draw_collidable player;  
 
   (* Update Score *)
