@@ -6,10 +6,10 @@ open Screen
 open State
 
 (** [set_fps] is the fps of the game screen *)
-let set_fps = 10.0
+let set_fps = 30.0
 
 (** [obj_fps] is the fps of the oject down movement *)
-let obj_fps = 1.5
+let obj_fps = 2.0
 
 (** [display last_update_time fps st high_score] controls the window 
     refresh updates 
@@ -102,12 +102,12 @@ let rec display last_update_time fps st high_score =
     let init_player : collidable =
       Player {
         x_pos = (size_x () / 2); 
-        y_pos = (size_y () / 7);
+        y_pos = (size_x () / 30);
         velocity = No, 0 ;
         id = 0;
         to_kill = false;
         score = 0;
-        height = 2*(size_y () / 50); 
+        height = (size_x () / 30); 
         width = 2*(size_x () / 30);
       } in
 

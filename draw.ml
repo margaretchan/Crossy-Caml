@@ -120,7 +120,7 @@ let update_window player_dir (player : collidable) update_obstacles
 
   (* Update and Draw Player Collidable *)
   set_color player_color;
-  moves_player player_dir grid_x (size_x ()) player;
+  moves_player player_dir (grid_x) (size_x ()) player;
   draw_collidable player;  
 
   (* Update Score *)

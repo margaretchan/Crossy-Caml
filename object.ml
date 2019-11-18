@@ -26,13 +26,22 @@ let get_block c =
 
 let check_collision c1 c2 = 
   match c1, c2 with
-  | Player ob1, Block (_, ob2) -> 
+  | Player ob1, Block (LargeB, ob2) -> 
     (ob2.y_pos) < (ob1.y_pos + ob1.height) 
     && 
-    (ob2.x_pos <= (ob1.x_pos + ob1.width)
-     || 
-     (ob2.x_pos + ob2.width) >= (ob1.x_pos))
-  | _, _ -> failwith "Failed requirement"
+    ((ob2.x_pos < ob1.x_pos + ob1.width && ob2.x_pos > ob1.x_pos) 
+     || (ob2.x_pos + ob2.width > ob1.x_pos && 
+         ob2.x_pos + ob2.width < ob1.x_pos + ob1.width)
+     || ob1.x_pos = ob2.x_pos && ob1.x_pos + ob1.width = ob2.x_pos + ob2.width)  
+
+  | Player ob1, Block (SmallB, ob2) -> 
+    (ob2.y_pos) < (ob1.y_pos + ob1.height) 
+    && 
+    ((ob2.x_pos < ob1.x_pos + ob1.width && ob2.x_pos > ob1.x_pos) 
+     || (ob2.x_pos + ob2.width > ob1.x_pos && 
+         ob2.x_pos + ob2.width < ob1.x_pos + ob1.width)
+     || ob1.x_pos = ob2.x_pos && ob1.x_pos + ob1.width = ob2.x_pos + ob2.width)
+  | _ -> false 
 
 let check_on_screen c xbound = 
   match c with

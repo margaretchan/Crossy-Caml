@@ -18,21 +18,12 @@ module Screen = struct
       let bottom_list = obj_lst_from_tup (peek s) in
       (* filter the list to be only the blocks near the player *)
       let collide_with_player = Object.check_collision player in
-      let collision_list = List.map collide_with_player bottom_list in
-      let rec helper block_lst col_lst = 
-        match block_lst, col_lst with
-        | [], [] -> State.Game
-        | h1 :: t1, h2 :: t2 -> 
-          if h2 
-          then (if Actor.is_good (Object.get_block h1)
-                then State.Game 
-                else State.Lose)
-          else helper t1 t2
-        | _ -> failwith "Oh no" in 
-      helper bottom_list collision_list
+      let collision_list = List.filter collide_with_player bottom_list in
+      if collision_list = [] 
+      then State.Game 
+      else State.Lose
     ) with
-    | _ ->              
-      State.Game 
+    | Queue.Empty -> State.Game 
 
   (** [shift_down col_lst] is a unit. It modifies all the collidables in 
       [col_lst] to have their position shifted down by their height. 
