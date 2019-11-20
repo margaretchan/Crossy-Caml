@@ -75,7 +75,7 @@ let draw_row collidable_lst =
       helper t in 
   helper (Screen.obj_lst_from_tup collidable_lst)
 
-let update_window player_dir (player : collidable) update_obstacles 
+let update_window player_dir (player : collidable) down_obstacles side_obstacles
     (screen : (Object.collidable list * bool) Queue.t) 
     seq_good_rows = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
@@ -93,7 +93,7 @@ let update_window player_dir (player : collidable) update_obstacles
 
   (* Update screen *)
   let screen' = 
-    if update_obstacles 
+    if down_obstacles 
     then
       let next_row_good = 
         if seq_good_rows < 3 
@@ -111,7 +111,7 @@ let update_window player_dir (player : collidable) update_obstacles
 
   (* Update number of sequential good rows *)
   let seq_good_rows' = 
-    if update_obstacles 
+    if down_obstacles 
     then 
       if (seq_good_rows > 3) 
       then 0 
@@ -143,10 +143,11 @@ let start_page () =
   draw_string "Welcome to Crossy Caml!";
   let (x2, y2) = text_size "Press the space bar twice to begin" in
   moveto ((size_x () - x2) / 2) (size_y () / 2 - y1 - y2);
-  draw_string "Press the space bar twice to begin";
-  let img = Png.load "image.png" [] in
-  let g = Graphic_image.of_image img in
-  Graphics.draw_image g (10) (10)
+  draw_string "Press the space bar twice to begin"
+
+(* let img = Png.load "image.png" [] in
+   let g = Graphic_image.of_image img in
+   Graphics.draw_image g (10) (10) *)
 
 let game_over (score : int) (high_score : int) : unit = 
   clear_graph ();

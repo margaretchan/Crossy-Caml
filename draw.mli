@@ -20,7 +20,7 @@ val extract_obj : Object.collidable -> Object.obj
     [update_obstacles] is whether the obstacle positions should be updated 
     [screen] is the current screen of the game
     [seq_bad_rows] is the number of sequential bad rows there has been *)
-val update_window : int -> Object.collidable -> bool 
+val update_window : int -> Object.collidable -> bool -> bool 
   -> (Object.collidable list * bool) Queue.t -> int
   -> (Object.collidable * (Object.collidable list * bool) Queue.t * int)
 
