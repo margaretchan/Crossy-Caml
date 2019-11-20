@@ -5,4 +5,4 @@
     note: [y_pos] is the y coord of the bottom of the objects.
     [grid_y] is the number of pixels between every row of blocks
     The bottom row has at least [num_pass] number of passable blocks. *)
-val generate : int -> int -> int -> int -> int -> Object.collidable list * bool
+val generate : int -> int -> int -> int -> int -> Object.collidable list 

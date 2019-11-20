@@ -9,13 +9,11 @@ module Screen = struct
 
   let empty = create ()
 
-  let obj_lst_from_tup tup = 
-    match tup with 
-    | lst, _ -> lst
+  type q = (Object.collidable list) Queue.t
 
-  let collision_process player (s : (Object.collidable list * bool) Queue.t) =
+  let collision_process player (s : q) =
     try (
-      let bottom_list = obj_lst_from_tup (peek s) in
+      let bottom_list = (peek s) in
       (* filter the list to be only the blocks near the player *)
       let collide_with_player = Object.check_collision player in
       let collision_list = List.filter collide_with_player bottom_list in
@@ -37,7 +35,7 @@ module Screen = struct
           | Block (_, obj) -> obj.y_pos <- (obj.y_pos - obj.height)
           | Player _ -> failwith "List can't contain player" end;
         helper t in 
-    helper (obj_lst_from_tup col_lst)
+    helper (col_lst)
 
   (** [loop_around_helper x_bound normal] is the new position the 
       bottom left corner of the block should be in after shifting to the side. 
@@ -58,29 +56,29 @@ module Screen = struct
       [x_bound] is the screen bound in the x dimension.
       Requires: [col_lst] contains no players *)
   let shift_side x_bound col_lst = 
-    let rec helper lst move_dir = 
+    let rec helper lst = 
       match lst with 
       | [] -> ()
       | b :: t -> begin
           match b with 
           | Block (_, obj) -> 
+            let move_dir = 
+              if fst obj.velocity = Down 
+              then -1 else 1 in
             let normal = obj.x_pos + (move_dir * obj.width) in
             let new_loc = loop_around_helper x_bound normal in
             obj.x_pos <- new_loc; 
-            helper t move_dir
+            helper t
           | Player _ -> failwith "List can't contain player"
         end in 
-    match col_lst with 
-    | lst, dir -> 
-      let move_dir = if dir then 1 else -1 in 
-      helper lst move_dir
+    helper col_lst
 
   (** [get_obj col_lst] is the object of the first colllidable of [col_lst]
       Requires: [col_lst] is not empty with no player collidables *)
   let get_obj collidable_lst = 
     match collidable_lst with
-    | [], _ -> failwith "List is empty"
-    | h :: t, dir -> begin 
+    | [] -> failwith "List is empty"
+    | h :: t -> begin 
         match h with
         | Block (_, obj) -> obj
         | Player _ -> failwith "Should have no player in list"
@@ -88,7 +86,11 @@ module Screen = struct
 
   let update s x_bound y_bound num_pass grid_x grid_y = 
     (* shift down *)
-    Queue.iter (shift_down) s;
+    Queue.iter (shift_down) s; 
+    if num_pass <= (30) 
+    then let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
+      Queue.push new_list s; 
+    else ();
     (* shift side *)
     Queue.iter (shift_side x_bound) s;
     (* generate new row on top *)

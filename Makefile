@@ -1,6 +1,7 @@
 MODULES=main draw object actor generator state screen 
 OBJECTS=$(MODULES:=.cmo)
 MAIN=main.byte
+TEST=test.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind
 PKGS=camlimages.png,camlimages.graphics
 
@@ -25,3 +26,9 @@ docs-private: build
 	ocamlfind ocamldoc -I _build -package $(PKGS) \
 		-html -stars -d doc.private \
 		-inv-merge-ml-mli -m A -hide-warnings $(MLIS) $(MLS)
+test:
+	$(OCAMLBUILD) -tag 'debug' $(TEST) && ./$(TEST)
+
+clean:
+	ocamlbuild -clean
+	rm -rf doc.public doc.private report search_src.zip bisect*.out
