@@ -19,14 +19,29 @@ let text_color = rgb 128 0 62
 (** [background_color] is the color of the screen background *)
 let background_color = rgb 255 207 57
 
-(** [player_color] is the color of the player on the screen *)
-let player_color = rgb 209 105 154
-
 (** [bad_blk_color] is the color of the bad blocks on the screen *)
 let bad_blk_color = rgb 23 97 62
 
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = background_color
+
+(** [player_image_name] is the name of the player image file *)
+let player_image_name = "hope.png"
+
+(** [apply_transparency img] is an Rgb24 representation of a Png, where the
+      transparent pixels are accounted for using the Graphics library unique
+      transparent color. 
+      note: This function was generously donated by Gonzalo Gonzalez *)
+let apply_transparency = function
+  | Rgba32 bitmap ->
+    let w = bitmap.Rgba32.width
+    and h = bitmap.Rgba32.height in
+    Array.init h (fun i ->
+        Array.init w (fun j ->
+            let {color = {r = r; g = g; b = b}; 
+                 alpha = a} = Rgba32.unsafe_get bitmap j i in
+            if a = 0 then Graphics.transp else rgb r g b))
+  | _ -> failwith "impossible - always PNG with RGBA"
 
 (** [draw_collidable collide] draws the collidable object [collide] on the 
     screen as a rectangle with its fields width and height.
@@ -38,8 +53,9 @@ let draw_collidable collide =
     set_color (if Actor.is_good goodbad_type then good_blk_color else bad_blk_color);
     fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
   | Player obj -> 
-    set_color player_color;
-    fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height) 
+    let player_png = Png.load player_image_name [] in
+    let img = player_png |> apply_transparency |> Graphics.make_image in
+    Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
 (**[extract_obj c] extracts the Object from collidable [c] *)
 let extract_obj (c : collidable) = 
@@ -73,11 +89,10 @@ let draw_row collidable_lst =
     | h :: t -> 
       draw_collidable h; 
       helper t in 
-  helper (Screen.obj_lst_from_tup collidable_lst)
+  helper (collidable_lst)
 
-let update_window player_dir (player : collidable) update_obstacles 
-    (screen : (Object.collidable list * bool) Queue.t) 
-    seq_good_rows = 
+let update_window player_dir (player : collidable) down_obstacles side_obstacles
+    screen seq_good_rows = 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
   let grid_x = (size_x ()) / 30 in
@@ -93,7 +108,7 @@ let update_window player_dir (player : collidable) update_obstacles
 
   (* Update screen *)
   let screen' = 
-    if update_obstacles 
+    if down_obstacles 
     then
       let next_row_good = 
         if seq_good_rows < 3 
@@ -111,7 +126,7 @@ let update_window player_dir (player : collidable) update_obstacles
 
   (* Update number of sequential good rows *)
   let seq_good_rows' = 
-    if update_obstacles 
+    if down_obstacles 
     then 
       if (seq_good_rows > 3) 
       then 0 
@@ -119,7 +134,6 @@ let update_window player_dir (player : collidable) update_obstacles
     else seq_good_rows in
 
   (* Update and Draw Player Collidable *)
-  set_color player_color;
   moves_player player_dir (grid_x) (size_x ()) player;
   draw_collidable player;  
 
@@ -143,10 +157,7 @@ let start_page () =
   draw_string "Welcome to Crossy Caml!";
   let (x2, y2) = text_size "Press the space bar twice to begin" in
   moveto ((size_x () - x2) / 2) (size_y () / 2 - y1 - y2);
-  draw_string "Press the space bar twice to begin";
-  let img = Png.load "image.png" [] in
-  let g = Graphic_image.of_image img in
-  Graphics.draw_image g (10) (10)
+  draw_string "Press the space bar twice to begin"
 
 let game_over (score : int) (high_score : int) : unit = 
   clear_graph ();

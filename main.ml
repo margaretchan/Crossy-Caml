@@ -11,6 +11,9 @@ let set_fps = 30.0
 (** [obj_fps] is the fps of the oject down movement *)
 let obj_fps = 2.0
 
+(** [side_fps] is the fps of the oject side movement *)
+let side_fps = 30.0
+
 (** [display last_update_time fps st high_score] controls the window 
     refresh updates 
     [last_update_time] is the time the window was last redrawn 
@@ -41,7 +44,7 @@ let rec display last_update_time fps st high_score =
   if (st = Game) then (
 
     let rec loop last_update_time fps player screen seq_good_rows 
-        last_obj_update_time = 
+        last_obj_down_time last_obj_side_time = 
 
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
       if (Screen.collision_process player screen = Lose) then 
@@ -70,10 +73,13 @@ let rec display last_update_time fps st high_score =
                     else 0)
             else 0 in 
 
-
+          let move_side =
+            if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. side_fps)
+            then true
+            else false in
 
           let update_obstacles = 
-            if ((Sys.time ()) -. last_obj_update_time > (1.0 /. obj_fps)) 
+            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. obj_fps)) 
             then          
               let obj = Draw.extract_obj player in 
               obj.score <- obj.score + 1; 
@@ -81,19 +87,23 @@ let rec display last_update_time fps st high_score =
             else false in
 
           let updated_window = Draw.update_window dir player 
-              update_obstacles screen seq_good_rows in 
+              update_obstacles move_side screen seq_good_rows in 
 
           match updated_window with 
           | (p, s, good) -> 
-            let last_obj_update_time' = 
+            let last_obj_down_time' = 
               if update_obstacles 
               then (Sys.time ()) 
-              else last_obj_update_time in 
-            loop (Sys.time ()) fps p s good last_obj_update_time'
+              else last_obj_down_time in 
+            let last_obj_side_time' = 
+              if move_side 
+              then (Sys.time ()) 
+              else last_obj_side_time in 
+            loop (Sys.time ()) fps p s good last_obj_down_time' last_obj_side_time'
         ) 
         else (
           loop last_update_time fps player screen seq_good_rows 
-            last_obj_update_time
+            last_obj_down_time last_obj_side_time
         )
       ) in
 
@@ -113,7 +123,7 @@ let rec display last_update_time fps st high_score =
         width = 2*(size_x () / 30);
       } in
 
-    loop last_update_time fps init_player init_screen 0 (Sys.time ())
+    loop last_update_time fps init_player init_screen 0 (Sys.time ()) (Sys.time ())
 
   ) else 
 
