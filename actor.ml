@@ -7,7 +7,7 @@ type dir =
 type pos = int * int
 
 type effect = 
-  | Adder
+  | Adder of int
   | Multiplier of int
   | Phaser of int
   | Slower of int

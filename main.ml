@@ -81,7 +81,7 @@ let rec display last_update_time fps st high_score =
             if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) 
             then          
               let obj = Draw.extract_obj player in 
-              obj.score <- obj.score + 1; 
+              Object.score_incr obj 1; 
               true 
             else false in
 
