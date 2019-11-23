@@ -9,7 +9,7 @@ type pos = int * int
 
 (** The effect of an item block.*)
 type effect = 
-  | Adder
+  | Adder of int
   | Multiplier of int
   | Phaser of int
   | Slower of int

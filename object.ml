@@ -16,9 +16,9 @@ type collidable =
   | Player of obj
   | Block of block_type * obj
 
-let get_x (x,_) = x
-
-let get_y (_,y) = y
+let score_incr p s = 
+  (* if p has the multiplier effect active, change the score by 2 * s *)
+  p.score <- p.score + s
 
 let get_block c = 
   match c with 
