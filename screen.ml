@@ -3,6 +3,11 @@ open Object
 open Generator
 open State
 
+let extract_obj (c : collidable) = 
+  match c with 
+  | Player obj -> obj 
+  | Block (_, obj) -> obj
+
 module Screen = struct
 
   open Queue
@@ -11,15 +16,33 @@ module Screen = struct
 
   type q = (Object.collidable list) Queue.t
 
+  (** Returns State.Game if no collision with bad guy
+      Returns State.Lose if collision with bad guy 
+      Also updates player object with appropriate powerups
+  *)
   let collision_process player (s : q) =
     try (
       let bottom_list = (peek s) in
       (* filter the list to be only the blocks near the player *)
       let collide_with_player = Object.check_collision player in
-      let collision_list = List.filter collide_with_player bottom_list in
-      if collision_list = [] 
-      then State.Game 
-      else State.Lose
+      let collision_list = List.filter_map collide_with_player bottom_list in
+      if (List.exists (fun bt -> bt = LargeB || bt = SmallB) collision_list) then 
+        State.Lose
+      else 
+        let eff_filter_helper = function 
+          | GoodB eff -> true 
+          | _ -> false in
+
+        let extr_eff_helper = function 
+          | GoodB eff -> eff 
+          | _ -> failwith "This should never happen" in 
+
+        let effect_list = List.map (extr_eff_helper) 
+            (List.filter (eff_filter_helper) (collision_list)) in 
+
+        let obj = Object.extract_obj player in 
+        obj.effects <- obj.effects @ effect_list;
+        State.Game
     ) with
     | Queue.Empty -> State.Game 
 

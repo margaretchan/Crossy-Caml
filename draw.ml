@@ -80,18 +80,13 @@ let draw_two_bad obj1 =
   let img = two_bad_png |> apply_transparency |> Graphics.make_image in
   Graphics.draw_image img (obj1.x_pos) (obj1.y_pos)
 
-(**[extract_obj c] extracts the Object from collidable [c] *)
-let extract_obj (c : collidable) = 
-  match c with 
-  | Player obj -> obj 
-  | Block (_, obj) -> obj
 
 (** [moved_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
     Generalize to move_collidable later *)
 let moves_player (dir : int) (step : int) (x_bound : int) (player : collidable) 
   : unit  =
-  let obj = extract_obj player in 
+  let obj = Object.extract_obj player in 
   (** Loop player position around screen *)
   let pos_after_step = (obj.x_pos) + (dir * step) in
   let new_x_pos = if pos_after_step > x_bound then 0 else
@@ -167,7 +162,7 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   draw_collidable player;  
 
   (* Update Score *)
-  let p_obj = extract_obj player in 
+  let p_obj = Object.extract_obj player in 
   set_color text_color;
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));

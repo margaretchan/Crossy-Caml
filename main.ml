@@ -5,7 +5,7 @@ open Screen
 open State
 
 (** [screen_fps] is the fps of the game screen *)
-let screen_fps = 30.0
+let screen_fps = 60.0
 
 (** [down_fps] is the fps of the oject down movement *)
 let down_fps = 2.0
@@ -48,7 +48,7 @@ let rec display last_update_time fps st high_score =
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
       if (Screen.collision_process player screen = Lose) then 
         let () = Queue.clear screen in
-        let obj = Draw.extract_obj player in 
+        let obj = Object.extract_obj player in 
         if obj.score > high_score 
         then (
           Draw.game_over obj.score obj.score;
@@ -80,7 +80,7 @@ let rec display last_update_time fps st high_score =
           let obstacles_down = 
             if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) 
             then          
-              let obj = Draw.extract_obj player in 
+              let obj = Object.extract_obj player in 
               obj.score <- obj.score + 1; 
               true 
             else false in
@@ -120,6 +120,7 @@ let rec display last_update_time fps st high_score =
         score = 0;
         height = (size_x () / 30); 
         width = 2 * (size_x () / 30);
+        effects = []
       } in
 
     loop last_update_time fps init_player init_screen 3 (Sys.time ()) (Sys.time ())

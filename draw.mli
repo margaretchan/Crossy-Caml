@@ -4,9 +4,6 @@ open Screen
 (** [init_window ()] opens the game window *)
 val init_window : unit -> unit
 
-(**[extract_obj c] extracts the Object from collidable [c] *)
-val extract_obj : Object.collidable -> Object.obj
-
 (** [update_window player_dir old_pos update_obstacles screen seq_bad_rows] 
     is the tuple of:
     1. player object after drawing the updated game graphics,

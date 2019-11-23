@@ -1,4 +1,6 @@
 open OUnit2 
+open Object
+open Actor
 
 let player = 
   Object.Player {
@@ -10,6 +12,7 @@ let player =
     score = 0;
     height = 5; 
     width = 5;
+    effects = []
   }
 
 let enemy_same = 
@@ -22,6 +25,7 @@ let enemy_same =
       score = 0;
       height = 5; 
       width = 5;
+      effects = []
     })
 
 let enemy_left = 
@@ -34,6 +38,7 @@ let enemy_left =
       score = 0;
       height = 5; 
       width = 5;
+      effects = []
     })
 
 let enemy_right = 
@@ -46,6 +51,7 @@ let enemy_right =
       score = 0;
       height = 5; 
       width = 5;
+      effects = []
     })
 
 let enemy_above = 
@@ -58,6 +64,7 @@ let enemy_above =
       score = 0;
       height = 5; 
       width = 5;
+      effects = []
     })
 
 
@@ -71,6 +78,7 @@ let enemy_left2 =
       score = 0;
       height = 5; 
       width = 5;
+      effects = []
     })
 
 let enemy_right2 = 
@@ -83,34 +91,35 @@ let enemy_right2 =
       score = 0;
       height = 5; 
       width = 5;
+      effects = []
     })
 
 
 let collision_tests = [
 
   "same loc: collision" >:: (fun _ -> 
-      assert_equal  ~printer:(string_of_bool)
-        true (Object.check_collision player enemy_same));
+      assert_equal 
+        (Some LargeB) (Object.check_collision player enemy_same));
 
   "enemy to left: collision" >:: (fun _ -> 
-      assert_equal  ~printer:(string_of_bool)
-        true (Object.check_collision player enemy_left));
+      assert_equal  
+        (Some LargeB) (Object.check_collision player enemy_left));
 
   "enemy to right: collision" >:: (fun _ -> 
-      assert_equal  ~printer:(string_of_bool)
-        true (Object.check_collision player enemy_right));
+      assert_equal  
+        (Some LargeB) (Object.check_collision player enemy_right));
 
   "enemy above: no collision" >:: (fun _ -> 
-      assert_equal  ~printer:(string_of_bool)
-        false (Object.check_collision player enemy_above));
+      assert_equal 
+        None (Object.check_collision player enemy_above));
 
   "enemy to left: no collision" >:: (fun _ -> 
-      assert_equal  ~printer:(string_of_bool)
-        false (Object.check_collision player enemy_left2));
+      assert_equal  
+        None (Object.check_collision player enemy_left2));
 
   "enemy to right: no collision" >:: (fun _ -> 
-      assert_equal  ~printer:(string_of_bool)
-        false (Object.check_collision player enemy_right2));
+      assert_equal  
+        None (Object.check_collision player enemy_right2));
 ]
 
 let suite =

@@ -59,6 +59,7 @@ let generate_block coord grid_size typ dir spd : collidable =
         score = score_of_typ typ 5000;
         height = 2 * grid_size;
         width = 2 * grid_size; 
+        effects = []
       })
 
 (** [gen_helper coord x_bound y_bound cur_pass num_pass grid_size list] is a 
