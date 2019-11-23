@@ -12,7 +12,7 @@ play:
 	$(OCAMLBUILD) $(MAIN) && ./$(MAIN)
 
 zip:
-	zip crossy_caml_src.zip *.ml* _tags Makefile *.md
+	zip crossy_caml_src.zip *.ml* _tags Makefile *.md *.png
 
 docs: docs-public docs-private
 

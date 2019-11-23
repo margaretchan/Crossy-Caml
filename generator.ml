@@ -43,13 +43,6 @@ let score_of_typ typ s: int =
     end
   | _ -> 0
 
-let random_dir = 
-  let chance_of_dir = Random.int 3 in
-  match chance_of_dir with
-  | 0 -> Left
-  | 1 -> No
-  | _ -> Right
-
 (** [generate_block coord grid_size typ i dir spd] is a collidable object with 
     position [coord], type [typ], height and width = 2 * [grid_size], id = 
     id of last generated + 1, velocity of ([dir], [spd]) *)
@@ -69,7 +62,7 @@ let generate_block coord grid_size typ dir spd : collidable =
       })
 
 (** [gen_helper coord x_bound y_bound cur_pass num_pass grid_size list] is a 
-    (collidable list * bool) that has generated collidable objects filling up 
+    (collidable list) that has generated collidable objects filling up 
     all the grid spaces from x = 0 to x = [x_bound]. 
     The bool represents the direction the blocks in the row should move. *)
 let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
@@ -95,6 +88,14 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
 
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : Object.collidable list = 
+
+  let random_dir = 
+    let chance_of_dir = Random.int 3 in
+    match chance_of_dir with
+    | 0 -> Left
+    | 1 -> No
+    | _ -> Right in
+
   let start_coord = (0, y_bound) in
   let rand_dir = random_dir in
   gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0
