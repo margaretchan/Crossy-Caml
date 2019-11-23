@@ -120,6 +120,9 @@ let draw_row collidable_lst =
 
 let update_window player_dir (player : collidable) down_obstacles side_obstacles
     screen seq_good_rows = 
+
+  auto_synchronize false;
+
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
   let grid_x = (size_x ()) / 30 in
@@ -168,6 +171,8 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   set_color text_color;
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
+
+  auto_synchronize true;
 
   (* return tuple: (player object * screen * number of sequential good rows) *)
   (player, screen', seq_good_rows')
