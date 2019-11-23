@@ -18,8 +18,8 @@ let text_color = rgb 128 0 62
 (** [background_color] is the color of the screen background *)
 let background_color = rgb 255 207 57
 
-(* * [bad_blk_color] is the color of the bad blocks on the screen
-   let bad_blk_color = rgb 23 97 62 *)
+(** [bad_blk_color] is the color of the bad blocks on the screen
+    let bad_blk_color = rgb 23 97 62 *)
 
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = background_color
@@ -177,7 +177,7 @@ let start_page () =
   set_color start_page_color;
   fill_rect 0 0 (size_x ()) (size_y ());
   set_color text_color;
-  set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1"; (* causes error on windows *)
+  (* set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1"; causes error on windows *)
   let (x1, y1) = text_size "Welcome to Crossy Caml!" in
   moveto ((size_x () - x1) / 2) ((size_y () - y1) / 2);
   draw_string "Welcome to Crossy Caml!";
@@ -191,7 +191,7 @@ let game_over (score : int) (high_score : int) : unit =
   fill_rect 0 0 (size_x ()) (size_y ());
 
   set_color text_color;
-  set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1"; (* causes error on windows *)
+  (* set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1"; causes error on windows *)
   let (x1, y1) = text_size "Game Over" in
   moveto ((size_x () - x1) / 2) ((size_y () - y1) / 2);
   draw_string "Game Over";
