@@ -50,6 +50,7 @@ module Screen = struct
       then 0
       else normal
     )
+
   (** [shift_side x_bound col_lst] is a unit. It modifies all the collidables 
       in [col_lst] to have their position shifted either left or right 
       (determined pseudo-randomly) by their width. 
@@ -63,9 +64,13 @@ module Screen = struct
           match b with 
           | Block (_, obj) -> 
             let move_dir = 
-              if fst obj.velocity = Down 
-              then -1 else 1 in
-            let normal = obj.x_pos + (move_dir * obj.width) in
+              let dir = fst obj.velocity in 
+              if dir = Left 
+              then -1 
+              else (if dir = Right 
+                    then 1 else 0) in
+            let side_step_size = obj.width / 5 in
+            let normal = obj.x_pos + (move_dir * side_step_size) in
             let new_loc = loop_around_helper x_bound normal in
             obj.x_pos <- new_loc; 
             helper t
@@ -84,21 +89,29 @@ module Screen = struct
         | Player _ -> failwith "Should have no player in list"
       end
 
-  let update s x_bound y_bound num_pass grid_x grid_y = 
+  let update s x_bound y_bound num_pass grid_x grid_y toggle_down = 
+
     (* shift down *)
-    Queue.iter (shift_down) s; 
-    if num_pass <= (30) 
+    if toggle_down then 
+      Queue.iter (shift_down) s; 
+
+    (* generate new row on top if bad *)
+    if num_pass <= (30)
     then let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
       Queue.push new_list s; 
     else ();
+
     (* shift side *)
     Queue.iter (shift_side x_bound) s;
-    (* generate new row on top *)
-    let new_list = Generator.generate x_bound y_bound num_pass grid_x grid_y in
-    Queue.push new_list s; 
-    let bottom_row = Queue.peek s in
-    let bottom_obj = get_obj bottom_row in
-    let bottom = if bottom_obj.y_pos < 0 then Queue.pop s else Queue.peek s in 
-    match bottom with 
-    | _ -> s
+
+    if Queue.length s > 0 then 
+      let bottom_row = Queue.peek s in
+      let bottom_obj = get_obj bottom_row in
+      let bottom = 
+        if bottom_obj.y_pos < 0
+        then Queue.pop s 
+        else Queue.peek s in 
+      match bottom with 
+      | _ -> s
+    else s
 end

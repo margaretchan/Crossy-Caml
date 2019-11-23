@@ -13,7 +13,7 @@ module Screen : sig
       shifted down and adds a new row. If the screen is full, then it no longer 
       stores the information of the bottom-most row.*)
   val update : (Object.collidable list) Queue.t 
-    -> int -> int -> int -> int -> int 
+    -> int -> int -> int -> int -> int -> bool
     -> (Object.collidable list) Queue.t
 
 end
