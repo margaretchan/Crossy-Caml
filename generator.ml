@@ -14,6 +14,7 @@ let counter = ref 0
 (** [which_item] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
 let which_effect : Actor.effect = 
+  let () = generate_seed in
   let item = Random.int 4 in
   match item with
   | 0 -> Adder 0
@@ -25,6 +26,7 @@ let which_effect : Actor.effect =
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
     chance. With i% it will choose an effect, excluding Nothing. *)
 let generate_rand_item i : Actor.effect = 
+  let () = generate_seed in
   let chance_of_item = Random.int 100 in
   if chance_of_item < i
   then which_effect

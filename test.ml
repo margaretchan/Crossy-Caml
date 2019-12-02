@@ -96,6 +96,8 @@ let enemy_right2 =
 
 let empty_col_row = Generator.generate 10 10 100 1 1
 
+let non_empty_row = Generator.generate 2 4 0 1 1 
+
 let collision_tests = [
 
   "same loc: collision" >:: (fun _ -> 
@@ -126,7 +128,9 @@ let collision_tests = [
 let generator_tests = [
   "empty row" >:: (fun _ -> 
       assert_equal 
-        [] empty_col_row)
+        [] empty_col_row);
+  "non-empty row" >:: (fun _ ->
+      assert (non_empty_row <> []))
 ]
 
 let suite =
