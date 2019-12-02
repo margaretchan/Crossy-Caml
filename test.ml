@@ -2,6 +2,62 @@ open OUnit2
 open Object
 open Actor
 
+let add = Adder 10
+let mult = Multiplier 10
+let phas = Phaser 10
+let slow = Slower 10
+
+let smallb = SmallB
+let largeb = LargeB
+let goodb = GoodB Nothing
+let addb = GoodB add
+let multb = GoodB mult
+let phasb = GoodB phas
+let slowb = GoodB slow
+
+let actor_tests = [
+  "effect of smallb" >:: (fun _ -> 
+      assert_raises (Failure "No effect")
+        (fun () -> get_effect smallb));
+  "effect of largeb" >:: (fun _ -> 
+      assert_raises (Failure "No effect")
+        (fun () -> get_effect largeb));
+  "effect of goodb" >:: (fun _ -> 
+      assert_equal (Nothing) (get_effect goodb));
+  "effect of addb" >:: (fun _ -> 
+      assert_equal (add) (get_effect addb));
+  "effect of multb" >:: (fun _ -> 
+      assert_equal (mult) (get_effect multb));
+  "effect of phasb" >:: (fun _ -> 
+      assert_equal (phas) (get_effect phasb));
+  "effect of slowb" >:: (fun _ -> 
+      assert_equal (slow) (get_effect slowb));
+  "time of smallb" >:: (fun _ -> 
+      assert_raises (Failure "No effect")
+        (fun () -> get_time smallb));
+  "time of largeb" >:: (fun _ -> 
+      assert_raises (Failure "No effect")
+        (fun () -> get_time largeb));
+  "time of goodb" >:: (fun _ -> 
+      assert_equal 0 (get_time goodb));
+  "time of addb" >:: (fun _ -> 
+      assert_equal 0 (get_time addb));
+  "time of multb" >:: (fun _ -> 
+      assert_equal 10 (get_time multb));
+  "time of phasb" >:: (fun _ -> 
+      assert_equal 10 (get_time phasb));
+  "time of slowb" >:: (fun _ -> 
+      assert_equal 10 (get_time slowb));
+  "is_good of smallb" >:: (fun _ -> 
+      assert (not (is_good smallb)));
+  "is_good of largeb" >:: (fun _ -> 
+      assert (not (is_good largeb)));
+  "is_good of goodb" >:: (fun _ -> 
+      assert (is_good goodb));
+  "is_good of phasb" >:: (fun _ -> 
+      assert (is_good phasb));
+]
+
 let player = 
   Object.Player {
     x_pos = 5; 
@@ -137,6 +193,7 @@ let suite =
   "test suite for Crossy Caml"  >::: List.flatten [
     collision_tests;
     generator_tests;
+    actor_tests;
   ]
 
 let _ = run_test_tt_main suite
