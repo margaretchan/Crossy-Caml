@@ -94,6 +94,7 @@ let enemy_right2 =
       effects = []
     })
 
+let empty_col_row = Generator.generate 10 10 100 1 1
 
 let collision_tests = [
 
@@ -122,9 +123,16 @@ let collision_tests = [
         None (Object.check_collision player enemy_right2));
 ]
 
+let generator_tests = [
+  "empty row" >:: (fun _ -> 
+      assert_equal 
+        [] empty_col_row)
+]
+
 let suite =
   "test suite for Crossy Caml"  >::: List.flatten [
     collision_tests;
+    generator_tests;
   ]
 
 let _ = run_test_tt_main suite
