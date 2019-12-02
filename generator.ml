@@ -75,7 +75,7 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     let block_width = 2 * grid_size in
     let blocks_left = total_width / block_width in 
     let pass_left = num_pass - cur_pass in
-    if (blocks_left <= 0) 
+    if (blocks_left <= 0 || pass_left > blocks_left) 
     then list
     else let rand = Random.int (x_bound / block_width) in 
       if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
