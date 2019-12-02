@@ -11,7 +11,7 @@ let screen_fps = 60.0
 let down_fps = 2.0
 
 (** [side_fps] is the fps of the oject side movement *)
-let side_fps = 10.0
+let side_fps = 0.0
 
 (** [display last_update_time fps st high_score] controls the window 
     refresh updates 

@@ -48,6 +48,9 @@ val has_slower : obj -> bool
 (** is true iff the collidable's effect list contains a multiplier *)
 val has_mult : obj -> bool 
 
+(** Returns the maximum time of all effects of type specified *)
+val effect_time_left : Actor.effect list -> Actor.effect -> int 
+
 
 
 
