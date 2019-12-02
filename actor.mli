@@ -12,7 +12,7 @@ type effect =
   | Adder of int
   | Multiplier of int
   | Phaser of int
-  | Slower of int
+  | Slower of int 
   | Nothing
 
 (** The type of obstacle block. *)

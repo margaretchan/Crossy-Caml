@@ -26,7 +26,6 @@ let rec display last_update_time fps st high_score =
 
   (** Start State Logic *)
   if (st = Start) then (
-
     let rec wait_for_start () = 
       match wait_next_event [Key_pressed] with 
       | status -> 
@@ -45,8 +44,10 @@ let rec display last_update_time fps st high_score =
     let rec loop last_update_time fps player screen seq_good_rows 
         last_obj_down_time last_obj_side_time = 
 
+
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
-      if (Screen.collision_process player screen = Lose) then 
+      if (Screen.collision_process player screen = Lose && 
+          not (Object.has_phaser (Object.extract_obj player))) then 
         let () = Queue.clear screen in
         let obj = Object.extract_obj player in 
         if obj.score > high_score 
@@ -73,15 +74,20 @@ let rec display last_update_time fps st high_score =
             else 0 in 
 
           let obstacles_side =
-            if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. side_fps)
-            then true
-            else false in
+            if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. side_fps) && 
+               not (Object.has_slower (Object.extract_obj player)) then 
+              true else 
+              false in
 
           let obstacles_down = 
             if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) 
             then          
+              (** Update Score *)
               let obj = Object.extract_obj player in 
               Object.score_incr obj 1; 
+              (**Update Effects List *)
+              let obj = Object.extract_obj player in 
+              obj.effects <- Object.update_effects obj.effects;
               true 
             else false in
 

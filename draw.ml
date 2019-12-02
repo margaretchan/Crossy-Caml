@@ -24,6 +24,8 @@ let background_color = rgb 255 207 57
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = background_color
 
+let item_color = rgb 34 97 186
+
 (** [player_image_name] is the name of the player image file *)
 let player_image_name = "hope.png"
 
@@ -62,7 +64,7 @@ let draw_collidable collide =
   match collide with 
   | Block (goodbad_type, obj) -> 
     if Actor.is_good goodbad_type then (
-      set_color good_blk_color;
+      set_color item_color;
       fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height); )
     else
       let one_bad_png = Png.load one_bad_image_name [] in

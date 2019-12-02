@@ -35,3 +35,19 @@ val check_on_screen : collidable -> int -> bool
 
 (**[extract_obj c] extracts the Object from collidable [c] *)
 val extract_obj : collidable -> obj
+
+(** Decrements counters in [effs] and removes effects with timer zero *)
+val update_effects : Actor.effect list -> Actor.effect list 
+
+(** is true iff the collidable's effect list contains a phaser *)
+val has_phaser : obj -> bool  
+
+(** is true iff the collidable's effect list contains a slower *)
+val has_slower : obj -> bool 
+
+(** is true iff the collidable's effect list contains a multiplier *)
+val has_mult : obj -> bool 
+
+
+
+

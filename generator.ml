@@ -79,7 +79,7 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     then list
     else let rand = Random.int (x_bound / block_width) in 
       if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
-      then let eff = generate_rand_item 3 in
+      then let eff = generate_rand_item 50 in
         let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
         gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
           grid_size (pass_block :: list) dir spd

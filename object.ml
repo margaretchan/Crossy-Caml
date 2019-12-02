@@ -16,10 +16,6 @@ type collidable =
   | Player of obj
   | Block of block_type * obj
 
-let score_incr p s = 
-  (* if p has the multiplier effect active, change the score by 2 * s *)
-  p.score <- p.score + s
-
 let get_block c = 
   match c with 
   | Block (b,_) -> b
@@ -68,3 +64,46 @@ let extract_obj (c : collidable) =
   match c with 
   | Player obj -> obj 
   | Block (_, obj) -> obj
+
+(** Decrements counters in [effs] and removes effects with timer zero *)
+let update_effects (effs : effect list) : effect list =
+
+  let eff_helper = function 
+    | Adder i when i > 0 -> Adder (i - 1)
+    | Multiplier i when i > 0 -> Multiplier (i - 1)
+    | Phaser i when i > 0 -> Phaser (i - 1)
+    | Slower i when i > 0 -> Slower (i - 1)
+    | _ -> Nothing 
+  in
+  List.map eff_helper effs |> List.filter (fun eff -> eff != Nothing)
+
+let has_phaser (player : obj) : bool = 
+  let is_phaser = function 
+    | Phaser _ -> true 
+    | _ -> false in
+  List.exists is_phaser player.effects
+
+let has_slower (player : obj) : bool = 
+  let is_slower = function 
+    | Slower _ -> true 
+    | _ -> false in
+  List.exists is_slower player.effects
+
+let has_mult (player : obj) : bool = 
+  let is_mult = function 
+    | Multiplier _ -> true 
+    | _ -> false in
+  List.exists is_mult player.effects
+
+let has_adder (player : obj) : bool = 
+  let is_add = function 
+    | Adder _ -> true 
+    | _ -> false in
+  List.exists is_add player.effects
+
+let score_incr p s = 
+  if has_adder p then p.score <- p.score + 500;
+  if has_mult p then 
+    p.score <- p.score + 5*s
+  else
+    p.score <- p.score + s
