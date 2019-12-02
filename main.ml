@@ -55,7 +55,7 @@ let rec display last_update_time fps st high_score =
     Draw.start_page ();
     wait_for_start();
 
-  ) else 
+  ) else
 
     (** Game State Logic *)
   if (st = Game) then (
@@ -72,11 +72,11 @@ let rec display last_update_time fps st high_score =
         if obj.score > high_score 
         then (
           Draw.game_over obj.score obj.score;
-          display (Sys.time ()) screen_fps Lose obj.score
+          display (Sys.time ()) screen_fps Lose obj.score 
         )
         else (
           Draw.game_over obj.score high_score;
-          display (Sys.time ()) screen_fps Lose high_score
+          display (Sys.time ()) screen_fps Lose high_score 
         )
       else (
 

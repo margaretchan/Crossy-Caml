@@ -18,8 +18,11 @@ let text_color = rgb 128 0 62
 (** [background_color] is the color of the screen background *)
 let background_color = rgb 255 207 57
 
-(** [bad_blk_color] is the color of the bad blocks on the screen
-    let bad_blk_color = rgb 23 97 62 *)
+(** [background_image_name] is the name of the image file for the background *)
+let background_image_name = "background.png"
+
+(** [bad_blk_color] is the color of the bad blocks on the screen *)
+let bad_blk_color = rgb 23 97 62
 
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = background_color
@@ -84,14 +87,16 @@ let draw_collidable collide =
   | Player obj -> 
     let player_png = Png.load player_image_name [] in
     let img = player_png |> apply_transparency |> Graphics.make_image in
+    set_color bad_blk_color;
+    fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
     Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
-(** [draw_two_bad obj1] draws the image representation of a two-wide bad block 
+(** [draw_two_bad obj] draws the image representation of a two-wide bad block 
     on the screen *)
-let draw_two_bad obj1 =
+let draw_two_bad obj =
   let two_bad_png = Png.load two_bad_image_name [] in
   let img = two_bad_png |> apply_transparency |> Graphics.make_image in
-  Graphics.draw_image img (obj1.x_pos) (obj1.y_pos)
+  Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
 
 (** [moved_player dir step x_bound player] is [player] but 
@@ -131,6 +136,54 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
 
   auto_synchronize false;
 
+  Graphics.clear_graph ();
+
+  (* let init_background () = 
+     let rec helper x y = 
+      if x > 750 then helper 0 (y + 200) else 
+      if y > 750 then () else 
+        let width = (Random.int 500) + 10 in
+        let height = 200 in 
+        Graphics.set_color (rgb 228 174 (Random.int 131));
+        Graphics.fill_rect x y width height;
+        helper (x + width) y in 
+     helper 0 0; *)
+
+  Graphics.set_color (rgb 228 174 131);
+  Graphics.fill_rect 0 0 200 200;
+  Graphics.fill_rect 110 300 200 200;
+  Graphics.fill_rect 70 708 200 200;
+  Graphics.set_color (rgb 228 174 56);
+  Graphics.fill_rect 200 100 76 200;
+  Graphics.fill_rect 456 78 76 200;
+  Graphics.fill_rect 278 456 76 200;
+  Graphics.set_color (rgb 228 174 7);
+  Graphics.fill_rect 176 300 27 200;
+  Graphics.fill_rect 568 7 27 200;
+  Graphics.fill_rect 123 65 27 200;
+  Graphics.set_color (rgb 228 174 110);
+  Graphics.fill_rect 230 500 76 200;
+  Graphics.fill_rect 230 345 76 200;
+  Graphics.fill_rect 567 657 76 200;
+  Graphics.set_color (rgb 228 174 29);
+  Graphics.fill_rect 298 600 200 200;
+  Graphics.fill_rect 298 200 200 200;
+  Graphics.fill_rect 564 213 200 200;
+  Graphics.set_color (rgb 228 174 56);
+  Graphics.fill_rect 78 500 200 200;
+  Graphics.fill_rect 398 558 200 200;
+  Graphics.fill_rect 634 657 200 200;
+  Graphics.set_color (rgb 228 174 93);
+  Graphics.fill_rect 450 0 200 200;
+  Graphics.fill_rect 450 543 200 200;
+  Graphics.fill_rect 123 34 200 200;
+  Graphics.set_color (rgb 228 174 200);
+  Graphics.fill_rect 530 0 200 200;
+  Graphics.set_color (rgb 228 174 29);
+  Graphics.fill_rect 598 0 200 200;
+  Graphics.set_color (rgb 228 174 56);
+  Graphics.fill_rect 678 0 200 200;
+
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
   let grid_x = (size_x ()) / 30 in
@@ -141,8 +194,10 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   (* Fill background color:
      There is currently no way to set foreground and background colors?? 
      Filling a rectangle is so janky *)
-  set_color background_color;
-  fill_rect 0 0 (size_x ()) (size_y ());
+
+  (* let background_png = Png.load background_image_name [] in
+     let img = background_png |> apply_transparency |> Graphics.make_image in
+     Graphics.draw_image img 0 0; *)
 
   (* Update screen *)
   let screen' = 
@@ -154,12 +209,14 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
           if next_row_good 
           then good_blks_good_row 
           else good_blks_bad_row 
-        else 100 in
+        else 101 in
       Screen.update screen (size_x ()) (size_y ()) num_good_blks grid_x grid_y down_obstacles
     else screen in
 
   (* Draw blocks *)
   Queue.iter draw_row screen';
+
+  Graphics.sound 200 101;
 
   (* Update number of sequential good rows *)
   let seq_good_rows' = 
