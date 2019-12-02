@@ -65,9 +65,9 @@ let draw_collidable collide =
   | Block (goodbad_type, obj) -> 
     if Actor.is_good goodbad_type then (
       match get_effect goodbad_type with 
-      | Adder _ -> set_color (rgb 34 90 10) ;
+      | Adder _ -> set_color (rgb 255 255 255) ;
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
-      | Multiplier _ -> set_color (rgb 34 90 43);
+      | Multiplier _ -> set_color (rgb 0 0 0);
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
       | Phaser _ -> set_color (rgb 21 87 87);
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
