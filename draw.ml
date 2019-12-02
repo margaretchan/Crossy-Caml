@@ -64,8 +64,19 @@ let draw_collidable collide =
   match collide with 
   | Block (goodbad_type, obj) -> 
     if Actor.is_good goodbad_type then (
-      set_color item_color;
-      fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height); )
+      match get_effect goodbad_type with 
+      | Adder _ -> set_color (rgb 34 90 10) ;
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | Multiplier _ -> set_color (rgb 34 90 43);
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | Phaser _ -> set_color (rgb 21 87 87);
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | _ -> ()
+      | Slower _ -> set_color (rgb 43 10 32);
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | Nothing -> set_color background_color;
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+    )
     else
       let one_bad_png = Png.load one_bad_image_name [] in
       let img = one_bad_png |> apply_transparency |> Graphics.make_image in
@@ -168,6 +179,18 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   set_color text_color;
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
+
+  (** Update Effects Drawing *)
+  set_color text_color;
+
+  moveto 600 60; 
+  draw_string ("Multipler: " ^ (string_of_int (effect_time_left p_obj.effects (Multiplier 0))));
+
+  moveto 600 50; 
+  draw_string ("Phaser: " ^ (string_of_int (effect_time_left p_obj.effects (Phaser 0))));
+
+  moveto 600 40; 
+  draw_string ("Slower: " ^ (string_of_int (effect_time_left p_obj.effects (Slower 0))));
 
   auto_synchronize true;
 
