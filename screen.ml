@@ -129,12 +129,14 @@ module Screen = struct
 
     if Queue.length s > 0 then 
       let bottom_row = Queue.peek s in
-      let bottom_obj = get_obj bottom_row in
-      let bottom = 
-        if bottom_obj.y_pos < 0
-        then Queue.pop s 
-        else Queue.peek s in 
-      match bottom with 
-      | _ -> s
+      if bottom_row = [] then let _ = (Queue.pop s) in s 
+      else 
+        let bottom_obj = get_obj bottom_row in
+        let bottom = 
+          if bottom_obj.y_pos < 0
+          then Queue.pop s 
+          else Queue.peek s in 
+        match bottom with 
+        | _ -> s
     else s
 end
