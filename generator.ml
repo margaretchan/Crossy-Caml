@@ -8,24 +8,25 @@ let generate_seed : unit =
   let seed_int = int_of_float flt in
   Random.init seed_int
 
+(** [counter] is the number of objects generated *)
 let counter = ref 0
-
-let x = generate_seed
 
 (** [which_item] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
 let which_effect : Actor.effect = 
+  let () = generate_seed in
   let item = Random.int 4 in
   match item with
-  | 0 -> Adder
-  | 1 -> Multiplier
-  | 2 -> Phaser
-  | 3 -> Slower
+  | 0 -> Adder 0
+  | 1 -> Multiplier 10
+  | 2 -> Phaser 10
+  | 3 -> Slower 10
   | _ -> failwith "Should never happen"
 
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
     chance. With i% it will choose an effect, excluding Nothing. *)
 let generate_rand_item i : Actor.effect = 
+  let () = generate_seed in
   let chance_of_item = Random.int 100 in
   if chance_of_item < i
   then which_effect
@@ -38,7 +39,7 @@ let score_of_typ typ s: int =
   | GoodB e -> 
     begin 
       match e with 
-      | Adder -> 10000
+      | Adder _ -> s
       | _ -> 0
     end
   | _ -> 0
@@ -59,10 +60,11 @@ let generate_block coord grid_size typ dir spd : collidable =
         score = score_of_typ typ 5000;
         height = 2 * grid_size;
         width = 2 * grid_size; 
+        effects = []
       })
 
 (** [gen_helper coord x_bound y_bound cur_pass num_pass grid_size list] is a 
-    (collidable list) that has generated collidable objects filling up 
+    (collidable list * bool) that has generated collidable objects filling up 
     all the grid spaces from x = 0 to x = [x_bound]. 
     The bool represents the direction the blocks in the row should move. *)
 let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
@@ -72,13 +74,11 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     let block_width = 2 * grid_size in
     let blocks_left = total_width / block_width in 
     let pass_left = num_pass - cur_pass in
-
-    if (blocks_left <= 0) 
+    if (blocks_left <= 0 || pass_left > blocks_left) 
     then list
     else let rand = Random.int (x_bound / block_width) in 
-
       if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
-      then let eff = generate_rand_item 3 in
+      then let eff = generate_rand_item 50 in
         let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
         gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
           grid_size (pass_block :: list) dir spd
@@ -88,6 +88,8 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
 
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : Object.collidable list = 
+
+  let () = generate_seed in
 
   let random_dir = 
     let chance_of_dir = Random.int 3 in

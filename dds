@@ -1,0 +1,45 @@
+[33mcommit 6bb7bced58be9b27b35a3d873a1c0713700fc459[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: ec003c7 071fe62
+Author: David Sun <ds833@cornell.edu>
+Date:   Mon Nov 18 18:31:55 2019 -0500
+
+    Fix merge conflicts
+
+[33mcommit ec003c7e05f46d11b59a823f237250e711eb5a2d[m
+Merge: e2e1f71 7161b19
+Author: David Sun <ds833@cornell.edu>
+Date:   Mon Nov 18 18:31:24 2019 -0500
+
+    Now support random generation through seed generation based on time. Support random item generation, support for items, unique ids, item score, and row direction
+
+[33mcommit 071fe62dc09d1772e31acf49303bac19492609fc[m
+Author: Kevin Huang <kqh3@cornell.edu>
+Date:   Mon Nov 18 18:05:21 2019 -0500
+
+    added some collision tests, score increments only when enemies move
+
+[33mcommit 80984cf4a6ff2aa9ee305c590b48f964b79e278a[m
+Merge: e492e90 4a6a3da
+Author: Kevin Huang <kqh3@cornell.edu>
+Date:   Mon Nov 18 17:56:17 2019 -0500
+
+    Merge branch 'master' of https://github.com/margaretchan/Crossy-Caml
+
+[33mcommit e492e901b05b335e2433851b307a0ac54c5d0a6a[m
+Author: Kevin Huang <kqh3@cornell.edu>
+Date:   Mon Nov 18 17:56:04 2019 -0500
+
+    collision tests
+
+[33mcommit 4a6a3da945482ab060686aba8dd2a833b55486a0[m
+Merge: 34e5e39 0d5b9db
+Author: Margaret Chan <mchan20822@gmail.com>
+Date:   Mon Nov 18 17:54:09 2019 -0500
+
+    Merge branch 'master' of https://github.com/margaretchan/Crossy-Caml
+
+[33mcommit 34e5e3938ec4cd226ba0471e1968c8895d325af8[m
+Author: Margaret Chan <mchan20822@gmail.com>
+Date:   Mon Nov 18 17:48:03 2019 -0500
+
+    Imports Camlimages library and adds loop around

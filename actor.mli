@@ -9,10 +9,10 @@ type pos = int * int
 
 (** The effect of an item block.*)
 type effect = 
-  | Adder
-  | Multiplier
-  | Phaser
-  | Slower
+  | Adder of int
+  | Multiplier of int
+  | Phaser of int
+  | Slower of int 
   | Nothing
 
 (** The type of obstacle block. *)
@@ -23,6 +23,9 @@ type block_type =
 
 (** [get_effect b] is the effect associated with block [b] *)
 val get_effect : block_type -> effect
+
+(** [get_time b] is the time associated with the block [b] *)
+val get_time : block_type -> int
 
 (** [is_good b] is true if block [b] is a GoodB *)
 val is_good : block_type -> bool

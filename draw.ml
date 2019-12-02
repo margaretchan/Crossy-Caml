@@ -27,6 +27,8 @@ let bad_blk_color = rgb 23 97 62
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = background_color
 
+let item_color = rgb 34 97 186
+
 (** [player_image_name] is the name of the player image file *)
 let player_image_name = "hope.png"
 
@@ -65,9 +67,20 @@ let draw_collidable collide =
   match collide with 
   | Block (goodbad_type, obj) -> 
     if Actor.is_good goodbad_type then (
-      (* don't draw good *)
-      set_color good_blk_color; )
-    else (* bad *)
+      match get_effect goodbad_type with 
+      | Adder _ -> set_color (rgb 34 90 10) ;
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | Multiplier _ -> set_color (rgb 34 90 43);
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | Phaser _ -> set_color (rgb 21 87 87);
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | _ -> ()
+      | Slower _ -> set_color (rgb 43 10 32);
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | Nothing -> set_color background_color;
+        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+    )
+    else
       let one_bad_png = Png.load one_bad_image_name [] in
       let img = one_bad_png |> apply_transparency |> Graphics.make_image in
       Graphics.draw_image img (obj.x_pos) (obj.y_pos)
@@ -85,18 +98,13 @@ let draw_two_bad obj =
   let img = two_bad_png |> apply_transparency |> Graphics.make_image in
   Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
-(**[extract_obj c] extracts the Object from collidable [c] *)
-let extract_obj (c : collidable) = 
-  match c with 
-  | Player obj -> obj 
-  | Block (_, obj) -> obj
 
 (** [moved_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
     Generalize to move_collidable later *)
 let moves_player (dir : int) (step : int) (x_bound : int) (player : collidable) 
   : unit  =
-  let obj = extract_obj player in 
+  let obj = Object.extract_obj player in 
   (** Loop player position around screen *)
   let pos_after_step = (obj.x_pos) + (dir * step) in
   let new_x_pos = if pos_after_step > x_bound then 0 else
@@ -224,10 +232,22 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   draw_collidable player;  
 
   (* Update Score *)
-  let p_obj = extract_obj player in 
+  let p_obj = Object.extract_obj player in 
   set_color text_color;
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
+
+  (** Update Effects Drawing *)
+  set_color text_color;
+
+  moveto 600 60; 
+  draw_string ("Multipler: " ^ (string_of_int (effect_time_left p_obj.effects (Multiplier 0))));
+
+  moveto 600 50; 
+  draw_string ("Phaser: " ^ (string_of_int (effect_time_left p_obj.effects (Phaser 0))));
+
+  moveto 600 40; 
+  draw_string ("Slower: " ^ (string_of_int (effect_time_left p_obj.effects (Slower 0))));
 
   auto_synchronize true;
 
