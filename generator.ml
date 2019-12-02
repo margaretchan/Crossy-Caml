@@ -11,9 +11,6 @@ let generate_seed : unit =
 (** [counter] is the number of objects generated *)
 let counter = ref 0
 
-(* [x] is the seed based on current time *)
-let x = generate_seed
-
 (** [which_item] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
 let which_effect : Actor.effect = 
@@ -89,6 +86,8 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
 
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : Object.collidable list = 
+
+  let () = generate_seed in
 
   let random_dir = 
     let chance_of_dir = Random.int 3 in
