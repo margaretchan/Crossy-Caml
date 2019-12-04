@@ -106,7 +106,7 @@ let has_adder (player : obj) : bool =
   List.exists is_add player.effects
 
 let score_incr p s = 
-  if has_adder p then p.score <- p.score + 500;
+  if has_adder p then p.score <- p.score + 40;
   if has_mult p then 
     p.score <- p.score + 5*s
   else
