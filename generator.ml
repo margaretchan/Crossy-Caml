@@ -1,9 +1,9 @@
 open Actor
 open Object
 
-(** [generate_seed] is a unit. It initializes the random module with a seed
+(** [generate_seed ()] is a unit. It initializes the random module with a seed
     that's dependent on the current time.  *)
-let generate_seed : unit = 
+let generate_seed () : unit = 
   let flt = Unix.time () in
   let seed_int = int_of_float flt in
   Random.init seed_int
@@ -11,10 +11,10 @@ let generate_seed : unit =
 (** [counter] is the number of objects generated *)
 let counter = ref 0
 
-(** [which_item] is an Actor.effect, excluding Nothing, chosen with equal
+(** [which_item () ] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
-let which_effect : Actor.effect = 
-  let () = generate_seed in
+let which_effect () : Actor.effect = 
+  let () = generate_seed () in
   let item = Random.int 4 in
   match item with
   | 0 -> Adder 0
@@ -26,10 +26,10 @@ let which_effect : Actor.effect =
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
     chance. With i% it will choose an effect, excluding Nothing. *)
 let generate_rand_item i : Actor.effect = 
-  let () = generate_seed in
+  let () = generate_seed () in
   let chance_of_item = Random.int 100 in
   if chance_of_item < i
-  then which_effect
+  then which_effect ()
   else Nothing
 
 (** [score_of_typ t s] is the score of the block type. If it's a GoodB Adder, 
@@ -89,7 +89,7 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : Object.collidable list = 
 
-  let () = generate_seed in
+  let () = generate_seed () in
 
   let random_dir = 
     let chance_of_dir = Random.int 3 in
