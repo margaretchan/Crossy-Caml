@@ -138,51 +138,41 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
 
   Graphics.clear_graph ();
 
-  (* let init_background () = 
-     let rec helper x y = 
-      if x > 750 then helper 0 (y + 200) else 
-      if y > 750 then () else 
-        let width = (Random.int 500) + 10 in
-        let height = 200 in 
-        Graphics.set_color (rgb 228 174 (Random.int 131));
-        Graphics.fill_rect x y width height;
-        helper (x + width) y in 
-     helper 0 0; *)
-
+  (* Fill background colors *)
   Graphics.set_color (rgb 228 174 131);
   Graphics.fill_rect 0 0 200 200;
-  Graphics.fill_rect 110 300 200 200;
-  Graphics.fill_rect 70 708 200 200;
+  Graphics.fill_rect 110 350 200 200;
+  Graphics.fill_rect 0 558 200 200;
   Graphics.set_color (rgb 228 174 56);
-  Graphics.fill_rect 200 100 76 200;
-  Graphics.fill_rect 456 78 76 200;
-  Graphics.fill_rect 278 456 76 200;
-  Graphics.set_color (rgb 228 174 7);
-  Graphics.fill_rect 176 300 27 200;
-  Graphics.fill_rect 568 7 27 200;
-  Graphics.fill_rect 123 65 27 200;
-  Graphics.set_color (rgb 228 174 110);
-  Graphics.fill_rect 230 500 76 200;
-  Graphics.fill_rect 230 345 76 200;
-  Graphics.fill_rect 567 657 76 200;
-  Graphics.set_color (rgb 228 174 29);
-  Graphics.fill_rect 298 600 200 200;
+  Graphics.fill_rect 200 0 200 200;
+  Graphics.fill_rect 278 456 50 200;
+  Graphics.set_color (rgb 228 174 120);
+  Graphics.fill_rect 676 460 100 100;
+  Graphics.fill_rect 588 79 200 200;
+  Graphics.fill_rect 123 65 200 200;
+  Graphics.set_color (rgb 228 174 108);
+  Graphics.fill_rect 200 550 200 200;
+  Graphics.fill_rect 567 557 200 200;
+  Graphics.set_color (rgb 228 174 49);
   Graphics.fill_rect 298 200 200 200;
-  Graphics.fill_rect 564 213 200 200;
+  Graphics.fill_rect 564 280 200 200;
   Graphics.set_color (rgb 228 174 56);
   Graphics.fill_rect 78 500 200 200;
   Graphics.fill_rect 398 558 200 200;
   Graphics.fill_rect 634 657 200 200;
   Graphics.set_color (rgb 228 174 93);
-  Graphics.fill_rect 450 0 200 200;
+  Graphics.fill_rect 358 0 200 200;
+  Graphics.fill_rect 300 400 200 200;
+  Graphics.set_color (rgb 228 174 125);
+  Graphics.fill_rect 200 200 200 200;
+  Graphics.fill_rect 0 400 200 200;
+  Graphics.set_color (rgb 228 174 113);
+  Graphics.fill_rect 558 0 200 200;
   Graphics.fill_rect 450 543 200 200;
-  Graphics.fill_rect 123 34 200 200;
-  Graphics.set_color (rgb 228 174 200);
-  Graphics.fill_rect 530 0 200 200;
-  Graphics.set_color (rgb 228 174 29);
-  Graphics.fill_rect 598 0 200 200;
+  Graphics.fill_rect 450 143 150 350;
   Graphics.set_color (rgb 228 174 56);
-  Graphics.fill_rect 678 0 200 200;
+  Graphics.fill_rect 0 200 200 200;
+  Graphics.fill_rect 498 400 200 200;
 
   (* [grid_x] is the number of pixels in one horizontal unit of the 
        screen grid *)
@@ -190,14 +180,6 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
 
   (* [grid_y] is the number of pixels in one vertical unit of the screen grid *)
   let grid_y = (size_y ()) / 50 in
-
-  (* Fill background color:
-     There is currently no way to set foreground and background colors?? 
-     Filling a rectangle is so janky *)
-
-  (* let background_png = Png.load background_image_name [] in
-     let img = background_png |> apply_transparency |> Graphics.make_image in
-     Graphics.draw_image img 0 0; *)
 
   (* Update screen *)
   let screen' = 
@@ -216,7 +198,7 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   (* Draw blocks *)
   Queue.iter draw_row screen';
 
-  Graphics.sound 200 101;
+  (* Graphics.sound 200 101; *)
 
   (* Update number of sequential good rows *)
   let seq_good_rows' = 
