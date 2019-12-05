@@ -12,6 +12,8 @@ let init_window () =
 (** [start_page_color] is the background color of the start screen *)
 let start_page_color = rgb 113 182 77
 
+let title_image_name = "title.png"
+
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 128 0 62
 
@@ -98,7 +100,6 @@ let draw_two_bad obj =
   let img = two_bad_png |> apply_transparency |> Graphics.make_image in
   Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
-
 (** [moved_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
     Generalize to move_collidable later *)
@@ -107,12 +108,13 @@ let moves_player (dir : int) (step : int) (x_bound : int) (player : collidable)
   let obj = Object.extract_obj player in 
   (** Loop player position around screen *)
   let pos_after_step = (obj.x_pos) + (dir * step) in
-  let new_x_pos = if pos_after_step > x_bound then 0 else
-      (if (pos_after_step + step) < 0 then (x_bound - step) 
-       else pos_after_step) in
+  let new_x_pos = 
+    if pos_after_step > x_bound then 0 else
+    if (pos_after_step + step) < 0 then (x_bound - step) 
+    else pos_after_step in
   obj.x_pos <- new_x_pos
 
-(** [get pos c] is the position of [c] *)
+(** [get pos c] is the position of collidable [c] *)
 let get_pos (c : collidable) =  
   match c with 
   | Player obj -> (obj.x_pos, obj.y_pos)
@@ -237,17 +239,18 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   (player, screen', seq_good_rows')
 
 let start_page () = 
+  Graphics.set_color (rgb 105 206 236);
+  Graphics.fill_rect 0 0 750 750;
+
+  auto_synchronize false;
+
   clear_graph ();
-  set_color start_page_color;
-  fill_rect 0 0 (size_x ()) (size_y ());
-  set_color text_color;
-  (* set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1"; causes error on windows *)
-  let (x1, y1) = text_size "Welcome to Crossy Caml!" in
-  moveto ((size_x () - x1) / 2) ((size_y () - y1) / 2);
-  draw_string "Welcome to Crossy Caml!";
-  let (x2, y2) = text_size "Press the space bar twice to begin" in
-  moveto ((size_x () - x2) / 2) (size_y () / 2 - y1 - y2);
-  draw_string "Press the space bar twice to begin"
+
+  let title_png = Png.load title_image_name [] in
+  let img = title_png |> apply_transparency |> Graphics.make_image in
+  Graphics.draw_image img 0 0;
+
+  auto_synchronize true
 
 let game_over (score : int) (high_score : int) : unit = 
   clear_graph ();
