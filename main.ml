@@ -60,9 +60,10 @@ let rec display last_update_time fps st high_score =
     (** Game State Logic *)
   if (st = Game) then (
 
-    let rec loop last_update_time fps player screen seq_good_rows 
-        last_obj_down_time last_obj_side_time = 
+    let last_player_dir = ref 1 in
 
+    let rec loop last_update_time fps player screen seq_good_rows 
+        last_obj_down_time last_obj_side_time last_player_dir = 
 
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
       if (Screen.collision_process player screen = Lose && 
@@ -88,15 +89,19 @@ let rec display last_update_time fps st high_score =
           (** Get Player Input Direction  *)
           let () = 
             if (key_pressed ()) 
-            then let key = read_key () in
-              if key = 'a' then 
-                dir := -1 
-              else if key = 'd' then 
-                dir := 1 
-              else if key = 'p' then 
-                let () = dir := 0 in 
-                display (Sys.time ()) screen_fps Pause high_score;
-              else dir := 0 in 
+            then 
+              let key = read_key () in
+              if key = 'a' 
+              then (dir := -1; 
+                    last_player_dir := -1)
+              else (if key = 'd' 
+                    then (dir := 1;
+                          last_player_dir := 1)
+                    else (if key = 'p' 
+                          then 
+                            let () = dir := 0 in 
+                            display (Sys.time ()) screen_fps Pause high_score;
+                          else dir := 0 )) in 
 
           let obstacles_side =
             if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. side_fps) && 
@@ -107,16 +112,16 @@ let rec display last_update_time fps st high_score =
           let obstacles_down = 
             if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) 
             then          
-              (** Update Score *)
+              (* Update Score *)
               let obj = Object.extract_obj player in 
               Object.score_incr obj 1; 
-              (**Update Effects List *)
+              (* Update Effects List *)
               let obj = Object.extract_obj player in 
               obj.effects <- Object.update_effects obj.effects;
               true 
             else false in
 
-          let updated_window = Draw.update_window !dir player 
+          let updated_window = Draw.update_window !last_player_dir !dir player 
               obstacles_down obstacles_side screen seq_good_rows in 
 
           match updated_window with 
@@ -131,15 +136,15 @@ let rec display last_update_time fps st high_score =
               else last_obj_side_time in 
             player_ref := p;
             screen_ref := s;
-            loop (Sys.time ()) fps !player_ref !screen_ref good last_obj_down_time' last_obj_side_time'
+            loop (Sys.time ()) fps !player_ref !screen_ref good last_obj_down_time' last_obj_side_time' last_player_dir
         ) 
         else (
           loop last_update_time fps !player_ref !screen_ref seq_good_rows 
-            last_obj_down_time last_obj_side_time
+            last_obj_down_time last_obj_side_time last_player_dir
         )
       ) in
 
-    loop last_update_time fps !player_ref !screen_ref 3 (Sys.time ()) (Sys.time ())
+    loop last_update_time fps !player_ref !screen_ref 3 (Sys.time ()) (Sys.time ()) last_player_dir
 
   ) else 
 
@@ -158,10 +163,12 @@ let rec display last_update_time fps st high_score =
   ) else 
 
   if (st = Pause) then (
+    Draw.pause ();
     let rec wait_for_continue () = 
       if key_pressed () && read_key () = 'p' then 
         display (Sys.time ()) screen_fps Game high_score
-      else wait_for_continue () in
+      else 
+        wait_for_continue () in
     wait_for_continue ();
   )
 

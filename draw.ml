@@ -10,18 +10,29 @@ let init_window () =
   set_window_title "Crossy Caml"
 
 (** [start_page_color] is the background color of the start screen *)
-let start_page_color = rgb 113 182 77
+let start_page_color = rgb 105 206 236
 
+(** [title_image_name] is the name of the image file for the title screen *)
 let title_image_name = "title.png"
 
+(** [gameover_page_color] is the background color of the game over screen *)
+let gameover_page_color = rgb 47 0 31
+
+(** [gameover_image_name] is the name of the image file for the 
+    game over screen *)
+let gameover_image_name = "gameover.png"
+
+(** [pause_page_color] is the background color of the pause screen *)
+let pause_page_color = rgb 255 238 39
+
+(** [pause_image_name] is the name of the image file for the pause screen *)
+let pause_image_name = "pause.png"
+
 (** [text_color] is the color of the text on the start screen *)
-let text_color = rgb 128 0 62
+let text_color = rgb 255 255 255
 
 (** [background_color] is the color of the screen background *)
 let background_color = rgb 255 207 57
-
-(** [background_image_name] is the name of the image file for the background *)
-let background_image_name = "background.png"
 
 (** [bad_blk_color] is the color of the bad blocks on the screen *)
 let bad_blk_color = rgb 23 97 62
@@ -31,8 +42,13 @@ let good_blk_color = background_color
 
 let item_color = rgb 34 97 186
 
-(** [player_image_name] is the name of the player image file *)
-let player_image_name = "hope.png"
+(** [playerL_image_name] is the name of the player image file pointed to the 
+    left *)
+let playerL_image_name = "camelL.png"
+
+(** [playerR_image_name] is the name of the player image file pointed to the 
+    left *)
+let playerR_image_name = "camelR.png"
 
 (** [one_bad_image_name] is the name of the image file for a 1-wide bad block *)
 let one_bad_image_name = "onebad.png"
@@ -56,41 +72,58 @@ let apply_transparency = function
     and h = bitmap.Rgba32.height in
     Array.init h (fun i ->
         Array.init w (fun j ->
-            let {color = {r = r; g = g; b = b}; 
-                 alpha = a} = Rgba32.unsafe_get bitmap j i in
-            if a = 0 then Graphics.transp else rgb r g b))
+            let {color = 
+                   {r = r; g = g; b = b}; 
+                 alpha = a} = 
+              Rgba32.unsafe_get bitmap j i in
+            if a = 0 
+            then Graphics.transp 
+            else rgb r g b))
   | _ -> failwith "impossible - always PNG with RGBA"
 
-(** [draw_collidable collide] draws the collidable object [collide] on the 
-    screen as a rectangle with its fields width and height.
+(** [draw_collidable old_player_dir player_dir collide] draws the collidable 
+    object [collide] on the screen as its corresponding png image.
     The color of the rectangle is dependant whether [collide] is a 
     good or bad block type *)
-let draw_collidable collide = 
+let draw_collidable old_player_dir player_dir collide = 
   match collide with 
   | Block (goodbad_type, obj) -> 
     if Actor.is_good goodbad_type then (
       match get_effect goodbad_type with 
-      | Adder _ -> set_color (rgb 255 255 255) ;
+      | Adder _ -> 
+        set_color (rgb 255 255 255) ;
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
-      | Multiplier _ -> set_color (rgb 0 0 0);
+      | Multiplier _ -> 
+        set_color (rgb 0 0 0);
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
-      | Phaser _ -> set_color (rgb 21 87 87);
+      | Phaser _ -> 
+        set_color (rgb 21 87 87);
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
       | _ -> ()
-      | Slower _ -> set_color (rgb 43 10 32);
+      | Slower _ -> 
+        set_color (rgb 43 10 32);
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
-      | Nothing -> set_color background_color;
+      | Nothing -> 
+        set_color background_color;
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
     )
     else
       let one_bad_png = Png.load one_bad_image_name [] in
-      let img = one_bad_png |> apply_transparency |> Graphics.make_image in
+      let img = 
+        one_bad_png 
+        |> apply_transparency 
+        |> Graphics.make_image in
       Graphics.draw_image img (obj.x_pos) (obj.y_pos)
   | Player obj -> 
-    let player_png = Png.load player_image_name [] in
-    let img = player_png |> apply_transparency |> Graphics.make_image in
-    set_color bad_blk_color;
-    fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+    let player_png = 
+      (* dir -1 = left *)
+      if player_dir = -1 || (player_dir = 0 && old_player_dir = -1) 
+      then Png.load playerL_image_name []
+      else Png.load playerR_image_name [] in
+    let img = 
+      player_png 
+      |> apply_transparency 
+      |> Graphics.make_image in
     Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
 (** [draw_two_bad obj] draws the image representation of a two-wide bad block 
@@ -129,11 +162,11 @@ let draw_row collidable_lst =
       then draw_two_bad obj1;
       helper t
     | h :: t -> 
-      draw_collidable h; 
+      draw_collidable 1 1 h; 
       helper t in 
   helper (collidable_lst)
 
-let update_window player_dir (player : collidable) down_obstacles side_obstacles
+let update_window last_player_dir player_dir (player : collidable) down_obstacles side_obstacles
     screen seq_good_rows = 
 
   auto_synchronize false;
@@ -194,7 +227,8 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
           then good_blks_good_row 
           else good_blks_bad_row 
         else 101 in
-      Screen.update screen (size_x ()) (size_y ()) num_good_blks grid_x grid_y down_obstacles
+      Screen.update screen (size_x ()) (size_y ()) num_good_blks grid_x grid_y 
+        down_obstacles
     else screen in
 
   (* Draw blocks *)
@@ -213,7 +247,7 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
 
   (* Update and Draw Player Collidable *)
   moves_player player_dir (grid_x) (size_x ()) player;
-  draw_collidable player;  
+  draw_collidable last_player_dir player_dir player;  
 
   (* Update Score *)
   let p_obj = Object.extract_obj player in 
@@ -225,13 +259,16 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   set_color text_color;
 
   moveto 600 60; 
-  draw_string ("Multipler: " ^ (string_of_int (effect_time_left p_obj.effects (Multiplier 0))));
+  draw_string ("Multipler: " ^ 
+               (string_of_int (effect_time_left p_obj.effects (Multiplier 0))));
 
   moveto 600 50; 
-  draw_string ("Phaser: " ^ (string_of_int (effect_time_left p_obj.effects (Phaser 0))));
+  draw_string ("Phaser: " ^ 
+               (string_of_int (effect_time_left p_obj.effects (Phaser 0))));
 
   moveto 600 40; 
-  draw_string ("Slower: " ^ (string_of_int (effect_time_left p_obj.effects (Slower 0))));
+  draw_string ("Slower: " ^ 
+               (string_of_int (effect_time_left p_obj.effects (Slower 0))));
 
   auto_synchronize true;
 
@@ -239,7 +276,7 @@ let update_window player_dir (player : collidable) down_obstacles side_obstacles
   (player, screen', seq_good_rows')
 
 let start_page () = 
-  Graphics.set_color (rgb 105 206 236);
+  Graphics.set_color start_page_color;
   Graphics.fill_rect 0 0 750 750;
 
   auto_synchronize false;
@@ -247,31 +284,56 @@ let start_page () =
   clear_graph ();
 
   let title_png = Png.load title_image_name [] in
-  let img = title_png |> apply_transparency |> Graphics.make_image in
+  let img = 
+    title_png 
+    |> apply_transparency 
+    |> Graphics.make_image in
+  Graphics.draw_image img 0 0;
+
+  auto_synchronize true
+
+let pause () = 
+  Graphics.set_color pause_page_color;
+  Graphics.fill_rect 0 0 750 750;
+
+  auto_synchronize false;
+
+  clear_graph ();
+
+  let pause_png = Png.load pause_image_name [] in
+  let img = 
+    pause_png 
+    |> apply_transparency 
+    |> Graphics.make_image in
   Graphics.draw_image img 0 0;
 
   auto_synchronize true
 
 let game_over (score : int) (high_score : int) : unit = 
+  Graphics.set_color gameover_page_color;
+  Graphics.fill_rect 0 0 750 750;
+
+  auto_synchronize false;
+
   clear_graph ();
-  set_color start_page_color;
-  fill_rect 0 0 (size_x ()) (size_y ());
+
+  let gameover_png = Png.load gameover_image_name [] in
+  let img = 
+    gameover_png 
+    |> apply_transparency 
+    |> Graphics.make_image in
+  Graphics.draw_image img 0 0;
 
   set_color text_color;
-  (* set_font "-*-fixed-medium-r-semicondensed--40-*-*-*-*-*-iso8859-1"; causes error on windows *)
-  let (x1, y1) = text_size "Game Over" in
-  moveto ((size_x () - x1) / 2) ((size_y () - y1) / 2);
-  draw_string "Game Over";
 
-  let (x2, y2) = text_size ("Your Score was " ^ string_of_int score) in
-  moveto ((size_x () - x2) / 2) (size_y () / 2 - y1 - y2);
-  draw_string ("Your Score was " ^ string_of_int score);
+  let x_pos_score = 400 in 
+  let y_pos_score = 270 in 
+  moveto x_pos_score y_pos_score;
+  draw_string (string_of_int score);
 
-  let (x3, y3) = text_size ("Your High Score is " ^ string_of_int high_score) in
-  moveto ((size_x () - x3) / 2) (size_y () / 2 - y1 - y2 - y3);
-  draw_string ("Your High Score is " ^ string_of_int high_score);
+  let x_pos_highscore = 445 in 
+  let y_pos_highscore = 228 in 
+  moveto x_pos_highscore y_pos_highscore;
+  draw_string (string_of_int high_score);
 
-  let (x4, y4) = text_size "Press 'R' twice to Reset" in
-  moveto ((size_x () - x4) / 2) (size_y () / 2 - y1 - y2 - y3 - y4);
-  draw_string "Press 'R' twice to Reset"
-
+  auto_synchronize true
