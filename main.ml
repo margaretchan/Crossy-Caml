@@ -73,10 +73,13 @@ let rec display last_update_time fps st high_score =
         if obj.score > high_score 
         then (
           Draw.game_over obj.score obj.score;
-          display (Sys.time ()) screen_fps Lose obj.score 
+          let high_score = obj.score in 
+          obj.score <- 0;
+          display (Sys.time ()) screen_fps Lose high_score 
         )
         else (
           Draw.game_over obj.score high_score;
+          obj.score <- 0;
           display (Sys.time ()) screen_fps Lose high_score 
         )
       else (
