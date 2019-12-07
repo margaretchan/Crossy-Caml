@@ -1,12 +1,10 @@
 <!-- This is the README for Crossy Caml -->
 
 # Crossy Caml
----
 Crossy Caml is a variation of the "Crossy Road" game built entirely in OCaml.
 It was built as the final project for CS 3110 in Fall 2019.
 
 ## Getting Started
----
 Please reference the INSTALL.md document for installation directions.
 
 ## Testing
@@ -16,7 +14,6 @@ make test
 ```
 
 ## Deployment
----
 To run the game, you first must build the files using:
 
 ```bash
@@ -38,13 +35,11 @@ while also attempting to collect items. These items include:
 - Heart: gives the player an extra life
 
 ## Built With
----
 Libraries:
 - [CamlImages](http://gallium.inria.fr/camlimages/)
 - OCaml Graphics
 
 ## Authors
----
 - Margaret Chan
 - David Sun
 - Kevin Huang
