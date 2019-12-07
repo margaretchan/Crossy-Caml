@@ -44,9 +44,6 @@ let score_of_typ typ s: int =
     end
   | _ -> 0
 
-(** [generate_block coord grid_size typ i dir spd] is a collidable object with 
-    position [coord], type [typ], height and width = 2 * [grid_size], id = 
-    id of last generated + 1, velocity of ([dir], [spd]) *)
 let generate_block coord grid_size typ dir spd : collidable = 
   counter := !counter + 1;
   match coord with
@@ -57,7 +54,7 @@ let generate_block coord grid_size typ dir spd : collidable =
         velocity = (dir, spd);
         id = !counter;
         to_kill = false;
-        score = score_of_typ typ 5000;
+        score = score_of_typ typ 40;
         height = 2 * grid_size;
         width = 2 * grid_size; 
         effects = []
