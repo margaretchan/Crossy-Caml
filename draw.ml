@@ -42,11 +42,17 @@ let playerL_image_name = "camelL.png"
     right *)
 let playerR_image_name = "camelR.png"
 
-(** [one_bad_image_name] is the name of the image file for a 1-wide bad block *)
-let one_bad_image_name = "onebad.png"
+(** [small_bad_image_name] is the name of the image file for a 
+    1-wide bad block *)
+let small_bad_image_name = "onebad.png"
 
-(** [two_bad_image_name] is the name of the image file for a 2-wide bad block *)
-let two_bad_image_name = "twobad.png"
+(** [medium_bad_image_name] is the name of the image file for a 
+    2-wide bad block *)
+let medium_bad_image_name = "twobad.png"
+
+(** [large_bad_image_name] is the name of the image file for a 
+    3-wide bad block *)
+let large_bad_image_name = "threebad.png"
 
 let mult_image_name = "mult.png"
 
@@ -152,10 +158,15 @@ let draw_collidable old_player_dir player_dir collide =
         set_color background_color;
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
     )
-    else
-      let one_bad_png = Png.load one_bad_image_name [] in
+    else  
+      let bad_png = 
+        match goodbad_type with 
+        | SmallB -> Png.load small_bad_image_name []
+        | MediumB -> Png.load medium_bad_image_name []
+        | LargeB -> Png.load large_bad_image_name []
+        | GoodB _ -> failwith "these should only be bad blocks!" in 
       let img = 
-        one_bad_png 
+        bad_png 
         |> apply_transparency 
         |> Graphics.make_image in
       Graphics.draw_image img (obj.x_pos) (obj.y_pos)
@@ -170,13 +181,6 @@ let draw_collidable old_player_dir player_dir collide =
       |> apply_transparency 
       |> Graphics.make_image in
     Graphics.draw_image img (obj.x_pos) (obj.y_pos)
-
-(** [draw_two_bad obj] draws the image representation of a two-wide bad block 
-    on the screen *)
-let draw_two_bad obj =
-  let two_bad_png = Png.load two_bad_image_name [] in
-  let img = two_bad_png |> apply_transparency |> Graphics.make_image in
-  Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
 (** [moved_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
@@ -203,10 +207,6 @@ let draw_row collidable_lst =
   let rec helper lst = 
     match lst with
     | [] -> ()
-    | Block (goodbad1, obj1) :: Block (goodbad2, obj2) :: t -> 
-      if not (Actor.is_good goodbad1 && Actor.is_good goodbad2)
-      then draw_two_bad obj1;
-      helper t
     | h :: t -> 
       draw_collidable 1 1 h; 
       helper t in 
@@ -386,8 +386,6 @@ let continue (lives : int) =
   draw_string (string_of_int lives);
 
   auto_synchronize true
-
-
 
 let game_over (score : int) (high_score : int) : unit = 
   Graphics.set_color gameover_page_color;
