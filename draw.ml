@@ -48,22 +48,31 @@ let small_bad_image_name = "onebad.png"
 
 (** [medium_bad_image_name] is the name of the image file for a 
     2-wide bad block *)
-let medium_bad_image_name = "twobad.png"
+let medium_bad_image_name = "threebad.png"
 
 (** [large_bad_image_name] is the name of the image file for a 
     3-wide bad block *)
 let large_bad_image_name = "threebad.png"
 
-let mult_image_name = "mult.png"
+(** [mult_image_name] is the name of the image file for a 
+    multiplier item *)
+let mult_image_name = "multiplier.png"
 
+(** [adder_image_name] is the name of the image file for a 
+    adder item *)
 let adder_image_name = "adder.png"
 
+(** [freezer_image_name] is the name of the image file for a 
+    freezer item *)
 let freezer_image_name = "freezer.png"
 
+(** [life_image_name] is the name of the image file for a 
+    life item *)
 let life_image_name = "life.png"
 
+(** [phaser_image_name] is the name of the image file for a 
+    phaser item *)
 let phaser_image_name = "phaser.png"
-
 
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 255 255 255
@@ -154,28 +163,30 @@ let draw_collidable old_player_dir player_dir collide =
           |> Graphics.make_image in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
-      | Nothing -> 
-        set_color background_color;
-        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | Nothing -> ()
     )
     else  
+
       let bad_png = 
         match goodbad_type with 
         | SmallB -> Png.load small_bad_image_name []
         | MediumB -> Png.load medium_bad_image_name []
         | LargeB -> Png.load large_bad_image_name []
         | GoodB _ -> failwith "these should only be bad blocks!" in 
+
       let img = 
         bad_png 
         |> apply_transparency 
         |> Graphics.make_image in
       Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
   | Player obj -> 
     let player_png = 
       (* dir -1 = left *)
       if player_dir = -1 || (player_dir = 0 && old_player_dir = -1) 
       then Png.load playerL_image_name []
       else Png.load playerR_image_name [] in
+
     let img = 
       player_png 
       |> apply_transparency 
