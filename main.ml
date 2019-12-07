@@ -17,6 +17,9 @@ let side_fps = 2.0
 
 let screen_ref = ref Screen.empty
 
+(** [lives] is the number of lives the player has. Initalizes at 3. *)
+let lives = ref 3 
+
 let init_player =
   Player {
     x_pos = (size_x () / 2); 
@@ -68,22 +71,25 @@ let rec display last_update_time fps st high_score =
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
       if (Screen.collision_process player screen = Lose && 
           not (Object.has_phaser (Object.extract_obj player))) then 
-        let () = Queue.clear screen in
         let obj = Object.extract_obj player in 
-        if obj.score > high_score 
-        then (
-          Draw.game_over obj.score obj.score;
-          let high_score = obj.score in 
-          obj.score <- 0;
-          display (Sys.time ()) screen_fps Lose high_score 
-        )
-        else (
-          Draw.game_over obj.score high_score;
-          obj.score <- 0;
-          display (Sys.time ()) screen_fps Lose high_score 
-        )
+        if (!lives = 0) then 
+          let () = Queue.clear screen in
+          if obj.score > high_score then (
+            Draw.game_over obj.score obj.score;
+            let high_score = obj.score in 
+            obj.score <- 0;
+            display (Sys.time ()) screen_fps Lose high_score 
+          ) 
+          else (
+            Draw.game_over obj.score high_score;
+            obj.score <- 0;
+            display (Sys.time ()) screen_fps Lose high_score 
+          )
+        else 
+          let () = (lives := !lives - 1) in 
+          let () = Queue.clear screen in 
+          display (Sys.time()) screen_fps Continue high_score
       else (
-
         (* Check for time based update *)
         if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
 
@@ -167,8 +173,18 @@ let rec display last_update_time fps st high_score =
 
   if (st = Pause) then (
     Draw.pause ();
-    let rec wait_for_continue () = 
+    let rec wait_for_unpause () = 
       if key_pressed () && read_key () = 'p' then 
+        display (Sys.time ()) screen_fps Game high_score
+      else 
+        wait_for_unpause () in
+    wait_for_unpause ();
+  ) else 
+
+  if (st = Continue) then (
+    Draw.continue !lives;
+    let rec wait_for_continue () = 
+      if key_pressed () && read_key () = 'f' then 
         display (Sys.time ()) screen_fps Game high_score
       else 
         wait_for_continue () in

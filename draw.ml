@@ -309,6 +309,22 @@ let pause () =
 
   auto_synchronize true
 
+let continue (lives : int) = 
+  Graphics.set_color pause_page_color;
+  Graphics.fill_rect 0 0 750 750;
+
+  auto_synchronize false;
+
+  clear_graph ();
+
+  let pause_png = Png.load pause_image_name [] in
+  let img = 
+    pause_png 
+    |> apply_transparency 
+    |> Graphics.make_image in
+  Graphics.draw_image img 0 0;
+  auto_synchronize true
+
 let game_over (score : int) (high_score : int) : unit = 
   Graphics.set_color gameover_page_color;
   Graphics.fill_rect 0 0 750 750;
