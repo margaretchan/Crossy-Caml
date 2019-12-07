@@ -11,7 +11,7 @@ let generate_seed () : unit =
 (** [counter] is the number of objects generated *)
 let counter = ref 0
 
-(** [which_item () ] is an Actor.effect, excluding Nothing, chosen with equal
+(** [which_item ()] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
 let which_effect () : Actor.effect = 
   let () = generate_seed () in
