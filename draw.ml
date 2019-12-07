@@ -48,7 +48,7 @@ let small_bad_image_name = "onebad.png"
 
 (** [medium_bad_image_name] is the name of the image file for a 
     2-wide bad block *)
-let medium_bad_image_name = "threebad.png"
+let medium_bad_image_name = "twobad.png"
 
 (** [large_bad_image_name] is the name of the image file for a 
     3-wide bad block *)
