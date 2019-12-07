@@ -48,6 +48,17 @@ let one_bad_image_name = "onebad.png"
 (** [two_bad_image_name] is the name of the image file for a 2-wide bad block *)
 let two_bad_image_name = "twobad.png"
 
+let mult_image_name = "mult.png"
+
+let adder_image_name = "adder.png"
+
+let freezer_image_name = "freezer.png"
+
+let life_image_name = "life.png"
+
+let phaser_image_name = "phaser.png"
+
+
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 255 255 255
 
@@ -97,19 +108,46 @@ let draw_collidable old_player_dir player_dir collide =
   | Block (goodbad_type, obj) -> 
     if Actor.is_good goodbad_type then (
       match get_effect goodbad_type with 
-      | Adder _ -> 
-        set_color (rgb 255 255 255) ;
-        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+      | Adder _ ->       
+        let adder_png = Png.load adder_image_name [] in
+        let img = 
+          adder_png 
+          |> apply_transparency 
+          |> Graphics.make_image in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
       | Multiplier _ -> 
-        set_color (rgb 0 0 0);
-        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+        let mult_png = Png.load mult_image_name [] in
+        let img = 
+          mult_png 
+          |> apply_transparency 
+          |> Graphics.make_image in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
       | Phaser _ -> 
-        set_color (rgb 21 87 87);
-        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
-      | _ -> ()
+        let phaser_png = Png.load phaser_image_name [] in
+        let img = 
+          phaser_png 
+          |> apply_transparency 
+          |> Graphics.make_image in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
       | Slower _ -> 
-        set_color (rgb 43 10 32);
-        fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
+        let freezer_png = Png.load freezer_image_name [] in
+        let img = 
+          freezer_png 
+          |> apply_transparency 
+          |> Graphics.make_image in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
+      | Life _ -> 
+        let life_png = Png.load life_image_name [] in
+        let img = 
+          life_png 
+          |> apply_transparency 
+          |> Graphics.make_image in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
       | Nothing -> 
         set_color background_color;
         fill_rect (obj.x_pos) (obj.y_pos) (obj.width) (obj.height);
