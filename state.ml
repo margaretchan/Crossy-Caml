@@ -3,4 +3,5 @@ type state =
   | Game
   | Lose
   | Pause 
+  | Continue
 

@@ -17,6 +17,11 @@ let side_fps = 2.0
 
 let screen_ref = ref Screen.empty
 
+let init_lives = 3
+
+(** [lives] is the number of lives the player has *)
+let lives = ref init_lives
+
 let init_player =
   Player {
     x_pos = (size_x () / 2); 
@@ -68,22 +73,25 @@ let rec display last_update_time fps st high_score =
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
       if (Screen.collision_process player screen = Lose && 
           not (Object.has_phaser (Object.extract_obj player))) then 
-        let () = Queue.clear screen in
         let obj = Object.extract_obj player in 
-        if obj.score > high_score 
-        then (
-          Draw.game_over obj.score obj.score;
-          let high_score = obj.score in 
-          obj.score <- 0;
-          display (Sys.time ()) screen_fps Lose high_score 
-        )
-        else (
-          Draw.game_over obj.score high_score;
-          obj.score <- 0;
-          display (Sys.time ()) screen_fps Lose high_score 
-        )
+        if (!lives = 0) then 
+          let () = Queue.clear screen in
+          if obj.score > high_score then (
+            Draw.game_over obj.score obj.score;
+            let high_score = obj.score in 
+            obj.score <- 0;
+            display (Sys.time ()) screen_fps Lose high_score 
+          ) 
+          else (
+            Draw.game_over obj.score high_score;
+            obj.score <- 0;
+            display (Sys.time ()) screen_fps Lose high_score 
+          )
+        else 
+          let () = (lives := !lives - 1) in 
+          let () = Queue.clear screen in 
+          display (Sys.time()) screen_fps Continue high_score
       else (
-
         (* Check for time based update *)
         if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
 
@@ -113,19 +121,24 @@ let rec display last_update_time fps st high_score =
               false in
 
           let obstacles_down = 
-            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) 
-            then          
+            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) then          
               (* Update Score *)
               let obj = Object.extract_obj player in 
               Object.score_incr obj 1; 
+
+              (** Update Lives *)
+              if (Object.has_life obj) then 
+                lives := !lives + 1;
+
               (* Update Effects List *)
               let obj = Object.extract_obj player in 
               obj.effects <- Object.update_effects obj.effects;
               true 
-            else false in
+            else 
+              false in
 
           let updated_window = Draw.update_window !last_player_dir !dir player 
-              obstacles_down obstacles_side screen seq_good_rows in 
+              obstacles_down obstacles_side screen seq_good_rows !lives in 
 
           match updated_window with 
           | (p, s, good) -> 
@@ -155,6 +168,7 @@ let rec display last_update_time fps st high_score =
   if (st = Lose) then (
     player_ref := init_player;
     screen_ref := Screen.empty;
+    lives := init_lives;
     let rec wait_for_reset () = 
       match wait_next_event [Key_pressed] with 
       | status -> 
@@ -167,8 +181,18 @@ let rec display last_update_time fps st high_score =
 
   if (st = Pause) then (
     Draw.pause ();
-    let rec wait_for_continue () = 
+    let rec wait_for_unpause () = 
       if key_pressed () && read_key () = 'p' then 
+        display (Sys.time ()) screen_fps Game high_score
+      else 
+        wait_for_unpause () in
+    wait_for_unpause ();
+  ) else 
+
+  if (st = Continue) then (
+    Draw.continue !lives;
+    let rec wait_for_continue () = 
+      if key_pressed () && read_key () = 'f' then 
         display (Sys.time ()) screen_fps Game high_score
       else 
         wait_for_continue () in

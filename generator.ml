@@ -11,16 +11,17 @@ let generate_seed () : unit =
 (** [counter] is the number of objects generated *)
 let counter = ref 0
 
-(** [which_item () ] is an Actor.effect, excluding Nothing, chosen with equal
+(** [which_item ()] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
 let which_effect () : Actor.effect = 
   let () = generate_seed () in
-  let item = Random.int 4 in
+  let item = Random.int 5 in
   match item with
   | 0 -> Adder 0
   | 1 -> Multiplier 10
   | 2 -> Phaser 10
   | 3 -> Slower 10
+  | 4 -> Life 0
   | _ -> failwith "Should never happen"
 
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 

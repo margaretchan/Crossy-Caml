@@ -51,6 +51,9 @@ val has_mult : obj -> bool
 (** is true iff the collidable's effect list contains an adder *)
 val has_adder : obj -> bool
 
+(** is true iff the collidable's effect list contains a life *)
+val has_life : obj -> bool
+
 (** Returns the maximum time of all effects of type specified *)
 val effect_time_left : Actor.effect list -> Actor.effect -> int 
 
