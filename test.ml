@@ -2,7 +2,7 @@ open OUnit2
 open Object
 open Actor
 
-let add = Adder 10
+let add = Adder 500
 let mult = Multiplier 10
 let phas = Phaser 10
 let slow = Slower 10
@@ -75,7 +75,7 @@ let actor_tests = [
       assert (is_good phasb));
 ]
 
-let effect_list = [Adder 500; Multiplier 10; Phaser 10; Slower 10]
+let effect_list = [add; mult; phas; slow]
 
 let player_obj = {
   x_pos = 5; 
@@ -200,7 +200,7 @@ let enemy_right2 =
     })
 
 let good_same = 
-  Object.Block (GoodB (Adder 10), {
+  Object.Block (GoodB (add), {
       x_pos = 10; 
       y_pos = 11;
       velocity = No, 0 ;
@@ -213,7 +213,7 @@ let good_same =
     })
 
 let good_left = 
-  Object.Block (GoodB (Adder 10), {
+  Object.Block (GoodB (add), {
       x_pos = 1; 
       y_pos = 4;
       velocity = No, 0 ;
@@ -226,7 +226,7 @@ let good_left =
     })
 
 let good_right = 
-  Object.Block (GoodB (Adder 10), {
+  Object.Block (GoodB (add), {
       x_pos = 7; 
       y_pos = 4;
       velocity = No, 0 ;
@@ -252,7 +252,7 @@ let player_off_screen =
   }
 
 let block_off_screen = 
-  Object.Block (GoodB (Adder 10), {
+  Object.Block (GoodB (add), {
       x_pos = 7; 
       y_pos = 4;
       velocity = No, 0 ;
@@ -295,11 +295,11 @@ let object_tests = [
 
   "item to left: collision" >:: (fun _ -> 
       assert_equal  
-        (Some (GoodB (Adder 10))) (Object.check_collision player good_left));
+        (Some (GoodB (add))) (Object.check_collision player good_left));
 
   "item to right: collision" >:: (fun _ -> 
       assert_equal  
-        (Some (GoodB (Adder 10))) (Object.check_collision player good_right));
+        (Some (GoodB (add))) (Object.check_collision player good_right));
 
   "enemy above: no collision" >:: (fun _ -> 
       assert_equal 
@@ -364,47 +364,98 @@ let object_tests = [
 
   "effect_time_left on adder in effect list" >:: (fun _ -> 
       assert_equal
-        (500) (effect_time_left effect_list (Adder 500)));
+        (500) (effect_time_left effect_list (add)));
 
   "effect_time_left on adder in updated list" >:: (fun _ -> 
       assert_equal
-        (0) (effect_time_left new_effect_list (Adder 500)));
+        (0) (effect_time_left new_effect_list (add)));
 
   "effect_time_left on mult in effect list" >:: (fun _ -> 
       assert_equal
-        (10) (effect_time_left effect_list (Multiplier 10)));
+        (10) (effect_time_left effect_list (mult)));
 
   "effect_time_left on mult in updated list" >:: (fun _ -> 
       assert_equal
-        (9) (effect_time_left new_effect_list (Multiplier 10)));
+        (9) (effect_time_left new_effect_list (mult)));
 
   "effect_time_left on phaser in effect list" >:: (fun _ -> 
       assert_equal
-        (10) (effect_time_left effect_list (Phaser 10)));
+        (10) (effect_time_left effect_list (phas)));
 
   "effect_time_left on phaser in updated list" >:: (fun _ -> 
       assert_equal
-        (9) (effect_time_left new_effect_list (Phaser 10)));
+        (9) (effect_time_left new_effect_list (phas)));
 
   "effect_time_left on slower in effect list" >:: (fun _ -> 
       assert_equal
-        (10) (effect_time_left effect_list (Slower 10)));
+        (10) (effect_time_left effect_list (slow)));
 
   "effect_time_left on adder in empty list" >:: (fun _ -> 
       assert_equal
-        (9) (effect_time_left new_effect_list (Slower 10)));
+        (9) (effect_time_left new_effect_list (slow)));
 ]
+
+let gen_block = Generator.generate_block (0,0) 1 (GoodB add) Left 0   
+
+let gen_block_type = Object.get_block gen_block
+
+let gen_block_obj = Object.extract_obj gen_block
 
 let empty_col_row = Generator.generate 10 10 100 1 1
 
 let non_empty_row = Generator.generate 2 4 0 1 1 
 
 let generator_tests = [
+  "gen_block type test" >:: (fun _ -> 
+      assert_equal 
+        (GoodB add) gen_block_type);
+
+  "gen_block field test: x_pos" >:: (fun _ -> 
+      assert_equal 
+        0 gen_block_obj.x_pos);
+
+  "gen_block field test: y_pos" >:: (fun _ -> 
+      assert_equal 
+        0 gen_block_obj.y_pos);
+
+  "gen_block field test: velocity (dir)" >:: (fun _ -> 
+      assert_equal 
+        Left (fst gen_block_obj.velocity));      
+
+  "gen_block field test: velocity (spd)"  >:: (fun _ -> 
+      assert_equal 
+        0 (snd gen_block_obj.velocity));    
+
+  "gen_block field test: id" >:: (fun _ -> 
+      assert_equal 
+        1 gen_block_obj.id);  
+
+  "gen_block field test: to_kill" >:: (fun _ -> 
+      assert
+        (not (gen_block_obj.to_kill)));            
+
+  "gen_block field test: score"  >:: (fun _ -> 
+      assert_equal 
+        40 gen_block_obj.score);
+
+  "gen_block field test: height"  >:: (fun _ -> 
+      assert_equal 
+        2 gen_block_obj.height);            
+
+  "gen_block field test: effects"  >:: (fun _ -> 
+      assert_equal 
+        [] gen_block_obj.effects);      
+
   "empty row" >:: (fun _ -> 
       assert_equal 
         [] empty_col_row);
   "non-empty row" >:: (fun _ ->
-      assert (non_empty_row <> []))
+      assert 
+        (non_empty_row <> []));
+  (* Test length of the rows *)
+  "non-empty row length" >:: (fun _ ->
+      assert_equal 
+        1 (List.length non_empty_row));
 ]
 
 let suite =

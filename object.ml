@@ -106,8 +106,16 @@ let is_add = function
   | Adder _ -> true 
   | _ -> false 
 
+(** TODO: DOC *)
+let is_life = function 
+  | Life _ -> true 
+  | _ -> false
+
 let has_adder (player : obj) : bool = 
   List.exists is_add player.effects
+
+let has_life (player: obj) : bool = 
+  List.exists is_life player.effects 
 
 let score_incr p s = 
   if has_adder p then p.score <- p.score + 40;
@@ -118,7 +126,8 @@ let score_incr p s =
 
 let effect_time_left (effs : effect list) (e : effect) : int = 
   let effect_time_helper (acc : int) (eff: effect) : int = 
-    match eff with 
+    match eff with
+    | Life i when is_life e && i > acc -> i 
     | Adder i when is_add e && i > acc -> i 
     | Multiplier i when is_mult e && i > acc -> i 
     | Phaser i when is_phaser e && i > acc -> i 

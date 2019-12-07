@@ -15,12 +15,13 @@ let counter = ref 0
       probability. *)
 let which_effect () : Actor.effect = 
   let () = generate_seed () in
-  let item = Random.int 4 in
+  let item = Random.int 5 in
   match item with
   | 0 -> Adder 0
   | 1 -> Multiplier 10
   | 2 -> Phaser 10
   | 3 -> Slower 10
+  | 4 -> Life 0
   | _ -> failwith "Should never happen"
 
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
@@ -58,9 +59,6 @@ let score_of_typ typ s: int =
     end
   | _ -> 0
 
-(** [generate_block coord grid_size typ i dir spd] is a collidable object with 
-    position [coord], type [typ], height and width = 2 * [grid_size], id = 
-    id of last generated + 1, velocity of ([dir], [spd]) *)
 let generate_block coord grid_size typ dir spd : collidable = 
   counter := !counter + 1;
   let width_mult = 
@@ -76,7 +74,7 @@ let generate_block coord grid_size typ dir spd : collidable =
         velocity = (dir, spd);
         id = !counter;
         to_kill = false;
-        score = score_of_typ typ 5000;
+        score = score_of_typ typ 40;
         height = 2 * grid_size;
         width = 2 * grid_size * width_mult; 
         effects = []
