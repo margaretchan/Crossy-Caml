@@ -178,7 +178,7 @@ let draw_row collidable_lst =
     side_obstacles screen seq_good_rows] is the drawing and updating of the 
     game screen window *)
 let update_window last_player_dir player_dir (player : collidable) 
-    down_obstacles side_obstacles screen seq_good_rows = 
+    down_obstacles side_obstacles screen seq_good_rows lives = 
 
   auto_synchronize false;
 
@@ -263,8 +263,13 @@ let update_window last_player_dir player_dir (player : collidable)
   (* Update Score *)
   let p_obj = Object.extract_obj player in 
   set_color text_color;
+
   moveto 50 50;
   draw_string ("Score: " ^ (string_of_int p_obj.score));
+
+  (** Update Lives *)
+  moveto 50 60;
+  draw_string ("Lives: " ^ (string_of_int lives));
 
   (** Update Effects Drawing *)
   set_color text_color;
@@ -321,20 +326,30 @@ let pause () =
   auto_synchronize true
 
 let continue (lives : int) = 
-  Graphics.set_color pause_page_color;
+  Graphics.set_color died_page_color;
   Graphics.fill_rect 0 0 750 750;
 
   auto_synchronize false;
 
   clear_graph ();
 
-  let pause_png = Png.load pause_image_name [] in
+  let died_png = Png.load died_image_name [] in
   let img = 
-    pause_png 
+    died_png 
     |> apply_transparency 
     |> Graphics.make_image in
   Graphics.draw_image img 0 0;
+
+  set_color text_color;
+
+  let x_pos_lives = 480 in 
+  let y_pos_lives = 253 in 
+  moveto x_pos_lives y_pos_lives;
+  draw_string (string_of_int lives);
+
   auto_synchronize true
+
+
 
 let game_over (score : int) (high_score : int) : unit = 
   Graphics.set_color gameover_page_color;

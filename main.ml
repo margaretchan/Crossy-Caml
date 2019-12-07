@@ -17,8 +17,10 @@ let side_fps = 2.0
 
 let screen_ref = ref Screen.empty
 
-(** [lives] is the number of lives the player has. Initalizes at 3. *)
-let lives = ref 3 
+let init_lives = 3
+
+(** [lives] is the number of lives the player has *)
+let lives = ref init_lives
 
 let init_player =
   Player {
@@ -131,7 +133,7 @@ let rec display last_update_time fps st high_score =
             else false in
 
           let updated_window = Draw.update_window !last_player_dir !dir player 
-              obstacles_down obstacles_side screen seq_good_rows in 
+              obstacles_down obstacles_side screen seq_good_rows !lives in 
 
           match updated_window with 
           | (p, s, good) -> 
@@ -161,6 +163,7 @@ let rec display last_update_time fps st high_score =
   if (st = Lose) then (
     player_ref := init_player;
     screen_ref := Screen.empty;
+    lives := init_lives;
     let rec wait_for_reset () = 
       match wait_next_event [Key_pressed] with 
       | status -> 

@@ -18,7 +18,7 @@ val init_window : unit -> unit
     [screen] is the current screen of the game
     [seq_bad_rows] is the number of sequential bad rows there has been *)
 val update_window : int -> int -> Object.collidable -> bool -> bool 
-  -> (Object.collidable list) Queue.t -> int
+  -> (Object.collidable list) Queue.t -> int -> int
   -> (Object.collidable * (Object.collidable list) Queue.t * int)
 
 (** [start_page ()] draws the start screen of the game *)
