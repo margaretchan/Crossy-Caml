@@ -28,6 +28,26 @@ let pause_page_color = rgb 255 238 39
 (** [pause_image_name] is the name of the image file for the pause screen *)
 let pause_image_name = "pause.png"
 
+(** [died_page_color] is the background color of the death screen *)
+let died_page_color = rgb 255 93 147
+
+(** [died_image_name] is the name of the image file for the death screen *)
+let died_image_name = "died.png"
+
+(** [playerL_image_name] is the name of the player image file pointed to the 
+    left *)
+let playerL_image_name = "camelL.png"
+
+(** [playerR_image_name] is the name of the player image file pointed to the 
+    right *)
+let playerR_image_name = "camelR.png"
+
+(** [one_bad_image_name] is the name of the image file for a 1-wide bad block *)
+let one_bad_image_name = "onebad.png"
+
+(** [two_bad_image_name] is the name of the image file for a 2-wide bad block *)
+let two_bad_image_name = "twobad.png"
+
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 255 255 255
 
@@ -40,21 +60,8 @@ let bad_blk_color = rgb 23 97 62
 (** [good_blk_color] is the color of the passable blocks on the screen *)
 let good_blk_color = background_color
 
+(** [item_color] is the color of the item blocks on the screen *)
 let item_color = rgb 34 97 186
-
-(** [playerL_image_name] is the name of the player image file pointed to the 
-    left *)
-let playerL_image_name = "camelL.png"
-
-(** [playerR_image_name] is the name of the player image file pointed to the 
-    left *)
-let playerR_image_name = "camelR.png"
-
-(** [one_bad_image_name] is the name of the image file for a 1-wide bad block *)
-let one_bad_image_name = "onebad.png"
-
-(** [two_bad_image_name] is the name of the image file for a 1-wide bad block *)
-let two_bad_image_name = "twobad.png"
 
 (** [good_blks_bad_row] is the number of good blocks present in a bad row *)
 let good_blks_bad_row = 10
@@ -153,6 +160,7 @@ let get_pos (c : collidable) =
   | Player obj -> (obj.x_pos, obj.y_pos)
   | Block (_, obj) -> (obj.x_pos, obj.y_pos)
 
+(** [draw_row collidable_lst] draws the row of collidable blocks *)
 let draw_row collidable_lst =
   let rec helper lst = 
     match lst with
@@ -166,12 +174,17 @@ let draw_row collidable_lst =
       helper t in 
   helper (collidable_lst)
 
-let update_window last_player_dir player_dir (player : collidable) down_obstacles side_obstacles
-    screen seq_good_rows = 
+(** [update_window last_player_dir player_dir player down_obstacles 
+    side_obstacles screen seq_good_rows] is the drawing and updating of the 
+    game screen window *)
+let update_window last_player_dir player_dir (player : collidable) 
+    down_obstacles side_obstacles screen seq_good_rows = 
 
   auto_synchronize false;
 
   Graphics.clear_graph ();
+
+  (* Graphics.sound 432 10; *)
 
   (* Fill background colors *)
   Graphics.set_color (rgb 228 174 131);
@@ -233,8 +246,6 @@ let update_window last_player_dir player_dir (player : collidable) down_obstacle
 
   (* Draw blocks *)
   Queue.iter draw_row screen';
-
-  (* Graphics.sound 200 101; *)
 
   (* Update number of sequential good rows *)
   let seq_good_rows' = 
