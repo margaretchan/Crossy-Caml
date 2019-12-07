@@ -121,16 +121,21 @@ let rec display last_update_time fps st high_score =
               false in
 
           let obstacles_down = 
-            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) 
-            then          
+            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) then          
               (* Update Score *)
               let obj = Object.extract_obj player in 
               Object.score_incr obj 1; 
+
+              (** Update Lives *)
+              if (Object.has_life obj) then 
+                lives := !lives + 1;
+
               (* Update Effects List *)
               let obj = Object.extract_obj player in 
               obj.effects <- Object.update_effects obj.effects;
               true 
-            else false in
+            else 
+              false in
 
           let updated_window = Draw.update_window !last_player_dir !dir player 
               obstacles_down obstacles_side screen seq_good_rows !lives in 
