@@ -15,7 +15,8 @@ type effect =
 
 type block_type = 
   | SmallB (* Scorpion *)
-  | LargeB  (* Snake *)
+  | MediumB (* Snake *)
+  | LargeB  (* centipede *)
   | GoodB of effect 
 
 let get_effect b = 

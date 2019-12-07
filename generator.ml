@@ -32,6 +32,20 @@ let generate_rand_item i : Actor.effect =
   then which_effect ()
   else Nothing
 
+(** [generate_rand_blk_type] is a tuple of (Actor.block_type * block_length) 
+    with the block type chosen at random *)
+let generate_rand_blk_type () = 
+  let () = generate_seed () in 
+  let blk_type_rand = Random.int 3 in 
+  let blk_type = 
+    if blk_type_rand = 0 then 
+      Actor.SmallB
+    else 
+      (if blk_type_rand = 1 
+       then Actor.MediumB
+       else Actor.LargeB) in
+  blk_type, blk_type_rand + 1
+
 (** [score_of_typ t s] is the score of the block type. If it's a GoodB Adder, 
     then the score is s, else 0. *)
 let score_of_typ typ s: int = 
@@ -49,6 +63,11 @@ let score_of_typ typ s: int =
     id of last generated + 1, velocity of ([dir], [spd]) *)
 let generate_block coord grid_size typ dir spd : collidable = 
   counter := !counter + 1;
+  let width_mult = 
+    match typ with 
+    | SmallB -> 1
+    | MediumB -> 2
+    | _ -> 3 in 
   match coord with
   | (x, y) ->
     Block (typ, {
@@ -59,7 +78,7 @@ let generate_block coord grid_size typ dir spd : collidable =
         to_kill = false;
         score = score_of_typ typ 5000;
         height = 2 * grid_size;
-        width = 2 * grid_size; 
+        width = 2 * grid_size * width_mult; 
         effects = []
       })
 
@@ -76,15 +95,19 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     let pass_left = num_pass - cur_pass in
     if (blocks_left <= 0 || pass_left > blocks_left) 
     then list
-    else let rand = Random.int (x_bound / block_width) in 
+    else 
+      let rand = Random.int (x_bound / block_width) in 
       if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
-      then let eff = generate_rand_item 50 in
+      then 
+        let eff = generate_rand_item 10 in
         let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
         gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
           grid_size (pass_block :: list) dir spd
-      else let new_block = generate_block coord grid_size LargeB dir spd in
-        gen_helper (x + block_width, y) x_bound cur_pass num_pass grid_size 
-          (new_block :: list) dir spd
+      else 
+        let rand_blk = generate_rand_blk_type () in 
+        let new_block = generate_block coord grid_size (fst rand_blk) dir spd in
+        gen_helper (x + (snd rand_blk) * block_width, y) x_bound cur_pass 
+          num_pass grid_size (new_block :: list) dir spd
 
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : Object.collidable list = 

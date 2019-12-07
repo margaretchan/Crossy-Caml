@@ -18,6 +18,7 @@ type effect =
 (** The type of obstacle block. *)
 type block_type = 
   | SmallB
+  | MediumB
   | LargeB
   | GoodB of effect
 
