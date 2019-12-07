@@ -52,24 +52,24 @@ let check_collision (c1: collidable) (c2: collidable) : Actor.block_type option 
     -> Some (GoodB effect)
   | _ -> None 
 
+(* FUNCTION IS NEVER USED *)
 let check_on_screen c xbound = 
   match c with
   | Block (_, ob) -> (ob.y_pos + ob.height) > 0
   | Player ob -> ob.y_pos > 0 
                  && (ob.x_pos + ob.width) > 0
-                 && ob.y_pos < xbound    
+                 && ob.x_pos < xbound    
 
-(**[extract_obj c] extracts the Object from collidable [c] *)
 let extract_obj (c : collidable) = 
   match c with 
   | Player obj -> obj 
   | Block (_, obj) -> obj
 
-(** Decrements counters in [effs] and removes effects with timer zero *)
 let update_effects (effs : effect list) : effect list =
 
+  (* change adder helper to go to 0, maybe should make it go to Nothing *)
   let eff_helper = function 
-    | Adder i when i > 0 -> Adder (i - 1)
+    | Adder i when i > 0 -> Nothing
     | Multiplier i when i > 0 -> Multiplier (i - 1)
     | Phaser i when i > 0 -> Phaser (i - 1)
     | Slower i when i > 0 -> Slower (i - 1)
@@ -77,6 +77,7 @@ let update_effects (effs : effect list) : effect list =
   in
   List.map eff_helper effs |> List.filter (fun eff -> eff != Nothing)
 
+(** TODO: DOC *)
 let is_phaser = function 
   | Phaser _ -> true 
   | _ -> false 
@@ -84,6 +85,7 @@ let is_phaser = function
 let has_phaser (player : obj) : bool = 
   List.exists is_phaser player.effects
 
+(** TODO: DOC *)
 let is_slower = function 
   | Slower _ -> true 
   | _ -> false 
@@ -91,6 +93,7 @@ let is_slower = function
 let has_slower (player : obj) : bool = 
   List.exists is_slower player.effects
 
+(** TODO: DOC *)
 let is_mult = function 
   | Multiplier _ -> true 
   | _ -> false 
@@ -98,6 +101,7 @@ let is_mult = function
 let has_mult (player : obj) : bool = 
   List.exists is_mult player.effects
 
+(** TODO: DOC *)
 let is_add = function 
   | Adder _ -> true 
   | _ -> false 

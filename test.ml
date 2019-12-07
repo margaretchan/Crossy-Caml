@@ -17,62 +17,112 @@ let slowb = GoodB slow
 
 let actor_tests = [
   "effect of smallb" >:: (fun _ -> 
-      assert_raises (Failure "No effect")
-        (fun () -> get_effect smallb));
+      assert_raises 
+        (Failure "No effect") (fun () -> get_effect smallb));
+
   "effect of largeb" >:: (fun _ -> 
-      assert_raises (Failure "No effect")
-        (fun () -> get_effect largeb));
+      assert_raises 
+        (Failure "No effect") (fun () -> get_effect largeb));
+
   "effect of goodb" >:: (fun _ -> 
       assert_equal (Nothing) (get_effect goodb));
+
   "effect of addb" >:: (fun _ -> 
       assert_equal (add) (get_effect addb));
+
   "effect of multb" >:: (fun _ -> 
       assert_equal (mult) (get_effect multb));
+
   "effect of phasb" >:: (fun _ -> 
       assert_equal (phas) (get_effect phasb));
+
   "effect of slowb" >:: (fun _ -> 
       assert_equal (slow) (get_effect slowb));
+
   "time of smallb" >:: (fun _ -> 
-      assert_raises (Failure "No effect")
-        (fun () -> get_time smallb));
+      assert_raises 
+        (Failure "No effect") (fun () -> get_time smallb));
+
   "time of largeb" >:: (fun _ -> 
-      assert_raises (Failure "No effect")
-        (fun () -> get_time largeb));
+      assert_raises 
+        (Failure "No effect") (fun () -> get_time largeb));
+
   "time of goodb" >:: (fun _ -> 
       assert_equal 0 (get_time goodb));
+
   "time of addb" >:: (fun _ -> 
       assert_equal 0 (get_time addb));
+
   "time of multb" >:: (fun _ -> 
       assert_equal 10 (get_time multb));
+
   "time of phasb" >:: (fun _ -> 
       assert_equal 10 (get_time phasb));
+
   "time of slowb" >:: (fun _ -> 
       assert_equal 10 (get_time slowb));
+
   "is_good of smallb" >:: (fun _ -> 
       assert (not (is_good smallb)));
+
   "is_good of largeb" >:: (fun _ -> 
       assert (not (is_good largeb)));
+
   "is_good of goodb" >:: (fun _ -> 
       assert (is_good goodb));
+
   "is_good of phasb" >:: (fun _ -> 
       assert (is_good phasb));
 ]
 
-let player = 
-  Object.Player {
-    x_pos = 5; 
-    y_pos = 5;
-    velocity = No, 0 ;
-    id = 0;
-    to_kill = false;
-    score = 0;
-    height = 5; 
-    width = 5;
-    effects = []
-  }
+let effect_list = [Adder 500; Multiplier 10; Phaser 10; Slower 10]
 
-let enemy_same = 
-  Object.Block (LargeB, {
+let player_obj = {
+  x_pos = 5; 
+  y_pos = 5;
+  velocity = No, 0 ;
+  id = 0;
+  to_kill = false;
+  score = 0;
+  height = 5; 
+  width = 5;
+  effects = effect_list
+}
+
+let player_obj_empty = {
+  x_pos = 5; 
+  y_pos = 5;
+  velocity = No, 0 ;
+  id = 0;
+  to_kill = false;
+  score = 0;
+  height = 5; 
+  width = 5;
+  effects = []
+}
+
+let player = 
+  Object.Player player_obj
+
+let new_effect_list = update_effects effect_list
+
+let enemy_obj = {
+  x_pos = 5; 
+  y_pos = 4;
+  velocity = No, 0 ;
+  id = 0;
+  to_kill = false;
+  score = 0;
+  height = 5; 
+  width = 5;
+  effects = []
+}
+
+let enemy_same_large = 
+  Object.Block (LargeB, enemy_obj)
+
+let enemy_same_small = 
+  Object.Block (SmallB, {
       x_pos = 5; 
       y_pos = 4;
       velocity = No, 0 ;
@@ -80,7 +130,7 @@ let enemy_same =
       to_kill = false;
       score = 0;
       height = 5; 
-      width = 5;
+      width = 2;
       effects = []
     })
 
@@ -123,7 +173,6 @@ let enemy_above =
       effects = []
     })
 
-
 let enemy_left2 = 
   Object.Block (LargeB, {
       x_pos = 0; 
@@ -150,15 +199,91 @@ let enemy_right2 =
       effects = []
     })
 
-let empty_col_row = Generator.generate 10 10 100 1 1
+let good_same = 
+  Object.Block (GoodB (Adder 10), {
+      x_pos = 10; 
+      y_pos = 11;
+      velocity = No, 0 ;
+      id = 0;
+      to_kill = false;
+      score = 0;
+      height = 5; 
+      width = 5;
+      effects = []
+    })
 
-let non_empty_row = Generator.generate 2 4 0 1 1 
+let good_left = 
+  Object.Block (GoodB (Adder 10), {
+      x_pos = 1; 
+      y_pos = 4;
+      velocity = No, 0 ;
+      id = 0;
+      to_kill = false;
+      score = 0;
+      height = 5; 
+      width = 5;
+      effects = []
+    })
 
-let collision_tests = [
+let good_right = 
+  Object.Block (GoodB (Adder 10), {
+      x_pos = 7; 
+      y_pos = 4;
+      velocity = No, 0 ;
+      id = 0;
+      to_kill = false;
+      score = 0;
+      height = 5; 
+      width = 5;
+      effects = []
+    })
 
-  "same loc: collision" >:: (fun _ -> 
+let player_off_screen = 
+  Object.Player {
+    x_pos = 5; 
+    y_pos = -7;
+    velocity = No, 0 ;
+    id = 0;
+    to_kill = false;
+    score = 0;
+    height = 5; 
+    width = 5;
+    effects = []
+  }
+
+let block_off_screen = 
+  Object.Block (GoodB (Adder 10), {
+      x_pos = 7; 
+      y_pos = 4;
+      velocity = No, 0 ;
+      id = 0;
+      to_kill = false;
+      score = 0;
+      height = 5; 
+      width = 5;
+      effects = []
+    })
+
+let () = Object.score_incr player_obj 1 
+
+let () = Object.score_incr player_obj_empty 1
+
+let object_tests = [
+  "get_block: LargeB" >:: (fun _ -> 
       assert_equal 
-        (Some LargeB) (Object.check_collision player enemy_same));
+        (LargeB) (Object.get_block enemy_same_large));
+
+  "get_block: Player" >:: (fun _ -> 
+      assert_raises 
+        (Failure "Not a block") (fun () -> get_block player));   
+
+  "same loc with LargeB: collision" >:: (fun _ -> 
+      assert_equal 
+        (Some LargeB) (Object.check_collision player enemy_same_large));
+
+  "same loc with SmallB: collision" >:: (fun _ -> 
+      assert_equal 
+        (Some SmallB) (Object.check_collision player enemy_same_small));
 
   "enemy to left: collision" >:: (fun _ -> 
       assert_equal  
@@ -167,6 +292,14 @@ let collision_tests = [
   "enemy to right: collision" >:: (fun _ -> 
       assert_equal  
         (Some LargeB) (Object.check_collision player enemy_right));
+
+  "item to left: collision" >:: (fun _ -> 
+      assert_equal  
+        (Some (GoodB (Adder 10))) (Object.check_collision player good_left));
+
+  "item to right: collision" >:: (fun _ -> 
+      assert_equal  
+        (Some (GoodB (Adder 10))) (Object.check_collision player good_right));
 
   "enemy above: no collision" >:: (fun _ -> 
       assert_equal 
@@ -179,7 +312,92 @@ let collision_tests = [
   "enemy to right: no collision" >:: (fun _ -> 
       assert_equal  
         None (Object.check_collision player enemy_right2));
+
+  (* CHECK_ON_SCREEN TESTS BUT AREN'T USED CURRENTLY *)
+  "extract_obj of player" >:: (fun _ -> 
+      assert_equal  
+        player_obj (Object.extract_obj player));
+
+  "extract_obj of block" >:: (fun _ -> 
+      assert_equal  
+        enemy_obj (Object.extract_obj enemy_same_large));
+
+  "has_phaser in complete effect list" >:: (fun _ -> 
+      assert  
+        (Object.has_phaser player_obj));
+
+  "has_phaser in empty effect list" >:: (fun _ -> 
+      assert  
+        (not (Object.has_phaser player_obj_empty)));
+
+  "has_slower in complete effect list" >:: (fun _ -> 
+      assert
+        (Object.has_slower player_obj));
+
+  "has_slower in empty effect list" >:: (fun _ -> 
+      assert  
+        (not (Object.has_phaser player_obj_empty)));
+
+  "has_mult in complete effect list" >:: (fun _ -> 
+      assert
+        (Object.has_mult player_obj));
+
+  "has_mult in empty effect list" >:: (fun _ -> 
+      assert
+        (not (Object.has_mult player_obj_empty)));
+
+  "has_adder in complete effect list" >:: (fun _ -> 
+      assert
+        (Object.has_adder player_obj));
+
+  "has_adder in empty effect list" >:: (fun _ -> 
+      assert
+        (not (Object.has_adder player_obj_empty)));
+
+  "score_incr on player with complete effect list" >:: (fun _ -> 
+      assert_equal
+        (45) (player_obj.score));
+
+  "score_incr on player with empty effect list" >:: (fun _ -> 
+      assert_equal
+        (1) (player_obj_empty.score));
+
+  "effect_time_left on adder in effect list" >:: (fun _ -> 
+      assert_equal
+        (500) (effect_time_left effect_list (Adder 500)));
+
+  "effect_time_left on adder in updated list" >:: (fun _ -> 
+      assert_equal
+        (0) (effect_time_left new_effect_list (Adder 500)));
+
+  "effect_time_left on mult in effect list" >:: (fun _ -> 
+      assert_equal
+        (10) (effect_time_left effect_list (Multiplier 10)));
+
+  "effect_time_left on mult in updated list" >:: (fun _ -> 
+      assert_equal
+        (9) (effect_time_left new_effect_list (Multiplier 10)));
+
+  "effect_time_left on phaser in effect list" >:: (fun _ -> 
+      assert_equal
+        (10) (effect_time_left effect_list (Phaser 10)));
+
+  "effect_time_left on phaser in updated list" >:: (fun _ -> 
+      assert_equal
+        (9) (effect_time_left new_effect_list (Phaser 10)));
+
+  "effect_time_left on slower in effect list" >:: (fun _ -> 
+      assert_equal
+        (10) (effect_time_left effect_list (Slower 10)));
+
+  "effect_time_left on adder in empty list" >:: (fun _ -> 
+      assert_equal
+        (9) (effect_time_left new_effect_list (Slower 10)));
 ]
+
+let empty_col_row = Generator.generate 10 10 100 1 1
+
+let non_empty_row = Generator.generate 2 4 0 1 1 
 
 let generator_tests = [
   "empty row" >:: (fun _ -> 
@@ -191,9 +409,9 @@ let generator_tests = [
 
 let suite =
   "test suite for Crossy Caml"  >::: List.flatten [
-    collision_tests;
-    generator_tests;
     actor_tests;
+    object_tests;
+    generator_tests;
   ]
 
 let _ = run_test_tt_main suite
