@@ -431,7 +431,7 @@ let select () =
 
   auto_synchronize true
 
-let continue (lives : int) : unit = 
+let continue (lives : int) (score : int) = 
   Graphics.set_color died_page_color;
   Graphics.fill_rect 0 0 750 750;
 
@@ -446,10 +446,15 @@ let continue (lives : int) : unit =
 
   set_color text_color;
 
-  let x_pos_lives = 490 in 
-  let y_pos_lives = 252 in 
+  let x_pos_lives = 460 in 
+  let y_pos_lives = 304 in 
   moveto x_pos_lives y_pos_lives;
   draw_string (string_of_int lives);
+
+  let x_pos_score = 390 in 
+  let y_pos_score = 266 in 
+  moveto x_pos_score y_pos_score;
+  draw_string (string_of_int score);
 
   auto_synchronize true
 

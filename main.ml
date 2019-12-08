@@ -115,6 +115,7 @@ let rec display last_update_time fps st high_score =
         else 
           let () = (lives := !lives - 1) in 
           let () = Queue.clear screen in 
+          Draw.continue !lives obj.score ;
           display (Sys.time()) screen_fps Continue high_score
       else (
         (* Check for time based update *)
@@ -244,7 +245,6 @@ let rec display last_update_time fps st high_score =
   ) else 
 
   if (st = Continue) then (
-    Draw.continue !lives;
     let rec wait_for_continue () = 
       if key_pressed () && read_key () = 'f' then 
         display (Sys.time ()) screen_fps Game high_score
