@@ -103,12 +103,17 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     let block_width = 2 * grid_size in
     let blocks_left = total_width / block_width in 
     let pass_left = num_pass - cur_pass in
+    print_endline "Testing Testing Testing";
     if (blocks_left <= 0 || pass_left > blocks_left) 
     then list
     else 
-      let rand = Random.int (x_bound / block_width) in 
-      if (pass_left >= blocks_left || (rand < num_pass && pass_left > 0)) 
+      (* let rand = Random.int (x_bound / block_width) in  *)
+      let () = Random.self_init () in
+      let rand = Random.int (3) in 
+      (* if (pass_left >= blocks_left || (rand < num_pass && pass_left > 0))  *)
+      if (pass_left >= blocks_left || (rand = 0 && pass_left > 0)) 
       then 
+        let () = print_endline ("Generated Generated Item " ^ string_of_bool (pass_left = blocks_left)) in
         let eff = generate_rand_item 10 in
         let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
         gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
@@ -132,5 +137,6 @@ let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int)
     | _ -> Right in
 
   let start_coord = (0, y_bound) in
+  print_string ("Start of row\n");
   let rand_dir = random_dir in
   gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0
