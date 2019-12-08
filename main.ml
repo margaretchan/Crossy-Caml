@@ -53,9 +53,10 @@ let rec display last_update_time fps st high_score =
     let rec wait_for_start () = 
       match wait_next_event [Key_pressed] with 
       | status -> 
-        if read_key () = ' ' 
-        then display (Sys.time ()) screen_fps Game high_score
-        else wait_for_start () in
+        if read_key () = ' ' then 
+          display (Sys.time ()) screen_fps Game high_score
+        else 
+          wait_for_start () in
 
     Draw.start_page ();
     wait_for_start();
@@ -99,25 +100,25 @@ let rec display last_update_time fps st high_score =
 
           (** Get Player Input Direction  *)
           let () = 
-            if (key_pressed ()) 
-            then 
+            if (key_pressed ()) then 
               let key = read_key () in
-              if key = 'a' 
-              then (dir := -1; 
-                    last_player_dir := -1)
-              else (if key = 'd' 
-                    then (dir := 1;
-                          last_player_dir := 1)
-                    else (if key = 'p' 
-                          then 
+              if key = 'a' then 
+                (dir := -1; 
+                 last_player_dir := -1)
+              else (if key = 'd' then 
+                      (dir := 1;
+                       last_player_dir := 1)
+                    else (if key = 'p' then 
                             let () = dir := 0 in 
                             display (Sys.time ()) screen_fps Pause high_score;
-                          else dir := 0 )) in 
+                          else 
+                            dir := 0 )) in 
 
           let obstacles_side =
             if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. side_fps) && 
                not (Object.has_slower (Object.extract_obj player)) then 
-              true else 
+              true 
+            else 
               false in
 
           let obstacles_down = 
@@ -143,16 +144,20 @@ let rec display last_update_time fps st high_score =
           match updated_window with 
           | (p, s, good) -> 
             let last_obj_down_time' = 
-              if obstacles_down 
-              then (Sys.time ()) 
-              else last_obj_down_time in 
+              if obstacles_down then 
+                (Sys.time ()) 
+              else 
+                last_obj_down_time in 
             let last_obj_side_time' = 
-              if obstacles_side 
-              then (Sys.time ()) 
-              else last_obj_side_time in 
+              if obstacles_side then 
+                (Sys.time ()) 
+              else 
+                last_obj_side_time in 
+
             player_ref := p;
             screen_ref := s;
-            loop (Sys.time ()) fps !player_ref !screen_ref good last_obj_down_time' last_obj_side_time' last_player_dir
+            loop (Sys.time ()) fps !player_ref !screen_ref good 
+              last_obj_down_time' last_obj_side_time' last_player_dir
         ) 
         else (
           loop last_update_time fps !player_ref !screen_ref seq_good_rows 
@@ -160,7 +165,8 @@ let rec display last_update_time fps st high_score =
         )
       ) in
 
-    loop last_update_time fps !player_ref !screen_ref 3 (Sys.time ()) (Sys.time ()) last_player_dir
+    loop last_update_time fps !player_ref !screen_ref 3 
+      (Sys.time ()) (Sys.time ()) last_player_dir
 
   ) else 
 
@@ -169,12 +175,14 @@ let rec display last_update_time fps st high_score =
     player_ref := init_player;
     screen_ref := Screen.empty;
     lives := init_lives;
+
     let rec wait_for_reset () = 
       match wait_next_event [Key_pressed] with 
       | status -> 
-        if read_key () = 'r' 
-        then display (Sys.time ()) screen_fps Start high_score
-        else wait_for_reset () in
+        if read_key () = 'r' then 
+          display (Sys.time ()) screen_fps Start high_score
+        else 
+          wait_for_reset () in
 
     wait_for_reset();
   ) else 
