@@ -42,17 +42,29 @@ let playerL_image_name = "camelL.png"
     right *)
 let playerR_image_name = "camelR.png"
 
-(** [small_bad_image_name] is the name of the image file for a 
-    1-wide bad block *)
-let small_bad_image_name = "onebad.png"
+(** [small_badL_image_name] is the name of the image file for a 
+    1-wide bad block facing left *)
+let small_badL_image_name = "onebadL.png"
 
-(** [medium_bad_image_name] is the name of the image file for a 
-    2-wide bad block *)
-let medium_bad_image_name = "twobad.png"
+(** [small_badR_image_name] is the name of the image file for a 
+    1-wide bad block facing right *)
+let small_badR_image_name = "onebadR.png"
 
-(** [large_bad_image_name] is the name of the image file for a 
-    3-wide bad block *)
-let large_bad_image_name = "threebad.png"
+(** [medium_badL_image_name] is the name of the image file for a 
+    2-wide bad block facinig left *)
+let medium_badL_image_name = "twobadL.png"
+
+(** [medium_badR_image_name] is the name of the image file for a 
+    2-wide bad block facinig right *)
+let medium_badR_image_name = "twobadR.png"
+
+(** [large_badL_image_name] is the name of the image file for a 
+    3-wide bad block facing left *)
+let large_badL_image_name = "threebadL.png"
+
+(** [large_badR_image_name] is the name of the image file for a 
+    3-wide bad block facing left *)
+let large_badR_image_name = "threebadR.png"
 
 (** [mult_image_name] is the name of the image file for a 
     multiplier item *)
@@ -166,13 +178,24 @@ let draw_collidable old_player_dir player_dir collide =
       | Nothing -> ()
     )
     else  
+      let dir = fst obj.velocity in
 
       let bad_png = 
         match goodbad_type with 
-        | SmallB -> Png.load small_bad_image_name []
-        | MediumB -> Png.load medium_bad_image_name []
-        | LargeB -> Png.load large_bad_image_name []
-        | GoodB _ -> failwith "these should only be bad blocks!" in 
+        | SmallB -> 
+          if dir = Left then 
+            Png.load small_badL_image_name []
+          else Png.load small_badR_image_name []
+        | MediumB -> 
+          if dir = Left then 
+            Png.load medium_badL_image_name []
+          else Png.load medium_badR_image_name []
+        | LargeB -> 
+          if dir = Left then 
+            Png.load large_badL_image_name []
+          else Png.load large_badR_image_name []
+        | GoodB _ -> 
+          failwith "these should only be bad blocks!" in 
 
       let img = 
         bad_png 
@@ -391,8 +414,8 @@ let continue (lives : int) =
 
   set_color text_color;
 
-  let x_pos_lives = 480 in 
-  let y_pos_lives = 253 in 
+  let x_pos_lives = 490 in 
+  let y_pos_lives = 252 in 
   moveto x_pos_lives y_pos_lives;
   draw_string (string_of_int lives);
 
