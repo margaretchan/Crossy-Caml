@@ -71,21 +71,9 @@ let player_ref = ref init_player
 let rec display last_update_time fps st high_score = 
 
   (** Start State Logic *)
-  if (st = Start) then (
-    let rec wait_for_start () = 
-      match wait_next_event [Key_pressed] with 
-      | status -> 
-        if read_key () = ' ' then 
-          display (Sys.time ()) screen_fps Game high_score
-        else if read_key () = 's' then 
-          display (Sys.time ()) screen_fps Select high_score 
-        else
-          wait_for_start () in
-
-    Draw.start_page ();
-    wait_for_start();
-
-  ) else
+  if (st = Start) then 
+    start_state_logic high_score
+  else
 
     (** Game State Logic *)
   if (st = Game) then (
@@ -218,66 +206,99 @@ let rec display last_update_time fps st high_score =
   ) else 
 
     (** Lose State Logic *)
-  if (st = Lose) then (
-    player_ref := init_player;
-    screen_ref := Screen.empty;
-    lives := init_lives;
+  if (st = Lose) then 
+    lose_state_logic high_score
+  else 
 
-    let rec wait_for_reset () = 
-      match wait_next_event [Key_pressed] with 
-      | status -> 
-        if read_key () = 'r' then 
-          display (Sys.time ()) screen_fps Start high_score
-        else 
-          wait_for_reset () in
+  if (st = Pause) then 
+    pause_state_logic high_score
+  else 
 
-    wait_for_reset();
-  ) else 
+  if (st = Continue) then 
+    continue_state_logic high_score
+  else 
 
-  if (st = Pause) then (
-    Draw.pause ();
-    let rec wait_for_unpause () = 
-      if key_pressed () && read_key () = 'p' then 
+  if (st = Select) then 
+    select_state_logic high_score
+
+and start_state_logic high_score = 
+  let rec wait_for_start () = 
+    match wait_next_event [Key_pressed] with 
+    | status -> 
+      if read_key () = ' ' then 
         display (Sys.time ()) screen_fps Game high_score
-      else 
-        wait_for_unpause () in
-    wait_for_unpause ();
-  ) else 
+      else if read_key () = 's' then 
+        display (Sys.time ()) screen_fps Select high_score 
+      else
+        wait_for_start () in
 
-  if (st = Continue) then (
-    let rec wait_for_continue () = 
-      if key_pressed () && read_key () = 'f' then 
-        display (Sys.time ()) screen_fps Game high_score
-      else 
-        wait_for_continue () in
-    wait_for_continue ();
-  ) else 
+  Draw.start_page ();
+  wait_for_start();
 
-  if (st = Select) then (
-    Draw.select ();
-    let rec wait_for_select () = 
-      if key_pressed () then 
-        match read_key () with 
-        | 'a' -> 
-          diff := Easy;
-          down_fps := easy_down_fps;
-          side_fps := easy_side_fps;
-          display (Sys.time ()) screen_fps Start high_score
-        | 'b' -> 
-          diff := Normal;
-          down_fps := normal_down_fps;
-          side_fps := normal_side_fps;
-          display (Sys.time ()) screen_fps Start high_score
-        | 'c' -> 
-          diff := Hard;
-          down_fps := hard_down_fps;
-          side_fps := hard_side_fps;
-          display (Sys.time ()) screen_fps Start high_score
-        | _ -> wait_for_select () 
+and assign_easy () = 
+  diff := Easy;
+  down_fps := easy_down_fps;
+  side_fps := easy_side_fps;
+
+and assign_normal () = 
+  diff := Normal;
+  down_fps := normal_down_fps;
+  side_fps := normal_side_fps;
+
+and assign_hard () = 
+  diff := Hard;
+  down_fps := hard_down_fps;
+  side_fps := hard_side_fps;
+
+and select_state_logic high_score = 
+  Draw.select ();
+  let rec wait_for_select () = 
+    if key_pressed () then 
+      match read_key () with 
+      | 'a' -> assign_easy ();
+        display (Sys.time ()) screen_fps Start high_score
+      | 'b' -> assign_normal ();
+        display (Sys.time ()) screen_fps Start high_score
+      | 'c' -> assign_hard ();
+        display (Sys.time ()) screen_fps Start high_score
+      | _ -> wait_for_select () 
+    else 
+      wait_for_select () in
+  wait_for_select ()
+
+and continue_state_logic high_score = 
+  let rec wait_for_continue () = 
+    if key_pressed () && read_key () = 'f' then 
+      display (Sys.time ()) screen_fps Game high_score
+    else 
+      wait_for_continue () in
+  wait_for_continue ()
+
+and pause_state_logic high_score = 
+  Draw.pause ();
+  let rec wait_for_unpause () = 
+    if key_pressed () && read_key () = 'p' then 
+      display (Sys.time ()) screen_fps Game high_score
+    else 
+      wait_for_unpause () in
+  wait_for_unpause ()
+
+and assign_lose () = 
+  player_ref := init_player;
+  screen_ref := Screen.empty;
+  lives := init_lives;
+
+and lose_state_logic high_score = 
+  assign_lose ();
+  let rec wait_for_reset () = 
+    match wait_next_event [Key_pressed] with 
+    | status -> 
+      if read_key () = 'r' then 
+        display (Sys.time ()) screen_fps Start high_score
       else 
-        wait_for_select () in
-    wait_for_select ();
-  )
+        wait_for_reset () in
+  wait_for_reset()
+
 
 (** Initializes game *)
 let () =
