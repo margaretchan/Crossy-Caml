@@ -1,6 +1,7 @@
 open OUnit2 
 open Object
 open Actor
+open Screen
 
 let add = Adder 500
 let mult = Multiplier 10
@@ -449,13 +450,53 @@ let generator_tests = [
   "empty row" >:: (fun _ -> 
       assert_equal 
         [] empty_col_row);
+
   "non-empty row" >:: (fun _ ->
       assert 
         (non_empty_row <> []));
-  (* Test length of the rows *)
+
   "non-empty row length" >:: (fun _ ->
       assert_equal 
         1 (List.length non_empty_row));
+]
+
+let screen2 = Screen.empty 
+
+let update_screen2 = Screen.update screen2 4 4 0 1 1 true
+
+let update_screen2 = Screen.update screen2 4 4 1 1 1 true
+
+let update_screen2= Screen.update screen2 4 4 100 1 1 true
+
+let update_screen2= Screen.update screen2 4 4 100 1 1 true
+
+let bottom_row = Queue.peek screen2
+
+let rec block_checker l = 
+  match l with 
+  | [] -> 0
+  | h :: t -> 
+    let obj = extract_obj h in
+    print_int(obj.width);
+    print_endline("");
+    1 + block_checker t
+
+let screen_tests = [
+  "Size of twice updated screen" >:: (fun _ ->
+      assert_equal 
+        1 (Queue.length screen2));
+
+  "Size of updated screen of passable row" >:: (fun _ ->
+      assert_equal
+        1 (Queue.length screen2));
+
+  "Size of first row of objects" >:: (fun _ ->
+      assert
+        (List.length bottom_row > 0)); 
+
+  "Check random generation" >:: (fun _ ->
+      assert
+        (block_checker bottom_row > 0)); 
 ]
 
 let suite =
@@ -463,6 +504,7 @@ let suite =
     actor_tests;
     object_tests;
     generator_tests;
+    screen_tests;
   ]
 
 let _ = run_test_tt_main suite
