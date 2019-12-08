@@ -28,7 +28,7 @@ val start_page : unit -> unit
 val pause : unit -> unit
 
 (** [pause ()] draws the continue screen of the game *)
-val continue : int -> unit
+val continue : int -> int -> unit
 
 (** [game_over ()] erases the current game window and draws the 
     game over screen *)
