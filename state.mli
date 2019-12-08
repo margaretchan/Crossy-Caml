@@ -4,3 +4,4 @@ type state =
   | Lose 
   | Pause 
   | Continue
+  | Select

@@ -9,11 +9,23 @@ let () = Draw.init_window ()
 (** [screen_fps] is the fps of the game screen *)
 let screen_fps = 60.0
 
+let easy_down_fps = 1.0 
+
+let easy_side_fps = 1.0
+
+let normal_down_fps = 2.0 
+
+let normal_side_fps = 4.0
+
+let hard_down_fps = 3.0 
+
+let hard_side_fps = 10.0
+
 (** [down_fps] is the fps of the oject down movement *)
-let down_fps = 2.0
+let down_fps = ref hard_down_fps
 
 (** [side_fps] is the fps of the oject side movement *)
-let side_fps = 10.0
+let side_fps = ref hard_side_fps
 
 let screen_ref = ref Screen.empty
 
@@ -55,7 +67,9 @@ let rec display last_update_time fps st high_score =
       | status -> 
         if read_key () = ' ' then 
           display (Sys.time ()) screen_fps Game high_score
-        else 
+        else if read_key () = 's' then 
+          display (Sys.time ()) screen_fps Select high_score 
+        else
           wait_for_start () in
 
     Draw.start_page ();
@@ -115,14 +129,14 @@ let rec display last_update_time fps st high_score =
                             dir := 0 )) in 
 
           let obstacles_side =
-            if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. side_fps) && 
+            if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. !side_fps) && 
                not (Object.has_slower (Object.extract_obj player)) then 
               true 
             else 
               false in
 
           let obstacles_down = 
-            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. down_fps)) then          
+            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. !down_fps)) then          
               (* Update Score *)
               let obj = Object.extract_obj player in 
               Object.score_incr obj 1; 
@@ -205,7 +219,32 @@ let rec display last_update_time fps st high_score =
       else 
         wait_for_continue () in
     wait_for_continue ();
+  ) else 
+
+  if (st = Select) then (
+    Draw.select ();
+    let rec wait_for_select () = 
+      if key_pressed () then 
+        match read_key () with 
+        | 'a' -> 
+          down_fps := easy_down_fps;
+          side_fps := easy_side_fps;
+          display (Sys.time ()) screen_fps Start high_score
+        | 'b' -> 
+          down_fps := normal_down_fps;
+          side_fps := normal_side_fps;
+          display (Sys.time ()) screen_fps Start high_score
+        | 'c' -> 
+          down_fps := hard_down_fps;
+          side_fps := hard_side_fps;
+          display (Sys.time ()) screen_fps Start high_score
+        | _ -> wait_for_select () 
+      else 
+        wait_for_select () in
+    wait_for_select ();
   )
+
+
 
 (** Initializes game *)
 let () =
