@@ -2,7 +2,7 @@
 
 # Crossy Caml
 Crossy Caml is a variation of the "Crossy Road" game built entirely in OCaml.
-It was built as the final project for CS 3110 in Fall 2019.
+It was built as the final project for Cornell's CS 3110 in Fall 2019.
 
 ## Getting Started
 Please reference the INSTALL.md document for installation directions.
@@ -25,14 +25,15 @@ make play
 ```
 
 Crossy Caml is played by moving left and right using the 'a' and 'd' keys.
-Your camel will move side to side to dodge the enimies (scorpians, snakes, worms)
-while also attempting to collect items. These items include:
+Your camel will move side to side to dodge the enimies (pokemon)
+while also attempting to collect items and maximize score. These items include:
 
 - Money Bag: multiplies your score
 - Coin: adds to your score
 - Snowflake: freezes the game
 - Ghost: allows the player to phase through enimies
 - Heart: gives the player an extra life
+- Lighning Bolt: speeds up
 
 ## Built With
 Libraries:

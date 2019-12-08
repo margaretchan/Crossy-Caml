@@ -140,11 +140,8 @@ let rec display last_update_time fps st high_score =
 
 
           let obstacles_side =
-            if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. !side_fps) && 
-               not (Object.has_slower (Object.extract_obj player)) then 
-              true 
-            else 
-              false in
+            ((Sys.time ()) -. last_obj_side_time) > (1.0 /. !side_fps) && 
+            not (Object.has_slower (Object.extract_obj player))  in
 
           let obstacles_down = 
             if ((Sys.time ()) -. last_obj_down_time > (1.0 /. !down_fps)) then 

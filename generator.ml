@@ -15,9 +15,9 @@ let counter = ref 0
       probability. *)
 let which_effect () : Actor.effect = 
   let () = generate_seed () in
-  let item = Random.int 1 in
+  let item = Random.int 8 in
   match item with
-  | 0 -> Clear 0 
+  | 0 -> Adder 0 
   | 1 -> Multiplier 10
   | 2 -> Phaser 10
   | 3 -> Slower 10

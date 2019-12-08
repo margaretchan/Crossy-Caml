@@ -91,7 +91,7 @@ let phaser_image_name = "phaser.png"
 
 (** [clear_image_name] is the name of the image file for a 
     clear item *)
-let clear_image_name = "life.png"
+let clear_image_name = "clear.png"
 
 (** [speeder_image_name] is the name of the image file for a 
     speeder item *)
@@ -99,7 +99,7 @@ let speeder_image_name = "speeder.png"
 
 (** [subtracter_image_name] is the name of the image file for a 
     subtracter item *)
-let subtracter_image_name = "speeder.png"
+let subtracter_image_name = "subtractor.png"
 
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 255 255 255
@@ -233,7 +233,7 @@ let draw_collidable old_player_dir player_dir collide =
 
     Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
-(** [moved_player dir step x_bound player] is [player] but 
+(** [moves_player dir step x_bound player] is [player] but 
     moved one [step] in [dir] on a screen with x limit [x_bound]
     Generalize to move_collidable later *)
 let moves_player (dir : int) (step : int) (x_bound : int) (player : collidable) 
@@ -242,8 +242,10 @@ let moves_player (dir : int) (step : int) (x_bound : int) (player : collidable)
   (** Loop player position around screen *)
   let pos_after_step = (obj.x_pos) + (dir * step) in
   let new_x_pos = 
-    if pos_after_step > x_bound then 0 else
-    if (pos_after_step + step) < 0 then (x_bound - step) 
+    if pos_after_step > x_bound then 
+      0 
+    else if (pos_after_step + step) < 0 then 
+      (x_bound - step) 
     else pos_after_step in
   obj.x_pos <- new_x_pos
 
@@ -429,7 +431,7 @@ let select () =
 
   auto_synchronize true
 
-let continue (lives : int) = 
+let continue (lives : int) : unit = 
   Graphics.set_color died_page_color;
   Graphics.fill_rect 0 0 750 750;
 

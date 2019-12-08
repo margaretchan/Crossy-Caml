@@ -85,14 +85,19 @@ module Screen = struct
       | [] -> ()
       | b :: t -> begin
           match b with 
-          | Block (_, obj) -> 
+          | Block (badtype, obj) -> 
             let move_dir = 
               let dir = fst obj.velocity in 
               if dir = Left 
               then -1 
               else (if dir = Right 
                     then 1 else 0) in
-            let side_step_size = obj.width / 5 in
+            let side_step_size = 
+              if badtype = SmallB then 
+                obj.width / 5 
+              else if badtype = MediumB then 
+                obj.width / 10 
+              else obj.width / 15 in
             let normal = obj.x_pos + (move_dir * side_step_size) in
             let new_loc = loop_around_helper x_bound normal in
             obj.x_pos <- new_loc; 
