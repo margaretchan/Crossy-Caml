@@ -16,6 +16,13 @@ type collidable =
   | Player of obj
   | Block of block_type * obj
 
+(** [generate_seed ()] is a unit. It initializes the random module with a seed
+    that's dependent on the current time.  *)
+let generate_seed () : unit = 
+  let flt = Unix.time () in
+  let seed_int = int_of_float flt in
+  Random.init seed_int
+
 let get_block c = 
   match c with 
   | Block (b,_) -> b
@@ -65,6 +72,20 @@ let extract_obj (c : collidable) =
   | Player obj -> obj 
   | Block (_, obj) -> obj
 
+let mystery_select () : Actor.effect = 
+  generate_seed ();
+  let rand_int = Random.int 8 in
+  match rand_int with 
+  | 0 -> Adder 0 
+  | 1 -> Multiplier 10
+  | 2 -> Phaser 10
+  | 3 -> Slower 10
+  | 4 -> Life 0
+  | 5 -> Clear 0
+  | 6 -> Speeder 20
+  | 7 -> Subtracter 0
+  | _ -> failwith "Random Int should not be > 7"
+
 let update_effects (effs : effect list) : effect list =
 
   (* change adder helper to go to 0, maybe should make it go to Nothing *)
@@ -77,6 +98,7 @@ let update_effects (effs : effect list) : effect list =
     | Speeder i when i > 0 -> Speeder (i - 1)
     | Clear i when i > 0 -> Clear 0
     | Subtracter i when i > 0 -> Subtracter 0
+    | Mystery i -> mystery_select ()
     | _ -> Nothing in
   List.map eff_helper effs |> List.filter (fun eff -> eff != Nothing)
 
@@ -127,6 +149,10 @@ let is_subtracter = function
 (** TODO: DOC *)
 let is_speeder = function 
   | Speeder _ -> true 
+  | _ -> false
+
+let is_mystery = function 
+  | Mystery _ -> true 
   | _ -> false
 
 let has_clear (player : obj) : bool = 

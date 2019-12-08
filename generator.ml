@@ -1,12 +1,6 @@
 open Actor
 open Object
 
-(** [generate_seed ()] is a unit. It initializes the random module with a seed
-    that's dependent on the current time.  *)
-let generate_seed () : unit = 
-  let flt = Unix.time () in
-  let seed_int = int_of_float flt in
-  Random.init seed_int
 
 (** [counter] is the number of objects generated *)
 let counter = ref 0
@@ -15,7 +9,7 @@ let counter = ref 0
       probability. *)
 let which_effect () : Actor.effect = 
   let () = generate_seed () in
-  let item = Random.int 8 in
+  let item = Random.int 9 in
   match item with
   | 0 -> Adder 0 
   | 1 -> Multiplier 10
@@ -25,6 +19,7 @@ let which_effect () : Actor.effect =
   | 5 -> Clear 0
   | 6 -> Speeder 20
   | 7 -> Subtracter 0
+  | 8 -> Mystery 0
   | _ -> failwith "Should never happen"
 
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
@@ -103,7 +98,7 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     let block_width = 2 * grid_size in
     let blocks_left = total_width / block_width in 
     let pass_left = num_pass - cur_pass in
-    print_endline "Testing Testing Testing";
+    (* print_endline "Testing Testing Testing"; *)
     if (blocks_left <= 0 || pass_left > blocks_left) 
     then list
     else 
@@ -113,7 +108,7 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
       (* if (pass_left >= blocks_left || (rand < num_pass && pass_left > 0))  *)
       if (pass_left >= blocks_left || (rand = 0 && pass_left > 0)) 
       then 
-        let () = print_endline ("Generated Generated Item " ^ string_of_bool (pass_left = blocks_left)) in
+        (* let () = print_endline ("Generated Generated Item " ^ string_of_bool (pass_left = blocks_left)) in *)
         let eff = generate_rand_item 10 in
         let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
         gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
@@ -137,6 +132,6 @@ let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int)
     | _ -> Right in
 
   let start_coord = (0, y_bound) in
-  print_string ("Start of row\n");
+  (* print_string ("Start of row\n"); *)
   let rand_dir = random_dir in
   gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0

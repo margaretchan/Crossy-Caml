@@ -66,6 +66,6 @@ val has_life : obj -> bool
 (** Returns the maximum time of all effects of type specified *)
 val effect_time_left : Actor.effect list -> Actor.effect -> int 
 
-
-
-
+(** [generate_seed ()] is a unit. It initializes the random module with a seed
+    that's dependent on the current time.  *)
+val generate_seed : unit -> unit 
