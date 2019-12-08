@@ -12,6 +12,9 @@ type effect =
   | Multiplier of int
   | Phaser of int
   | Slower of int
+  | Clear of int 
+  | Speeder of int 
+  | Subtracter of int 
   | Nothing
 
 type block_type = 

@@ -74,6 +74,18 @@ let life_image_name = "life.png"
     phaser item *)
 let phaser_image_name = "phaser.png"
 
+(** [clear_image_name] is the name of the image file for a 
+    clear item *)
+let clear_image_name = "life.png"
+
+(** [speeder_image_name] is the name of the image file for a 
+    speeder item *)
+let speeder_image_name = "life.png"
+
+(** [subtracter_image_name] is the name of the image file for a 
+    subtracter item *)
+let subtracter_image_name = "life.png"
+
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 255 255 255
 
@@ -159,6 +171,30 @@ let draw_collidable old_player_dir player_dir collide =
         let life_png = Png.load life_image_name [] in
         let img = 
           life_png 
+          |> apply_transparency 
+          |> Graphics.make_image in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
+      | Clear _ ->       
+        let clear_png = Png.load clear_image_name [] in
+        let img = 
+          clear_png 
+          |> apply_transparency 
+          |> Graphics.make_image in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
+      | Speeder _ -> 
+        let speeder_png = Png.load speeder_image_name [] in
+        let img = 
+          speeder_png 
+          |> apply_transparency 
+          |> Graphics.make_image in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
+      | Subtracter _ -> 
+        let subtracter_png = Png.load subtracter_image_name [] in
+        let img = 
+          subtracter_png 
           |> apply_transparency 
           |> Graphics.make_image in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
@@ -332,6 +368,12 @@ let update_window last_player_dir player_dir (player : collidable)
   moveto 600 40; 
   draw_string ("Slower: " ^ 
                (string_of_int (effect_time_left p_obj.effects (Slower 0))));
+
+  moveto 600 30; 
+  draw_string ("Speeder: " ^ 
+               (string_of_int (effect_time_left p_obj.effects (Speeder 0))));
+
+
 
   auto_synchronize true;
 

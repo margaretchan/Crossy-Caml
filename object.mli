@@ -51,6 +51,15 @@ val has_mult : obj -> bool
 (** is true iff the collidable's effect list contains an adder *)
 val has_adder : obj -> bool
 
+(** is true iff the collidable's effect list contains an clear *)
+val has_clear : obj -> bool
+
+(** is true iff the collidable's effect list contains an speeder *)
+val has_speeder : obj -> bool
+
+(** is true iff the collidable's effect list contains an subtracter *)
+val has_subtracter : obj -> bool
+
 (** is true iff the collidable's effect list contains a life *)
 val has_life : obj -> bool
 

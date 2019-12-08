@@ -6,3 +6,8 @@ type state =
   | Continue
   | Select
 
+type difficulty = 
+  | Easy 
+  | Normal 
+  | Hard
+

@@ -21,11 +21,21 @@ let hard_down_fps = 3.0
 
 let hard_side_fps = 10.0
 
-(** [down_fps] is the fps of the oject down movement *)
-let down_fps = ref hard_down_fps
+let speeder_down_fps = 4.0
 
-(** [side_fps] is the fps of the oject side movement *)
-let side_fps = ref hard_side_fps
+let speeder_side_fps = 15.0
+
+(** [down_fps] is the fps of the oject down movement 
+    Initializes at [normal_side_fps] *)
+let down_fps = ref normal_down_fps
+
+(** [side_fps] is the fps of the oject side movement. 
+    Initializes at [normal_side_fps] *)
+let side_fps = ref normal_side_fps
+
+(** [diff] is hte difficulty of the Game.
+    Initializes at [Normal] *)
+let diff = ref Normal
 
 let screen_ref = ref Screen.empty
 
@@ -128,6 +138,7 @@ let rec display last_update_time fps st high_score =
                           else 
                             dir := 0 )) in 
 
+
           let obstacles_side =
             if ((Sys.time ()) -. last_obj_side_time) > (1.0 /. !side_fps) && 
                not (Object.has_slower (Object.extract_obj player)) then 
@@ -136,14 +147,38 @@ let rec display last_update_time fps st high_score =
               false in
 
           let obstacles_down = 
-            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. !down_fps)) then          
+            if ((Sys.time ()) -. last_obj_down_time > (1.0 /. !down_fps)) then 
+
               (* Update Score *)
               let obj = Object.extract_obj player in 
               Object.score_incr obj 1; 
 
-              (** Update Lives *)
+              (** Do Item Effects *)
               if (Object.has_life obj) then 
-                lives := !lives + 1;
+                lives := !lives + 1 
+              else ();
+
+              if (Object.has_clear obj) then 
+                Queue.clear screen
+              else ();
+
+              if (Object.has_speeder obj) then (
+                down_fps := speeder_down_fps; 
+                side_fps := speeder_side_fps 
+              ) else ();
+
+              if (not (Object.has_speeder obj)) then 
+                match !diff with 
+                | Easy ->
+                  down_fps := easy_down_fps;
+                  side_fps := easy_side_fps;
+                | Normal -> 
+                  down_fps := normal_down_fps;
+                  side_fps := normal_side_fps;
+                | Hard -> 
+                  down_fps := hard_down_fps;
+                  side_fps := hard_side_fps;
+              else ();
 
               (* Update Effects List *)
               let obj = Object.extract_obj player in 
@@ -227,14 +262,17 @@ let rec display last_update_time fps st high_score =
       if key_pressed () then 
         match read_key () with 
         | 'a' -> 
+          diff := Easy;
           down_fps := easy_down_fps;
           side_fps := easy_side_fps;
           display (Sys.time ()) screen_fps Start high_score
         | 'b' -> 
+          diff := Normal;
           down_fps := normal_down_fps;
           side_fps := normal_side_fps;
           display (Sys.time ()) screen_fps Start high_score
         | 'c' -> 
+          diff := Hard;
           down_fps := hard_down_fps;
           side_fps := hard_side_fps;
           display (Sys.time ()) screen_fps Start high_score
@@ -243,8 +281,6 @@ let rec display last_update_time fps st high_score =
         wait_for_select () in
     wait_for_select ();
   )
-
-
 
 (** Initializes game *)
 let () =

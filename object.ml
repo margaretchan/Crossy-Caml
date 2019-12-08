@@ -69,12 +69,15 @@ let update_effects (effs : effect list) : effect list =
 
   (* change adder helper to go to 0, maybe should make it go to Nothing *)
   let eff_helper = function 
-    | Adder i when i > 0 -> Nothing
+    | Life i when i > 0 -> Life 0
+    | Adder i when i > 0 -> Adder 0
     | Multiplier i when i > 0 -> Multiplier (i - 1)
     | Phaser i when i > 0 -> Phaser (i - 1)
     | Slower i when i > 0 -> Slower (i - 1)
-    | _ -> Nothing 
-  in
+    | Speeder i when i > 0 -> Speeder (i - 1)
+    | Clear i when i > 0 -> Clear 0
+    | Subtracter i when i > 0 -> Subtracter 0
+    | _ -> Nothing in
   List.map eff_helper effs |> List.filter (fun eff -> eff != Nothing)
 
 (** TODO: DOC *)
@@ -111,6 +114,30 @@ let is_life = function
   | Life _ -> true 
   | _ -> false
 
+(** TODO: DOC *)
+let is_clear = function 
+  | Clear _ -> true 
+  | _ -> false 
+
+(** TODO: DOC *)
+let is_subtracter = function 
+  | Subtracter _ -> true 
+  | _ -> false
+
+(** TODO: DOC *)
+let is_speeder = function 
+  | Speeder _ -> true 
+  | _ -> false
+
+let has_clear (player : obj) : bool = 
+  List.exists is_clear player.effects
+
+let has_subtracter (player : obj) : bool = 
+  List.exists is_subtracter player.effects
+
+let has_speeder (player : obj) : bool = 
+  List.exists is_speeder player.effects
+
 let has_adder (player : obj) : bool = 
   List.exists is_add player.effects
 
@@ -119,6 +146,7 @@ let has_life (player: obj) : bool =
 
 let score_incr p s = 
   if has_adder p then p.score <- p.score + 40;
+  if has_subtracter p then p.score <- p.score - 40;
   if has_mult p then 
     p.score <- p.score + 5*s
   else
@@ -132,6 +160,9 @@ let effect_time_left (effs : effect list) (e : effect) : int =
     | Multiplier i when is_mult e && i > acc -> i 
     | Phaser i when is_phaser e && i > acc -> i 
     | Slower i when is_slower e && i > acc -> i
+    | Clear i when is_clear e && i > acc -> i
+    | Speeder i when is_speeder e && i > acc -> i
+    | Subtracter i when is_subtracter e && i > acc -> i
     | _ -> acc in 
   List.fold_left (effect_time_helper) 0 (effs)
 

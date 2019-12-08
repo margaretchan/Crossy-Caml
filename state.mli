@@ -5,3 +5,8 @@ type state =
   | Pause 
   | Continue
   | Select
+
+type difficulty = 
+  | Easy 
+  | Normal
+  | Hard
