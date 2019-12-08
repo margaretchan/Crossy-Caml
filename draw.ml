@@ -15,6 +15,9 @@ let start_page_color = rgb 105 206 236
 (** [title_image_name] is the name of the image file for the title screen *)
 let title_image_name = "title.png"
 
+(** [select_image_name] is the name of the image file for the select screen *)
+let select_image_name = "select.png"
+
 (** [gameover_page_color] is the background color of the game over screen *)
 let gameover_page_color = rgb 47 0 31
 
@@ -92,11 +95,11 @@ let clear_image_name = "life.png"
 
 (** [speeder_image_name] is the name of the image file for a 
     speeder item *)
-let speeder_image_name = "life.png"
+let speeder_image_name = "speeder.png"
 
 (** [subtracter_image_name] is the name of the image file for a 
     subtracter item *)
-let subtracter_image_name = "life.png"
+let subtracter_image_name = "speeder.png"
 
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 255 255 255
@@ -138,6 +141,12 @@ let apply_transparency = function
             else rgb r g b))
   | _ -> failwith "impossible - always PNG with RGBA"
 
+(** [get_image png] is the Graphics library image from the [png] *)
+let get_image png = 
+  png 
+  |> apply_transparency
+  |> Graphics.make_image
+
 (** [draw_collidable old_player_dir player_dir collide] draws the collidable 
     object [collide] on the screen as its corresponding png image.
     The color of the rectangle is dependant whether [collide] is a 
@@ -149,66 +158,42 @@ let draw_collidable old_player_dir player_dir collide =
       match get_effect goodbad_type with 
       | Adder _ ->       
         let adder_png = Png.load adder_image_name [] in
-        let img = 
-          adder_png 
-          |> apply_transparency 
-          |> Graphics.make_image in
+        let img = get_image adder_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Multiplier _ -> 
         let mult_png = Png.load mult_image_name [] in
-        let img = 
-          mult_png 
-          |> apply_transparency 
-          |> Graphics.make_image in
+        let img = get_image mult_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Phaser _ -> 
         let phaser_png = Png.load phaser_image_name [] in
-        let img = 
-          phaser_png 
-          |> apply_transparency 
-          |> Graphics.make_image in
+        let img = get_image phaser_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Slower _ -> 
         let freezer_png = Png.load freezer_image_name [] in
-        let img = 
-          freezer_png 
-          |> apply_transparency 
-          |> Graphics.make_image in
+        let img = get_image freezer_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Life _ -> 
         let life_png = Png.load life_image_name [] in
-        let img = 
-          life_png 
-          |> apply_transparency 
-          |> Graphics.make_image in
+        let img = get_image life_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Clear _ ->       
         let clear_png = Png.load clear_image_name [] in
-        let img = 
-          clear_png 
-          |> apply_transparency 
-          |> Graphics.make_image in
+        let img = get_image clear_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Speeder _ -> 
         let speeder_png = Png.load speeder_image_name [] in
-        let img = 
-          speeder_png 
-          |> apply_transparency 
-          |> Graphics.make_image in
+        let img = get_image speeder_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Subtracter _ -> 
         let subtracter_png = Png.load subtracter_image_name [] in
-        let img = 
-          subtracter_png 
-          |> apply_transparency 
-          |> Graphics.make_image in
+        let img = get_image subtracter_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Nothing -> ()
@@ -233,10 +218,8 @@ let draw_collidable old_player_dir player_dir collide =
         | GoodB _ -> 
           failwith "these should only be bad blocks!" in 
 
-      let img = 
-        bad_png 
-        |> apply_transparency 
-        |> Graphics.make_image in
+      let img = get_image bad_png in
+
       Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
   | Player obj -> 
@@ -246,10 +229,8 @@ let draw_collidable old_player_dir player_dir collide =
       then Png.load playerL_image_name []
       else Png.load playerR_image_name [] in
 
-    let img = 
-      player_png 
-      |> apply_transparency 
-      |> Graphics.make_image in
+    let img = get_image player_png in
+
     Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
 (** [moved_player dir step x_bound player] is [player] but 
@@ -412,10 +393,8 @@ let start_page () =
   clear_graph ();
 
   let title_png = Png.load title_image_name [] in
-  let img = 
-    title_png 
-    |> apply_transparency 
-    |> Graphics.make_image in
+  let img = get_image title_png in
+
   Graphics.draw_image img 0 0;
 
   auto_synchronize true
@@ -429,10 +408,8 @@ let pause () =
   clear_graph ();
 
   let pause_png = Png.load pause_image_name [] in
-  let img = 
-    pause_png 
-    |> apply_transparency 
-    |> Graphics.make_image in
+  let img = get_image pause_png in
+
   Graphics.draw_image img 0 0;
 
   auto_synchronize true
@@ -445,11 +422,9 @@ let select () =
 
   clear_graph ();
 
-  let pause_png = Png.load pause_image_name [] in
-  let img = 
-    pause_png 
-    |> apply_transparency 
-    |> Graphics.make_image in
+  let select_png = Png.load select_image_name [] in
+  let img = get_image select_png in
+
   Graphics.draw_image img 0 0;
 
   auto_synchronize true
@@ -463,10 +438,8 @@ let continue (lives : int) =
   clear_graph ();
 
   let died_png = Png.load died_image_name [] in
-  let img = 
-    died_png 
-    |> apply_transparency 
-    |> Graphics.make_image in
+  let img = get_image died_png in
+
   Graphics.draw_image img 0 0;
 
   set_color text_color;
@@ -487,10 +460,8 @@ let game_over (score : int) (high_score : int) : unit =
   clear_graph ();
 
   let gameover_png = Png.load gameover_image_name [] in
-  let img = 
-    gameover_png 
-    |> apply_transparency 
-    |> Graphics.make_image in
+  let img = get_image gameover_png in
+
   Graphics.draw_image img 0 0;
 
   set_color text_color;
