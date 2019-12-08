@@ -4,3 +4,9 @@ type state =
   | Lose 
   | Pause 
   | Continue
+  | Select
+
+type difficulty = 
+  | Easy 
+  | Normal
+  | Hard

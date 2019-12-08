@@ -34,3 +34,6 @@ val continue : int -> unit
     game over screen *)
 val game_over : int -> int -> unit 
 
+(** [select ()] draws the select screen of the game *)
+val select : unit -> unit 
+

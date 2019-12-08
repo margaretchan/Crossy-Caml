@@ -15,13 +15,16 @@ let counter = ref 0
       probability. *)
 let which_effect () : Actor.effect = 
   let () = generate_seed () in
-  let item = Random.int 5 in
+  let item = Random.int 1 in
   match item with
-  | 0 -> Adder 0
+  | 0 -> Clear 0 
   | 1 -> Multiplier 10
   | 2 -> Phaser 10
   | 3 -> Slower 10
   | 4 -> Life 0
+  | 5 -> Clear 0
+  | 6 -> Speeder 20
+  | 7 -> Subtracter 0
   | _ -> failwith "Should never happen"
 
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
@@ -29,9 +32,10 @@ let which_effect () : Actor.effect =
 let generate_rand_item i : Actor.effect = 
   let () = generate_seed () in
   let chance_of_item = Random.int 100 in
-  if chance_of_item < i
-  then which_effect ()
-  else Nothing
+  if chance_of_item < i then 
+    which_effect ()
+  else 
+    Nothing
 
 (** [generate_rand_blk_type b_left p_left] is a tuple of 
     (Actor.block_type * block_length) with the block type chosen at random 
