@@ -3,10 +3,10 @@ open Object
 open Generator
 open State
 
-let extract_obj (c : collidable) = 
-  match c with 
-  | Player obj -> obj 
-  | Block (_, obj) -> obj
+(* let extract_obj (c : collidable) = 
+   match c with 
+   | Player obj -> obj 
+   | Block (_, obj) -> obj *)
 
 module Screen = struct
 
