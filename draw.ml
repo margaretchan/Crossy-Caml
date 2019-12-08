@@ -101,6 +101,10 @@ let speeder_image_name = "speeder.png"
     subtracter item *)
 let subtracter_image_name = "subtractor.png"
 
+(** [mystery_image_name] is the name of the image file for a 
+    mystery item *)
+let mystery_image_name = "mystery.png"
+
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 255 255 255
 
@@ -194,6 +198,11 @@ let draw_collidable old_player_dir player_dir collide =
       | Subtracter _ -> 
         let subtracter_png = Png.load subtracter_image_name [] in
         let img = get_image subtracter_png in
+        Graphics.draw_image img (obj.x_pos) (obj.y_pos)
+
+      | Mystery _ ->  
+        let mystery_png = Png.load mystery_image_name [] in
+        let img = get_image mystery_png in
         Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
       | Nothing -> ()

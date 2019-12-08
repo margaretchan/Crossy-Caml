@@ -1,12 +1,6 @@
 open Actor
 open Object
 
-(** [generate_seed ()] is a unit. It initializes the random module with a seed
-    that's dependent on the current time.  *)
-let generate_seed () : unit = 
-  let flt = Unix.time () in
-  let seed_int = int_of_float flt in
-  Random.init seed_int
 
 (** [counter] is the number of objects generated *)
 let counter = ref 0
@@ -15,7 +9,7 @@ let counter = ref 0
       probability. *)
 let which_effect () : Actor.effect = 
   let () = generate_seed () in
-  let item = Random.int 8 in
+  let item = Random.int 9 in
   match item with
   | 0 -> Adder 0 
   | 1 -> Multiplier 10
@@ -25,6 +19,7 @@ let which_effect () : Actor.effect =
   | 5 -> Clear 0
   | 6 -> Speeder 20
   | 7 -> Subtracter 0
+  | 8 -> Mystery 0
   | _ -> failwith "Should never happen"
 
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 

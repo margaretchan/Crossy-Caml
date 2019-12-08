@@ -17,6 +17,7 @@ type effect =
   | Clear of int 
   | Speeder of int 
   | Subtracter of int
+  | Mystery of int
   | Nothing
 
 (** The type of obstacle block. *)
