@@ -464,7 +464,7 @@ let screen2 = Screen.empty
 
 let update_screen2 = Screen.update screen2 4 4 0 1 1 true
 
-let update_screen2 = Screen.update screen2 4 4 1 1 1 true
+let update_screen2 = Screen.update screen2 10 4 2 1 1 true
 
 let update_screen2= Screen.update screen2 4 4 100 1 1 true
 
@@ -477,6 +477,7 @@ let rec block_checker l =
   | [] -> 0
   | h :: t -> 
     let obj = extract_obj h in
+    print_endline(Object.string_of_obj h);
     print_int(obj.width);
     print_endline("");
     1 + block_checker t

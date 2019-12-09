@@ -66,6 +66,6 @@ val has_life : obj -> bool
 (** Returns the maximum time of all effects of type specified *)
 val effect_time_left : Actor.effect list -> Actor.effect -> int 
 
-
+val string_of_obj : collidable -> string
 
 

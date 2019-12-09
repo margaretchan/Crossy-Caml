@@ -166,7 +166,11 @@ let effect_time_left (effs : effect list) (e : effect) : int =
     | _ -> acc in 
   List.fold_left (effect_time_helper) 0 (effs)
 
-
+let string_of_obj col = 
+  let block = get_block col in
+  match block with 
+  | GoodB e -> "GoodB"
+  | _ -> "BadB" 
 
 
 

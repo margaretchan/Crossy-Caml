@@ -15,7 +15,7 @@ let counter = ref 0
       probability. *)
 let which_effect () : Actor.effect = 
   let () = generate_seed () in
-  let item = Random.int 1 in
+  let item = Random.int 8 in
   match item with
   | 0 -> Clear 0 
   | 1 -> Multiplier 10
@@ -103,11 +103,15 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     let block_width = 2 * grid_size in
     let blocks_left = total_width / block_width in 
     let pass_left = num_pass - cur_pass in
-    if (blocks_left <= 0 || pass_left > blocks_left) 
+    (* base case no more space for blocks*)
+    if (blocks_left <= 0) 
     then list
     else 
       let rand = Random.int (x_bound / block_width) in 
-      if (pass_left >= blocks_left || (rand < num_pass && pass_left > 0)) 
+      print_endline "Testing Testing Testing";
+      print_string ("Rand: " ^ string_of_int rand ^ "  Num Pass: " ^ string_of_int num_pass);
+      print_newline ();
+      if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
       then 
         let eff = generate_rand_item 10 in
         let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
@@ -122,15 +126,17 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : Object.collidable list = 
 
-  let () = generate_seed () in
+  if num_pass > x_bound/grid_x then [] else 
 
-  let random_dir = 
-    let chance_of_dir = Random.int 3 in
-    match chance_of_dir with
-    | 0 -> Left
-    | 1 -> No
-    | _ -> Right in
+    let () = generate_seed () in
 
-  let start_coord = (0, y_bound) in
-  let rand_dir = random_dir in
-  gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0
+    let random_dir = 
+      let chance_of_dir = Random.int 3 in
+      match chance_of_dir with
+      | 0 -> Left
+      | 1 -> No
+      | _ -> Right in
+
+    let start_coord = (0, y_bound) in
+    let rand_dir = random_dir in
+    gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0
