@@ -25,47 +25,61 @@ val get_block : collidable -> Actor.block_type
     Requires: 
     - [c1] is a collidable of Player
     - [c2] is a collidable of Block
-      Raises: failwith "Failed requirement"
-*)
+      Raises: failwith "Failed requirement" *)
 val check_collision : collidable -> collidable -> Actor.block_type option
 
-(** [check_on_screen c xbound] is true if any part of collidable [c] is within the 
-    window. The window is defined as a rectangle of (0,0) to (xbound,_).   *)
+(** [check_on_screen c xbound] is true if any part of collidable [c] is within 
+    the window. The window is defined as a rectangle of (0,0) to (xbound,_). *)
 val check_on_screen : collidable -> int -> bool
 
-(**[extract_obj c] extracts the Object from collidable [c] *)
+(** [extract_obj c] extracts the Object from collidable [c] *)
 val extract_obj : collidable -> obj
 
-(** Decrements counters in [effs] and removes effects with timer zero *)
+(** [update_effects effs] Decrements counters in [effs] and removes effects with 
+    timer zero *)
 val update_effects : Actor.effect list -> Actor.effect list 
 
-(** is true iff the collidable's effect list contains a phaser *)
+(** [has_phaser player] is true iff the collidable's effect list contains a 
+    phaser *)
 val has_phaser : obj -> bool  
 
-(** is true iff the collidable's effect list contains a slower *)
+(** [has_slower player] is true iff the collidable's effect list contains a 
+    slower *)
 val has_slower : obj -> bool 
 
-(** is true iff the collidable's effect list contains a multiplier *)
+(** [has_mult player] is true iff the collidable's effect list contains a 
+    multiplier *)
 val has_mult : obj -> bool 
 
-(** is true iff the collidable's effect list contains an adder *)
+(** [has_adder player] is true iff the collidable's effect list contains an 
+    adder *)
 val has_adder : obj -> bool
 
-(** is true iff the collidable's effect list contains an clear *)
+(** [has_clear player] is true iff the collidable's effect list contains a 
+    clear *)
 val has_clear : obj -> bool
 
-(** is true iff the collidable's effect list contains an speeder *)
+(** [has_speeder player] is true iff the collidable's effect list contains a 
+    speeder *)
 val has_speeder : obj -> bool
 
-(** is true iff the collidable's effect list contains an subtracter *)
+(** [has_subtracter player] is true iff the collidable's effect list contains 
+    a subtracter *)
 val has_subtracter : obj -> bool
 
-(** is true iff the collidable's effect list contains a life *)
+(** [has_life player] is true iff the collidable's effect list contains a life*)
 val has_life : obj -> bool
 
-(** Returns the maximum time of all effects of type specified *)
+(** [effect_time_left effs e] is the maximum time of all effects of type 
+    specified *)
 val effect_time_left : Actor.effect list -> Actor.effect -> int 
 
+<<<<<<< HEAD
 val string_of_obj : collidable -> string
 
 
+=======
+(** [generate_seed ()] is a unit. It initializes the random module with a seed
+    that's dependent on the current time.  *)
+val generate_seed : unit -> unit 
+>>>>>>> c990d4650828449ad8e11143afb3ec46d59e40bd

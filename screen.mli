@@ -3,15 +3,18 @@ module Screen : sig
   (** [empty] is the empty screen *)
   val empty : (Object.collidable list) Queue.t 
 
-  (** [collision_process p s] is the State of the game upon this update. 
-      If [p] collides with a bad block from [s] then it is the Lose state. 
-      Else it is the Game state. *)
-  val collision_process : Object.collidable 
+  (** [process_collision player s] is the State of the game upon this update. 
+      If [player] collides with a bad/enemy block from [s] then it is the Lose 
+      state. Else it is the Game state. 
+      A side effect is that it updates the player object with the appropreate 
+      power-ups upon a collision. *)
+  val process_collision : Object.collidable 
     -> (Object.collidable list) Queue.t -> State.state
 
-  (** [update s x y n gx gy] is the new [s] with all the collidables in [s] 
-      shifted down and adds a new row. If the screen is full, then it no longer 
-      stores the information of the bottom-most row.*)
+  (** [update screen x_bound y_bound num_pass grid_x grid_y toggle_down] is the 
+      updated screen with all the collidables in [screen] shifted down according 
+      to [toggle_down] and adds a new row. If the screen is full, then it no 
+      longer stores the information of the bottom-most row. *)
   val update : (Object.collidable list) Queue.t 
     -> int -> int -> int -> int -> int -> bool
     -> (Object.collidable list) Queue.t

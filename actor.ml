@@ -14,13 +14,14 @@ type effect =
   | Slower of int
   | Clear of int 
   | Speeder of int 
-  | Subtracter of int 
+  | Subtractor of int 
+  | Mystery of int
   | Nothing
 
 type block_type = 
-  | SmallB (* Scorpion *)
-  | MediumB (* Snake *)
-  | LargeB  (* centipede *)
+  | SmallB 
+  | MediumB 
+  | LargeB 
   | GoodB of effect 
 
 let get_effect b = 
