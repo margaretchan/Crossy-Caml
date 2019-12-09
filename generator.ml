@@ -85,10 +85,9 @@ let generate_block coord grid_size typ dir spd : collidable =
         effects = []
       })
 
-(** [gen_helper coord x_bound y_bound cur_pass num_pass grid_size list] is a 
-    (collidable list * bool) that has generated collidable objects filling up 
-    all the grid spaces from x = 0 to x = [x_bound]. 
-    The bool represents the direction the blocks in the row should move. *)
+(** [gen_helper coord x_bound cur_pass num_pass grid_size list dir spd] is a 
+    (collidable list) that has generated collidable objects filling up 
+    all the grid spaces from x = 0 to x = [x_bound]. *)
 let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
   match coord with
   | (x, y) -> 
@@ -96,41 +95,26 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     let block_width = 2 * grid_size in
     let blocks_left = width_left / block_width in 
     let pass_left = num_pass - cur_pass in
-    (* base case no more space for blocks*)
-    (* if (blocks_left <= 0) 
-       then list
-       else 
-       let rand = Random.int (x_bound / block_width) in 
-       print_endline "Testing Testing Testing";
-       print_string ("Rand: " ^ string_of_int rand ^ "  Num Pass: " ^ string_of_int num_pass);
-       print_newline (); *)
-    (* if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
-       print_endline "Testing Testing Testing"; *)
-    if (blocks_left <= 0) 
-    then list
+    if (blocks_left <= 0) then list
     else 
-      (* let rand = Random.int (x_bound / block_width) in  *)
-      (* let () = Random.self_init () in *)
       let rand = Random.int (x_bound / block_width) in 
-      (* if (pass_left >= blocks_left || (rand < num_pass && pass_left > 0))  *)
-      if (pass_left >= blocks_left || (rand <= num_pass && pass_left > 0)) 
-      then 
-        (* let () = print_endline ("Generated Generated Item " ^ string_of_bool (pass_left = blocks_left)) in *)
+      if (pass_left >= blocks_left || (rand <= num_pass && pass_left > 0)) then 
         let eff = generate_rand_item 10 in
         let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
         gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
           grid_size (pass_block :: list) dir spd
       else 
         let rand_blk_tuple = generate_rand_blk_type blocks_left pass_left in 
-        let new_block = generate_block coord grid_size (fst rand_blk_tuple) dir spd in
+        let new_block = 
+          generate_block coord grid_size (fst rand_blk_tuple) dir spd in
         gen_helper (x + (snd rand_blk_tuple) * block_width, y) x_bound cur_pass 
           num_pass grid_size (new_block :: list) dir spd
 
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
     (grid_y : int) : Object.collidable list = 
 
-  if num_pass > x_bound/grid_x then [] else 
-
+  if num_pass > x_bound/grid_x then [] 
+  else 
     let () = Random.self_init () in
 
     let random_dir = 
@@ -141,6 +125,5 @@ let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int)
       | _ -> Right in
 
     let start_coord = (0, y_bound) in
-    (* print_string ("Start of row\n"); *)
     let rand_dir = random_dir in
     gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0
