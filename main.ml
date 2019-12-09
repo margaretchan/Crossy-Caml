@@ -96,7 +96,7 @@ let rec display last_update_time fps st high_score =
         last_obj_down_time last_obj_side_time last_player_dir = 
 
       (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
-      if (Screen.collision_process player screen = Lose && 
+      if (Screen.process_collision player screen = Lose && 
           not (Object.has_phaser (Object.extract_obj player))) then 
         let obj = Object.extract_obj player in 
         if (!lives = 0) then 
