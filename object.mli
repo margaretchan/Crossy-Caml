@@ -74,12 +74,6 @@ val has_life : obj -> bool
     specified *)
 val effect_time_left : Actor.effect list -> Actor.effect -> int 
 
-<<<<<<< HEAD
 val string_of_obj : collidable -> string
 
 
-=======
-(** [generate_seed ()] is a unit. It initializes the random module with a seed
-    that's dependent on the current time.  *)
-val generate_seed : unit -> unit 
->>>>>>> c990d4650828449ad8e11143afb3ec46d59e40bd

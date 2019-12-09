@@ -8,12 +8,8 @@ let counter = ref 0
 (** [which_item ()] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
 let which_effect () : Actor.effect = 
-  let () = generate_seed () in
-<<<<<<< HEAD
-  let item = Random.int 8 in
-=======
+  let () = Random.self_init () in
   let item = Random.int 9 in
->>>>>>> c990d4650828449ad8e11143afb3ec46d59e40bd
   match item with
   | 0 -> Adder 0 
   | 1 -> Multiplier 10
@@ -29,7 +25,7 @@ let which_effect () : Actor.effect =
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
     chance. With i% it will choose an effect, excluding Nothing. *)
 let generate_rand_item i : Actor.effect = 
-  let () = generate_seed () in
+  let () = Random.self_init () in
   let chance_of_item = Random.int 100 in
   if chance_of_item < i then 
     which_effect ()
@@ -40,7 +36,7 @@ let generate_rand_item i : Actor.effect =
     given the constraint of blocks left and p_left to ensure there are enough
     passable blocks*)
 let generate_rand_blk_type b_left p_left = 
-  let () = generate_seed () in 
+  let () = Random.self_init () in 
   (* what is the largest possible width of a generated block) *)
   let possible_not_pass = 
     if b_left - p_left > 3 
@@ -101,18 +97,16 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
     let block_width = 2 * grid_size in
     let blocks_left = total_width / block_width in 
     let pass_left = num_pass - cur_pass in
-<<<<<<< HEAD
     (* base case no more space for blocks*)
-    if (blocks_left <= 0) 
-    then list
-    else 
-      let rand = Random.int (x_bound / block_width) in 
-      print_endline "Testing Testing Testing";
-      print_string ("Rand: " ^ string_of_int rand ^ "  Num Pass: " ^ string_of_int num_pass);
-      print_newline ();
-      if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
-=======
-    (* print_endline "Testing Testing Testing"; *)
+    (* if (blocks_left <= 0) 
+       then list
+       else 
+       let rand = Random.int (x_bound / block_width) in 
+       print_endline "Testing Testing Testing";
+       print_string ("Rand: " ^ string_of_int rand ^ "  Num Pass: " ^ string_of_int num_pass);
+       print_newline (); *)
+    (* if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
+       print_endline "Testing Testing Testing"; *)
     if (blocks_left <= 0 || pass_left > blocks_left) 
     then list
     else 
@@ -121,7 +115,6 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
       let rand = Random.int (3) in 
       (* if (pass_left >= blocks_left || (rand < num_pass && pass_left > 0))  *)
       if (pass_left >= blocks_left || (rand = 0 && pass_left > 0)) 
->>>>>>> c990d4650828449ad8e11143afb3ec46d59e40bd
       then 
         (* let () = print_endline ("Generated Generated Item " ^ string_of_bool (pass_left = blocks_left)) in *)
         let eff = generate_rand_item 10 in
@@ -139,7 +132,7 @@ let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int)
 
   if num_pass > x_bound/grid_x then [] else 
 
-    let () = generate_seed () in
+    let () = Random.self_init () in
 
     let random_dir = 
       let chance_of_dir = Random.int 3 in
@@ -148,13 +141,7 @@ let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int)
       | 1 -> No
       | _ -> Right in
 
-<<<<<<< HEAD
     let start_coord = (0, y_bound) in
+    (* print_string ("Start of row\n"); *)
     let rand_dir = random_dir in
     gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0
-=======
-  let start_coord = (0, y_bound) in
-  (* print_string ("Start of row\n"); *)
-  let rand_dir = random_dir in
-  gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0
->>>>>>> c990d4650828449ad8e11143afb3ec46d59e40bd
