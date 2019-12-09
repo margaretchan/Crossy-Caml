@@ -69,40 +69,32 @@ let large_badL_image_name = "threebadL.png"
     3-wide bad block facing left *)
 let large_badR_image_name = "threebadR.png"
 
-(** [mult_image_name] is the name of the image file for a 
-    multiplier item *)
+(** [mult_image_name] is the name of the image file for a multiplier item *)
 let mult_image_name = "multiplier.png"
 
-(** [adder_image_name] is the name of the image file for a 
-    adder item *)
+(** [adder_image_name] is the name of the image file for a adder item *)
 let adder_image_name = "adder.png"
 
-(** [freezer_image_name] is the name of the image file for a 
-    freezer item *)
+(** [freezer_image_name] is the name of the image file for a freezer item *)
 let freezer_image_name = "freezer.png"
 
-(** [life_image_name] is the name of the image file for a 
-    life item *)
+(** [life_image_name] is the name of the image file for a life item *)
 let life_image_name = "life.png"
 
-(** [phaser_image_name] is the name of the image file for a 
-    phaser item *)
+(** [phaser_image_name] is the name of the image file for a phaser item *)
 let phaser_image_name = "phaser.png"
 
-(** [clear_image_name] is the name of the image file for a 
-    clear item *)
+(** [clear_image_name] is the name of the image file for a clear item *)
 let clear_image_name = "clear.png"
 
-(** [speeder_image_name] is the name of the image file for a 
-    speeder item *)
+(** [speeder_image_name] is the name of the image file for a speeder item *)
 let speeder_image_name = "speeder.png"
 
 (** [subtracter_image_name] is the name of the image file for a 
     subtracter item *)
 let subtracter_image_name = "subtractor.png"
 
-(** [mystery_image_name] is the name of the image file for a 
-    mystery item *)
+(** [mystery_image_name] is the name of the image file for a mystery item *)
 let mystery_image_name = "mystery.png"
 
 (** [text_color] is the color of the text on the start screen *)
@@ -213,7 +205,6 @@ let draw_collidable_enemy_helper goodbad_type obj =
       else Png.load large_badR_image_name []
     | GoodB _ -> 
       failwith "these should only be bad blocks!" in 
-
   let img = get_image bad_png in
   Graphics.draw_image img (obj.x_pos) (obj.y_pos)
 
@@ -232,7 +223,6 @@ let draw_collidable old_player_dir player_dir collide =
 
   | Player obj -> 
     let player_png = 
-      (* dir -1 = left *)
       if player_dir = -1 || (player_dir = 0 && old_player_dir = -1) 
       then Png.load playerL_image_name []
       else Png.load playerR_image_name [] in
@@ -369,9 +359,6 @@ let update_seq_good_rows down_obstacles seq_good_rows =
     else seq_good_rows + 1
   else seq_good_rows
 
-(** [update_window last_player_dir player_dir player down_obstacles 
-    side_obstacles screen seq_good_rows] is the drawing and updating of the 
-    game screen window *)
 let update_window last_player_dir player_dir (player : collidable) 
     down_obstacles side_obstacles screen seq_good_rows lives = 
   auto_synchronize false;
@@ -391,7 +378,6 @@ let update_window last_player_dir player_dir (player : collidable)
 
   (player, screen', seq_good_rows')
 
-(** [start_page ()] is the game screen displayed at the start of the game *)
 let start_page () = 
   Graphics.set_color start_page_color;
   Graphics.fill_rect 0 0 750 750;
@@ -407,7 +393,6 @@ let start_page () =
 
   auto_synchronize true
 
-(** [pause ()] is the game screen displayed when the game screen is paused *)
 let pause () = 
   Graphics.set_color pause_page_color;
   Graphics.fill_rect 0 0 750 750;
@@ -421,7 +406,6 @@ let pause () =
 
   auto_synchronize true
 
-(** [select ()] is the game screen displayed for selecting game difficulty *)
 let select () = 
   Graphics.set_color pause_page_color;
   Graphics.fill_rect 0 0 750 750;
@@ -435,8 +419,6 @@ let select () =
 
   auto_synchronize true
 
-(** [continue lives score] is the game screen displayed when the player has died
-    but there is a non-negative amount of lives left *)
 let continue (lives : int) (score : int) = 
   Graphics.set_color died_page_color;
   Graphics.fill_rect 0 0 750 750;
@@ -462,8 +444,6 @@ let continue (lives : int) (score : int) =
 
   auto_synchronize true
 
-(** [game_over score high_score] is the game screen displayed when the player 
-    has died and run out of lives *)
 let game_over (score : int) (high_score : int) : unit = 
   Graphics.set_color gameover_page_color;
   Graphics.fill_rect 0 0 750 750;

@@ -2,6 +2,8 @@ MODULES=main draw object actor generator state screen
 OBJECTS=$(MODULES:=.cmo)
 MAIN=main.byte
 TEST=test.byte
+MLS=$(MODULES:=.ml)
+MLIS=$(MODULES:=.mli)
 OCAMLBUILD=ocamlbuild -use-ocamlfind
 PKGS=camlimages.png,camlimages.graphics
 

@@ -14,8 +14,6 @@ make docs
 make clean
 ```
 
-
-
 ## Testing
 Testing is done via the test.ml file. It is run using:
 ```bash
