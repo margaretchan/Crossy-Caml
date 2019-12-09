@@ -41,3 +41,15 @@ let is_good b =
   match b with 
   | GoodB _ -> true
   | _ -> false
+
+let string_of_eff = function
+  | Life int -> "Life"
+  | Adder int -> "Adder"
+  | Multiplier int -> "Multiplier"
+  | Phaser int -> "Phaser"
+  | Slower int -> "Slower"
+  | Clear int -> "Clear"
+  | Speeder int -> "Speeder"
+  | Subtractor int -> "Sub"
+  | Mystery int -> "Mystery"
+  | Nothing -> "Nothing"

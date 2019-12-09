@@ -205,7 +205,7 @@ let effect_time_left (effs : effect list) (e : effect) : int =
 let string_of_obj col = 
   let block = get_block col in
   match block with 
-  | GoodB e -> "GoodB"
+  | GoodB e -> "GoodB" ^ Actor.string_of_eff e
   | _ -> "BadB" 
 
 

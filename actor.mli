@@ -36,3 +36,5 @@ val get_time : block_type -> int
 
 (** [is_good b] is whether or not block [b] is a GoodB *)
 val is_good : block_type -> bool
+
+val string_of_eff : effect -> string

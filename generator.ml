@@ -1,14 +1,13 @@
 open Actor
 open Object
 
-
 (** [counter] is the number of objects generated *)
 let counter = ref 0
 
 (** [which_item ()] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
 let which_effect () : Actor.effect = 
-  let () = Random.self_init () in
+  (* let () = Random.self_init () in *)
   let item = Random.int 9 in
   match item with
   | 0 -> Adder 0 
@@ -25,7 +24,7 @@ let which_effect () : Actor.effect =
 (** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
     chance. With i% it will choose an effect, excluding Nothing. *)
 let generate_rand_item i : Actor.effect = 
-  let () = Random.self_init () in
+  (* let () = Random.self_init () in *)
   let chance_of_item = Random.int 100 in
   if chance_of_item < i then 
     which_effect ()
@@ -36,7 +35,7 @@ let generate_rand_item i : Actor.effect =
     given the constraint of blocks left and p_left to ensure there are enough
     passable blocks*)
 let generate_rand_blk_type b_left p_left = 
-  let () = Random.self_init () in 
+  (* let () = Random.self_init () in  *)
   (* what is the largest possible width of a generated block) *)
   let possible_not_pass = 
     if b_left - p_left > 3 
@@ -93,9 +92,9 @@ let generate_block coord grid_size typ dir spd : collidable =
 let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
   match coord with
   | (x, y) -> 
-    let total_width = x_bound - x in
+    let width_left = x_bound - x in
     let block_width = 2 * grid_size in
-    let blocks_left = total_width / block_width in 
+    let blocks_left = width_left / block_width in 
     let pass_left = num_pass - cur_pass in
     (* base case no more space for blocks*)
     (* if (blocks_left <= 0) 
@@ -107,14 +106,14 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
        print_newline (); *)
     (* if (pass_left = blocks_left || (rand < num_pass && pass_left > 0)) 
        print_endline "Testing Testing Testing"; *)
-    if (blocks_left <= 0 || pass_left > blocks_left) 
+    if (blocks_left <= 0) 
     then list
     else 
       (* let rand = Random.int (x_bound / block_width) in  *)
-      let () = Random.self_init () in
-      let rand = Random.int (3) in 
+      (* let () = Random.self_init () in *)
+      let rand = Random.int (x_bound / block_width) in 
       (* if (pass_left >= blocks_left || (rand < num_pass && pass_left > 0))  *)
-      if (pass_left >= blocks_left || (rand = 0 && pass_left > 0)) 
+      if (pass_left >= blocks_left || (rand <= num_pass && pass_left > 0)) 
       then 
         (* let () = print_endline ("Generated Generated Item " ^ string_of_bool (pass_left = blocks_left)) in *)
         let eff = generate_rand_item 10 in

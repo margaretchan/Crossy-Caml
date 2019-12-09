@@ -464,7 +464,7 @@ let screen2 = Screen.empty
 
 let update_screen2 = Screen.update screen2 4 4 0 1 1 true
 
-let update_screen2 = Screen.update screen2 10 4 2 1 1 true
+let update_screen2 = Screen.update screen2 20 4 5 1 1 true
 
 let update_screen2= Screen.update screen2 4 4 100 1 1 true
 
