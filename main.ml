@@ -4,25 +4,36 @@ open Object
 open Screen
 open State
 
+(** This initializes the game window *)
 let () = Draw.init_window () 
 
 (** [screen_fps] is the fps of the game screen *)
 let screen_fps = 60.0
 
+(** [easy_down_fps] is the fps of objects moving down on easy mode *)
 let easy_down_fps = 1.0 
 
+(** [easy_side_fps] is the fps of objects moving to the side on easy mode *)
 let easy_side_fps = 1.0
 
+(** [normal_down_fps] is the fps of objects moving down on normal mode *)
 let normal_down_fps = 2.0 
 
+(** [normal_side_fps] is the fps of objects moving to the side on normal mode *)
 let normal_side_fps = 4.0
 
+(** [hard_down_fps] is the fps of objects moving down on hard mode *)
 let hard_down_fps = 3.0 
 
+(** [hard_side_fps] is the fps of objects moving to the side on hard mode *)
 let hard_side_fps = 10.0
 
+(** [speeder_down_fps] is the fps of objects moving down on while the Speeder 
+    effect is applied *)
 let speeder_down_fps = 4.0
 
+(** [speeder_side_fps] is the fps of objects moving to the side while the 
+    Speeder effect is applied *)
 let speeder_side_fps = 15.0
 
 (** [down_fps] is the fps of the oject down movement 
@@ -37,13 +48,16 @@ let side_fps = ref normal_side_fps
     Initializes at [Normal] *)
 let diff = ref Normal
 
+(** [screen_ref] is the reference to the Screen object throughout the game *)
 let screen_ref = ref Screen.empty
 
+(** [init_lives] is the number of lives the player begins the game with *)
 let init_lives = 3
 
 (** [lives] is the number of lives the player has *)
 let lives = ref init_lives
 
+(** [init_player] is the initial Player object at the start of the game *)
 let init_player =
   Player {
     x_pos = (size_x () / 2); 
@@ -57,6 +71,7 @@ let init_player =
     effects = []
   }
 
+(** [player_ref] is the reference to the Player object throughout the game *)
 let player_ref = ref init_player
 
 (** [display last_update_time fps st high_score] controls the window 
@@ -289,6 +304,6 @@ and game_state_logic high_score last_update_time fps =
   loop last_update_time fps !player_ref !screen_ref 3 
     (Sys.time ()) (Sys.time ()) last_player_dir high_score
 
-(** Initializes game *)
+(** Initializes game loop *)
 let () =
   display (Sys.time ()) screen_fps Start 0
