@@ -69,81 +69,12 @@ let player_ref = ref init_player
     [High Score] is the current high score      
     The game is exited by closing the window *)
 let rec display last_update_time fps st high_score = 
-
-  (** Start State Logic *)
-  if (st = Start) then 
-    start_state_logic high_score
-  else
-
-    (** Game State Logic *)
-  if (st = Game) then (
-
-    let last_player_dir = ref 1 in
-
-    let rec loop last_update_time fps player screen seq_good_rows 
-        last_obj_down_time last_obj_side_time last_player_dir = 
-
-      (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
-      if (Screen.process_collision player screen = Lose && 
-          not (Object.has_phaser (Object.extract_obj player))) then 
-        collision_logic player screen high_score
-      else (
-        (* Check for time based update *)
-        if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
-
-          let dir = ref 0 in 
-
-          (** Process Player Input Direction  *)
-          process_input_dir dir last_player_dir high_score;
-
-          let obstacles_side =
-            ((Sys.time ()) -. last_obj_side_time) > (1.0 /. !side_fps) && 
-            not (Object.has_slower (Object.extract_obj player))  in
-
-          let obstacles_down = 
-            obstacle_down_logic last_obj_down_time player screen in
-
-          let updated_window = Draw.update_window !last_player_dir !dir player 
-              obstacles_down obstacles_side screen seq_good_rows !lives in 
-
-          match updated_window with 
-          | (p, s, good) -> 
-            let last_obj_down_time' = 
-              last_obj_down_time_logic obstacles_down last_obj_down_time in 
-            let last_obj_side_time' = 
-              last_obj_side_time_logic obstacles_side last_obj_side_time in 
-            player_ref := p;
-            screen_ref := s;
-            loop (Sys.time ()) fps !player_ref !screen_ref good 
-              last_obj_down_time' last_obj_side_time' last_player_dir
-        ) 
-        else (
-          loop last_update_time fps !player_ref !screen_ref seq_good_rows 
-            last_obj_down_time last_obj_side_time last_player_dir
-        )
-      ) in
-
-    loop last_update_time fps !player_ref !screen_ref 3 
-      (Sys.time ()) (Sys.time ()) last_player_dir
-
-  ) else 
-
-    (** Lose State Logic *)
-  if (st = Lose) then 
-    lose_state_logic high_score
-  else 
-
-  if (st = Pause) then 
-    pause_state_logic high_score
-  else 
-
-  if (st = Continue) then 
-    continue_state_logic high_score
-  else 
-
-  if (st = Select) then 
-    select_state_logic high_score
-
+  if st = Start then start_state_logic high_score
+  else if st = Game then game_state_logic high_score last_update_time fps
+  else if st = Lose then lose_state_logic high_score
+  else if st = Pause then pause_state_logic high_score
+  else if st = Continue then continue_state_logic high_score
+  else if st = Select then select_state_logic high_score
 
 and start_state_logic high_score = 
   let rec wait_for_start () = 
@@ -263,30 +194,22 @@ and revert_speed_logic () =
     side_fps := hard_side_fps;
 
 and item_effect_logic obj screen = 
-  if (Object.has_life obj) then 
-    lives := !lives + 1 ;
-
-  if (Object.has_clear obj) then 
-    Queue.clear screen;
-
+  if (Object.has_life obj) then lives := !lives + 1 ;
+  if (Object.has_clear obj) then Queue.clear screen;
   if (Object.has_speeder obj) then (
     down_fps := speeder_down_fps; 
     side_fps := speeder_side_fps 
   );
-
   if (not (Object.has_speeder obj)) then 
     revert_speed_logic ()
 
 and obstacle_down_logic last_obj_down_time player screen = 
   if ((Sys.time ()) -. last_obj_down_time > (1.0 /. !down_fps)) then 
-
     (* Update Score *)
     let obj = Object.extract_obj player in 
     Object.score_incr obj 1; 
-
     (** Do Item Effects *)
     item_effect_logic obj screen;
-
     (* Update Effects List *)
     let obj = Object.extract_obj player in 
     obj.effects <- Object.update_effects obj.effects;
@@ -319,55 +242,52 @@ and last_obj_side_time_logic obstacles_side last_obj_side_time =
   else 
     last_obj_side_time
 
+and updated_window_logic updated_window = 
+  match updated_window with 
+  | (p, s, good) -> 
+    player_ref := p;
+    screen_ref := s;
+    good
+
+and obstacle_side_logic last_obj_side_time player = 
+  ((Sys.time ()) -. last_obj_side_time) > (1.0 /. !side_fps) && 
+  not (Object.has_slower (Object.extract_obj player)) 
+
+and time_based_update_logic last_player_dir high_score last_obj_side_time 
+    player screen seq_good_rows last_obj_down_time fps dir =
+  let obstacles_side = obstacle_side_logic last_obj_side_time player in
+  let obstacles_down = 
+    obstacle_down_logic last_obj_down_time player screen in
+  let updated_window = Draw.update_window !last_player_dir !dir player 
+      obstacles_down obstacles_side screen seq_good_rows !lives in 
+  let good = updated_window_logic updated_window in
+  let last_obj_down_time' = 
+    last_obj_down_time_logic obstacles_down last_obj_down_time in 
+  let last_obj_side_time' = 
+    last_obj_side_time_logic obstacles_side last_obj_side_time in
+  loop (Sys.time ()) fps !player_ref !screen_ref good 
+    last_obj_down_time' last_obj_side_time' last_player_dir high_score
+
+and loop last_update_time fps player screen seq_good_rows 
+    last_obj_down_time last_obj_side_time last_player_dir high_score = 
+
+  (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
+  if (Screen.process_collision player screen = Lose && 
+      not (Object.has_phaser (Object.extract_obj player))) then 
+    collision_logic player screen high_score
+  else if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then
+    let dir = ref 0 in
+    process_input_dir dir last_player_dir high_score; 
+    time_based_update_logic last_player_dir high_score last_obj_side_time 
+      player screen seq_good_rows last_obj_down_time fps dir
+  else 
+    loop last_update_time fps !player_ref !screen_ref seq_good_rows 
+      last_obj_down_time last_obj_side_time last_player_dir high_score
+
 and game_state_logic high_score last_update_time fps = 
-
   let last_player_dir = ref 1 in
-
-  let rec loop last_update_time fps player screen seq_good_rows 
-      last_obj_down_time last_obj_side_time last_player_dir = 
-
-    (** Check for Collisions, and if Lose, Set High Score & Draw Game Over *)
-    if (Screen.collision_process player screen = Lose && 
-        not (Object.has_phaser (Object.extract_obj player))) then 
-      collision_logic player screen high_score
-    else (
-      (* Check for time based update *)
-      if ((Sys.time ()) -. last_update_time > (1.0 /. fps)) then (
-
-        let dir = ref 0 in 
-
-        (** Process Player Input Direction  *)
-        process_input_dir dir last_player_dir high_score;
-
-        let obstacles_side =
-          ((Sys.time ()) -. last_obj_side_time) > (1.0 /. !side_fps) && 
-          not (Object.has_slower (Object.extract_obj player))  in
-
-        let obstacles_down = 
-          obstacle_down_logic last_obj_down_time player screen in
-
-        let updated_window = Draw.update_window !last_player_dir !dir player 
-            obstacles_down obstacles_side screen seq_good_rows !lives in 
-
-        match updated_window with 
-        | (p, s, good) -> 
-          let last_obj_down_time' = 
-            last_obj_down_time_logic obstacles_down last_obj_down_time in 
-          let last_obj_side_time' = 
-            last_obj_side_time_logic obstacles_side last_obj_side_time in 
-          player_ref := p;
-          screen_ref := s;
-          loop (Sys.time ()) fps !player_ref !screen_ref good 
-            last_obj_down_time' last_obj_side_time' last_player_dir
-      ) 
-      else (
-        loop last_update_time fps !player_ref !screen_ref seq_good_rows 
-          last_obj_down_time last_obj_side_time last_player_dir
-      )
-    ) in
-
   loop last_update_time fps !player_ref !screen_ref 3 
-    (Sys.time ()) (Sys.time ()) last_player_dir
+    (Sys.time ()) (Sys.time ()) last_player_dir high_score
 
 (** Initializes game *)
 let () =
