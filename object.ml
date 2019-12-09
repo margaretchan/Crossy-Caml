@@ -28,9 +28,8 @@ let get_block c =
   | Block (b,_) -> b
   | _ -> failwith "Not a block"
 
-let check_collision (c1: collidable) (c2: collidable) : Actor.block_type option = 
+let check_collision (c1: collidable) (c2: collidable): Actor.block_type option = 
   match c1, c2 with
-
   | Player ob1, Block (LargeB, ob2) when ( 
     (ob2.y_pos) < (ob1.y_pos + ob1.height) 
     && 
@@ -72,6 +71,7 @@ let extract_obj (c : collidable) =
   | Player obj -> obj 
   | Block (_, obj) -> obj
 
+(** [mystery_select ()] is an Actor.effect selected at random *)
 let mystery_select () : Actor.effect = 
   generate_seed ();
   let rand_int = Random.int 8 in
@@ -83,7 +83,7 @@ let mystery_select () : Actor.effect =
   | 4 -> Life 0
   | 5 -> Clear 0
   | 6 -> Speeder 20
-  | 7 -> Subtracter 0
+  | 7 -> Subtractor 0
   | _ -> failwith "Random Int should not be > 7"
 
 let update_effects (effs : effect list) : effect list =
@@ -97,78 +97,88 @@ let update_effects (effs : effect list) : effect list =
     | Slower i when i > 0 -> Slower (i - 1)
     | Speeder i when i > 0 -> Speeder (i - 1)
     | Clear i when i > 0 -> Clear 0
-    | Subtracter i when i > 0 -> Subtracter 0
+    | Subtractor i when i > 0 -> Subtractor 0
     | Mystery i -> mystery_select ()
     | _ -> Nothing in
   List.map eff_helper effs |> List.filter (fun eff -> eff != Nothing)
 
-(** TODO: DOC *)
-let is_phaser = function 
+(** [is_phaser eff] is whether the effect [eff] is a Phaser *)
+let is_phaser eff =
+  match eff with
   | Phaser _ -> true 
   | _ -> false 
 
 let has_phaser (player : obj) : bool = 
   List.exists is_phaser player.effects
 
-(** TODO: DOC *)
-let is_slower = function 
+(** [is_slower eff] is whether the effect [eff] is a Slower *)
+let is_slower eff =
+  match eff with
   | Slower _ -> true 
   | _ -> false 
 
 let has_slower (player : obj) : bool = 
   List.exists is_slower player.effects
 
-(** TODO: DOC *)
-let is_mult = function 
+(** [is_mult eff] is whether the effect [eff] is a Multiplier *)
+let is_mult eff =  
+  match eff with
   | Multiplier _ -> true 
   | _ -> false 
 
 let has_mult (player : obj) : bool = 
   List.exists is_mult player.effects
 
-(** TODO: DOC *)
-let is_add = function 
+(** [is_add eff] is whether the effect [eff] is an Add *)
+let is_add eff =
+  match eff with
   | Adder _ -> true 
   | _ -> false 
-
-(** TODO: DOC *)
-let is_life = function 
-  | Life _ -> true 
-  | _ -> false
-
-(** TODO: DOC *)
-let is_clear = function 
-  | Clear _ -> true 
-  | _ -> false 
-
-(** TODO: DOC *)
-let is_subtracter = function 
-  | Subtracter _ -> true 
-  | _ -> false
-
-(** TODO: DOC *)
-let is_speeder = function 
-  | Speeder _ -> true 
-  | _ -> false
-
-let is_mystery = function 
-  | Mystery _ -> true 
-  | _ -> false
-
-let has_clear (player : obj) : bool = 
-  List.exists is_clear player.effects
-
-let has_subtracter (player : obj) : bool = 
-  List.exists is_subtracter player.effects
-
-let has_speeder (player : obj) : bool = 
-  List.exists is_speeder player.effects
 
 let has_adder (player : obj) : bool = 
   List.exists is_add player.effects
 
+(** [is_life eff] is whether the effect [eff] is a Life *)
+let is_life eff =
+  match eff with  
+  | Life _ -> true 
+  | _ -> false
+
 let has_life (player: obj) : bool = 
   List.exists is_life player.effects 
+
+(** [is_clear eff] is whether the effect [eff] is a Clear *)
+let is_clear eff =
+  match eff with
+  | Clear _ -> true 
+  | _ -> false 
+
+let has_clear (player : obj) : bool = 
+  List.exists is_clear player.effects
+
+(** [is_subtracter eff] is whether the effect [eff] is a Subtractor *)
+let is_subtracter eff =
+  match eff with
+  | Subtractor _ -> true 
+  | _ -> false
+
+let has_subtracter (player : obj) : bool = 
+  List.exists is_subtracter player.effects
+
+(** [is_speeder eff] is whether the effect [eff] is a Speeder *)
+let is_speeder eff = 
+  match eff with
+  | Speeder _ -> true 
+  | _ -> false
+
+let has_speeder (player : obj) : bool = 
+  List.exists is_speeder player.effects
+
+(** [is_mystery eff] is whether the effect [eff] is a Mystery *)
+let is_mystery eff =  
+  match eff with
+  | Mystery _ -> true 
+  | _ -> false
 
 let score_incr p s = 
   if has_adder p then p.score <- p.score + 40;
@@ -188,7 +198,7 @@ let effect_time_left (effs : effect list) (e : effect) : int =
     | Slower i when is_slower e && i > acc -> i
     | Clear i when is_clear e && i > acc -> i
     | Speeder i when is_speeder e && i > acc -> i
-    | Subtracter i when is_subtracter e && i > acc -> i
+    | Subtractor i when is_subtracter e && i > acc -> i
     | _ -> acc in 
   List.fold_left (effect_time_helper) 0 (effs)
 

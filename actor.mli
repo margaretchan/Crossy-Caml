@@ -1,3 +1,4 @@
+(** The type for the movement direction of a block *)
 type dir =  
   | Down 
   | Left 
@@ -16,7 +17,7 @@ type effect =
   | Slower of int 
   | Clear of int 
   | Speeder of int 
-  | Subtracter of int
+  | Subtractor of int
   | Mystery of int
   | Nothing
 
@@ -30,8 +31,8 @@ type block_type =
 (** [get_effect b] is the effect associated with block [b] *)
 val get_effect : block_type -> effect
 
-(** [get_time b] is the time associated with the block [b] *)
+(** [get_time b] is the time associated with block [b] *)
 val get_time : block_type -> int
 
-(** [is_good b] is true if block [b] is a GoodB *)
+(** [is_good b] is whether or not block [b] is a GoodB *)
 val is_good : block_type -> bool

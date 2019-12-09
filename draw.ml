@@ -175,7 +175,7 @@ let draw_collidable_item_helper goodbad_type obj =
     let speeder_png = Png.load speeder_image_name [] in
     let img = get_image speeder_png in
     Graphics.draw_image img (obj.x_pos) (obj.y_pos)
-  | Subtracter _ -> 
+  | Subtractor _ -> 
     let subtracter_png = Png.load subtracter_image_name [] in
     let img = get_image subtracter_png in
     Graphics.draw_image img (obj.x_pos) (obj.y_pos)
