@@ -1,3 +1,5 @@
+(** Define basic types used in Object  *)
+
 (** The type for the movement direction of a block *)
 type dir =  
   | Down 

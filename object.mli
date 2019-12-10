@@ -1,3 +1,5 @@
+(** Defines collidable objects and collision processing. *)
+
 (** The type to represent an object *)
 type obj = {
   mutable x_pos: int;

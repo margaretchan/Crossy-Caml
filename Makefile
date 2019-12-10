@@ -1,4 +1,4 @@
-MODULES=main draw object actor generator state screen 
+MODULES=main draw object actor generator state screen authors
 OBJECTS=$(MODULES:=.cmo)
 MAIN=main.byte
 TEST=test.byte
@@ -14,7 +14,7 @@ play:
 	$(OCAMLBUILD) $(MAIN) && ./$(MAIN)
 
 zip:
-	zip crossy_caml_src.zip *.ml* _tags Makefile *.md *.png
+	zip crossy_caml_src.zip *.ml* _tags Makefile *.md *.png pngs/* *.txt
 
 docs: docs-public docs-private
 

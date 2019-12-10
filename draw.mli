@@ -1,3 +1,4 @@
+(** Creates the actual display (game window) for the game. *)
 open Graphics
 open Screen
 

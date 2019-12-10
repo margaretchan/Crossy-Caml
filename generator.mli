@@ -1,3 +1,5 @@
+(** Creates blocks (obstacles and items) and rows of blocks *)
+
 (** [generate_block coord grid_size typ dir spd] is a collidable block with 
     position [coord], type [typ], height and width = 2 * [grid_size], id = 
     id of last generated + 1, velocity of ([dir], [spd]) *)

@@ -1,3 +1,8 @@
+(** Stores, creates, and processes information of all the items on the game 
+    screen.*)
+
+(** [Screen] is the data structure that stores all the collidable objects
+    being displayed to the user via the game window. *)
 module Screen : sig 
 
   (** [empty] is the empty screen *)
