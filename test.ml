@@ -15,9 +15,10 @@ open Screen
     for match statements were tested (glass box) but also just the specification 
     comments were tested too (black box). 
     The probablistic things have been rigorously play tested to ensure that the 
-    code works as intended. The row generation, screen updating, and item effects
-    have been play tested. 
-    Since we 
+    code works as intended. The row generation (Generator.generate), 
+    screen updating (Screen.update), and item effects have been play tested. 
+    We test all of the edge cases for our functions and the game plays as 
+    intended. 
 *)
 
 let add = Adder 500
@@ -413,56 +414,102 @@ let object_tests = [
         (9) (effect_time_left new_effect_list (slow)));
 ]
 
-let gen_block = Generator.generate_block (0,0) 1 (GoodB add) Left 0   
+let gen_block_good = Generator.generate_block (0,0) 1 (GoodB add) Left 0   
 
-let gen_block_type = Object.get_block gen_block
+let gen_block_large = Generator.generate_block (2,0) 1 (LargeB) Right 0 
 
-let gen_block_obj = Object.extract_obj gen_block
+let gen_block_type_good = Object.get_block gen_block_good
+
+let gen_block_type_large = Object.get_block gen_block_large
+
+let gen_block_obj_good = Object.extract_obj gen_block_good
+
+let gen_block_obj_large = Object.extract_obj gen_block_large
 
 let empty_col_row = Generator.generate 10 10 100 1 
 
 let non_empty_row = Generator.generate 2 4 0 1  
 
 let generator_tests = [
-  "gen_block type test" >:: (fun _ -> 
+  "gen_block_good type test" >:: (fun _ -> 
       assert_equal 
-        (GoodB add) gen_block_type);
+        (GoodB add) gen_block_type_good);
 
-  "gen_block field test: x_pos" >:: (fun _ -> 
+  "gen_block_good field test: x_pos" >:: (fun _ -> 
       assert_equal 
-        0 gen_block_obj.x_pos);
+        0 gen_block_obj_good.x_pos);
 
-  "gen_block field test: y_pos" >:: (fun _ -> 
+  "gen_block_good field test: y_pos" >:: (fun _ -> 
       assert_equal 
-        0 gen_block_obj.y_pos);
+        0 gen_block_obj_good.y_pos);
 
-  "gen_block field test: velocity (dir)" >:: (fun _ -> 
+  "gen_block_good field test: velocity (dir)" >:: (fun _ -> 
       assert_equal 
-        Left (fst gen_block_obj.velocity));      
+        Left (fst gen_block_obj_good.velocity));      
 
-  "gen_block field test: velocity (spd)"  >:: (fun _ -> 
+  "gen_block_good field test: velocity (spd)"  >:: (fun _ -> 
       assert_equal 
-        0 (snd gen_block_obj.velocity));    
+        0 (snd gen_block_obj_good.velocity));    
 
-  "gen_block field test: id" >:: (fun _ -> 
+  "gen_block_good field test: id" >:: (fun _ -> 
       assert_equal 
-        1 gen_block_obj.id);  
+        1 gen_block_obj_good.id);  
 
-  "gen_block field test: to_kill" >:: (fun _ -> 
+  "gen_block_good field test: to_kill" >:: (fun _ -> 
       assert
-        (not (gen_block_obj.to_kill)));            
+        (not (gen_block_obj_good.to_kill)));            
 
-  "gen_block field test: score"  >:: (fun _ -> 
+  "gen_block_good field test: score"  >:: (fun _ -> 
       assert_equal 
-        40 gen_block_obj.score);
+        40 gen_block_obj_good.score);
 
-  "gen_block field test: height"  >:: (fun _ -> 
+  "gen_block_good field test: height"  >:: (fun _ -> 
       assert_equal 
-        2 gen_block_obj.height);            
+        2 gen_block_obj_good.height);            
 
-  "gen_block field test: effects"  >:: (fun _ -> 
+  "gen_block_good field test: effects"  >:: (fun _ -> 
       assert_equal 
-        [] gen_block_obj.effects);      
+        [] gen_block_obj_good.effects);      
+
+  "gen_block_large type test" >:: (fun _ -> 
+      assert_equal 
+        (LargeB) gen_block_type_large);
+
+  "gen_block_large field test: x_pos" >:: (fun _ -> 
+      assert_equal 
+        2 gen_block_obj_large.x_pos);
+
+  "gen_block_large field test: y_pos" >:: (fun _ -> 
+      assert_equal 
+        0 gen_block_obj_large.y_pos);
+
+  "gen_block_large field test: velocity (dir)" >:: (fun _ -> 
+      assert_equal 
+        Right (fst gen_block_obj_large.velocity));      
+
+  "gen_block_large field test: velocity (spd)"  >:: (fun _ -> 
+      assert_equal 
+        0 (snd gen_block_obj_large.velocity));    
+
+  "gen_block_large field test: id" >:: (fun _ -> 
+      assert_equal 
+        2 gen_block_obj_large.id);  
+
+  "gen_block_large field test: to_kill" >:: (fun _ -> 
+      assert
+        (not (gen_block_obj_large.to_kill)));            
+
+  "gen_block_large field test: score"  >:: (fun _ -> 
+      assert_equal 
+        0 gen_block_obj_large.score);
+
+  "gen_block_large field test: height"  >:: (fun _ -> 
+      assert_equal 
+        2 gen_block_obj_large.height);            
+
+  "gen_block_large field test: effects"  >:: (fun _ -> 
+      assert_equal 
+        [] gen_block_obj_large.effects); 
 
   "empty row" >:: (fun _ -> 
       assert_equal 

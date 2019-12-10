@@ -1,3 +1,18 @@
-Running `cloc .` on each of our team members' computers oddly results in 
+  Running `cloc .` on each of our team members' computers oddly results in 
 different numbers so we are unsure of our exact LOC. Our average number of 
-LOC is 1450.
+LOC is 1375.
+  While our system's LOC is slightly less than the recommended, we 
+believe that our system is complex enough for something of that size.
+Our game is a FPS based game that updates continuously regardless of player 
+input, with obstacles and items that are generated inifitely (as long as the
+player survives). 
+This brought the challenges of utilizing the Graphics library and figuring out 
+the game loop. Something in mind that can easily add lines of code would be
+hardcoding maps and obstacles. However, we opted for a robust layer generation
+algorithm that we use to create infinite levels of almost "purely random" levels.
+Furthermore, along with the short generation algorithm, our test suite is shorter
+than it could be, not because of a lack of tests, but due to the nature of the
+generation, we just can't provide tests in the suite that can validate our code.
+All of our functions that deal with randomness and probability was manually 
+tested, instead of providing a list of tests. This was a conscious decision in 
+hopes to design a better game.  
