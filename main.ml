@@ -91,6 +91,10 @@ let rec display last_update_time fps st high_score =
   else if st = Continue then continue_state_logic high_score
   else if st = Select then select_state_logic high_score
 
+(** [start_state_logic high_score] controls changes during Start State. 
+    It draws start page then:
+    If the user presses 's' then state changes to Select. 
+    If the user presses 'Space' then state changes to Game. *)
 and start_state_logic high_score = 
   let rec wait_for_start () = 
     match wait_next_event [Key_pressed] with 
@@ -105,21 +109,33 @@ and start_state_logic high_score =
   Draw.start_page ();
   wait_for_start();
 
+  (** [assign_easy ()] changes difficulty, down_fps, and side_fps to 
+      appropriate easy levels *)
 and assign_easy () = 
   diff := Easy;
   down_fps := easy_down_fps;
   side_fps := easy_side_fps;
 
+
+  (** [assign_easy ()] changes difficulty, down_fps, and side_fps to 
+      appropriate normal levels *)
 and assign_normal () = 
   diff := Normal;
   down_fps := normal_down_fps;
   side_fps := normal_side_fps;
 
+  (** [assign_easy ()] changes difficulty, down_fps, and side_fps to 
+      appropriate hard levels *)
 and assign_hard () = 
   diff := Hard;
   down_fps := hard_down_fps;
   side_fps := hard_side_fps;
 
+  (** [select_state_logic high_score] controls changes during Select State. 
+      It draws the Select Page and changes difficulty based on user input. 
+      If the user presses 'a', dififculty is changed to easy
+      If the user presses 'b', dififculty is changed to normal 
+      If the user presses 'c', dififculty is changed to hard *)
 and select_state_logic high_score = 
   Draw.select ();
   let rec wait_for_select () = 
@@ -136,6 +152,8 @@ and select_state_logic high_score =
       wait_for_select () in
   wait_for_select ()
 
+(** [continue_state_logic high_score] controls changes during Continue State.
+    If the user presses 'f', the game returns to Game state  *)
 and continue_state_logic high_score = 
   let rec wait_for_continue () = 
     if key_pressed () && read_key () = 'f' then 
@@ -144,6 +162,9 @@ and continue_state_logic high_score =
       wait_for_continue () in
   wait_for_continue ()
 
+(** [continue_state_logic high_score] controls changes during Pause State.
+    It draws the Pause page and then if the user presses 'p', 
+    the game returns to Game state  *)
 and pause_state_logic high_score = 
   Draw.pause ();
   let rec wait_for_unpause () = 
@@ -153,11 +174,16 @@ and pause_state_logic high_score =
       wait_for_unpause () in
   wait_for_unpause ()
 
+(** [assign_lose ()] reverts player_ref, screen_ref, and lives back to 
+    their intiial values *)
 and assign_lose () = 
   player_ref := init_player;
   screen_ref := Screen.empty;
   lives := init_lives;
 
+  (** [lose_state_logic high_score] controls changes during Lose State.
+      It reverts values back to their initial then if the user presses 'r', 
+      the game returns to Start state  *)
 and lose_state_logic high_score = 
   assign_lose ();
   let rec wait_for_reset () = 
@@ -169,6 +195,8 @@ and lose_state_logic high_score =
         wait_for_reset () in
   wait_for_reset()
 
+(** [go_to_lose_logic obj s h] clears the screen and assigns appropriate 
+    high score value. Then changes state to lose. *)
 and go_to_lose_logic obj screen high_score = 
   let () = Queue.clear screen in
   if obj.score > high_score then (
@@ -183,12 +211,17 @@ and go_to_lose_logic obj screen high_score =
     display (Sys.time ()) screen_fps Lose high_score
   )
 
+(** [go_to_continue_logic obj s h] clears the screen and assigns appropriate 
+    life value. Then changes state to Continue. *)
 and go_to_continue_logic obj screen high_score = 
   let () = (lives := !lives - 1) in 
   let () = Queue.clear screen in 
   Draw.continue !lives obj.score ;
   display (Sys.time()) screen_fps Continue high_score 
 
+(** [collision_logic p s hs] controls collision logic after a collision has been 
+    detected. If the player collides with an obstacle, change state to Lose or Continue
+    depending on number of lives left *)
 and collision_logic player screen high_score = 
   let obj = Object.extract_obj player in 
   if (!lives = 0) then 
@@ -196,6 +229,8 @@ and collision_logic player screen high_score =
   else 
     go_to_continue_logic obj screen high_score
 
+(** [revert_speed_logic ()] returns down_fps and side_fps values back to 
+    the appropriate values corresponding with the difficulty *)
 and revert_speed_logic () = 
   match !diff with 
   | Easy ->
@@ -208,6 +243,8 @@ and revert_speed_logic () =
     down_fps := hard_down_fps;
     side_fps := hard_side_fps;
 
+    (** [item_effect_logic o s] controls logic for Clear, Life, and 
+        Speeder items*)
 and item_effect_logic obj screen = 
   if (Object.has_life obj) then lives := !lives + 1 ;
   if (Object.has_clear obj) then Queue.clear screen;
@@ -218,6 +255,8 @@ and item_effect_logic obj screen =
   if (not (Object.has_speeder obj)) then 
     revert_speed_logic ()
 
+(** [obstacle_down_logic lobt p s] updates score, does item effects, 
+    and updates effect list when the condition specified by down_fps is met *)
 and obstacle_down_logic last_obj_down_time player screen = 
   if ((Sys.time ()) -. last_obj_down_time > (1.0 /. !down_fps)) then 
     (* Update Score *)
@@ -232,6 +271,10 @@ and obstacle_down_logic last_obj_down_time player screen =
   else 
     false 
 
+(** [process_input_dir d lpd hs] controls input during game. 
+    Sets direction to left when 'a' is pressed 
+    Sets direction to right when 'd' is pressed
+    Change state to Pause when 'p' is pressed  *)
 and process_input_dir dir last_player_dir high_score = 
   if (key_pressed ()) then 
     let key = read_key () in
@@ -245,18 +288,24 @@ and process_input_dir dir last_player_dir high_score =
       display (Sys.time ()) screen_fps Pause high_score;
     | _ -> dir := 0
 
+(** [last_obj_down_time_logic od lodt] is last time down 
+    obstacles have been updated *)
 and last_obj_down_time_logic obstacles_down last_obj_down_time = 
   if obstacles_down then 
     (Sys.time ()) 
   else 
     last_obj_down_time
 
+(** [last_obj_down_time_logic od lodt] is last time down 
+    obstacles have been updated *)
 and last_obj_side_time_logic obstacles_side last_obj_side_time = 
   if obstacles_side then 
     (Sys.time ()) 
   else 
     last_obj_side_time
 
+(** [updated_window_logic uw] assigns player_ref and screen_ref based on 
+    [updated_window]. Then returns # of good blocks/row. *)
 and updated_window_logic updated_window = 
   match updated_window with 
   | (p, s, good) -> 
@@ -264,10 +313,13 @@ and updated_window_logic updated_window =
     screen_ref := s;
     good
 
+(** [obstacles_side_logic lost p] is true iff it is time for a new update 
+    according to [lost] and side_fps *)
 and obstacle_side_logic last_obj_side_time player = 
   ((Sys.time ()) -. last_obj_side_time) > (1.0 /. !side_fps) && 
   not (Object.has_slower (Object.extract_obj player)) 
 
+(** [time_based_update_logic _] updates side and down obstacles when needed *)
 and time_based_update_logic last_player_dir high_score last_obj_side_time 
     player screen seq_good_rows last_obj_down_time fps dir =
   let obstacles_side = obstacle_side_logic last_obj_side_time player in
@@ -283,6 +335,8 @@ and time_based_update_logic last_player_dir high_score last_obj_side_time
   loop (Sys.time ()) fps !player_ref !screen_ref good 
     last_obj_down_time' last_obj_side_time' last_player_dir high_score
 
+(** [loop _] checks for collisions and sets state changes accordingly.
+    It controls palyer input during game and moves obstacles on screen. *)
 and loop last_update_time fps player screen seq_good_rows 
     last_obj_down_time last_obj_side_time last_player_dir high_score = 
 
@@ -299,11 +353,12 @@ and loop last_update_time fps player screen seq_good_rows
     loop last_update_time fps !player_ref !screen_ref seq_good_rows 
       last_obj_down_time last_obj_side_time last_player_dir high_score
 
+(** [game_state_logic _] controls all appropriate behavior during Game State *)
 and game_state_logic high_score last_update_time fps = 
   let last_player_dir = ref 1 in
   loop last_update_time fps !player_ref !screen_ref 3 
     (Sys.time ()) (Sys.time ()) last_player_dir high_score
 
-(** Initializes game loop *)
+(** () initializies the game loop *)
 let () =
   display (Sys.time ()) screen_fps Start 0
