@@ -15,15 +15,10 @@ open Screen
     for match statements were tested (glass box) but also just the specification 
     comments were tested too (black box). 
     The probablistic things have been rigorously play tested to ensure that the 
-<<<<<<< HEAD
     code works as intended. The row generation (Generator.generate), 
     screen updating (Screen.update), and item effects have been play tested. 
     We test all of the edge cases for our functions and the game plays as 
     intended. 
-=======
-    code works as intended. The row generation, screen updating, and item 
-    effects have been play tested. 
->>>>>>> 53a917417c594c9d7daa2df8de3ab91e38593077
 *)
 
 let add = Adder 500
