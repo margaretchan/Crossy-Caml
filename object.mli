@@ -16,8 +16,6 @@ type collidable =
   | Player of obj 
   | Block of Actor.block_type * obj
 
-
-
 (** [get_block c] is the block_type of collidable [c] 
     Requires: 
     - [c] is a collidable block
