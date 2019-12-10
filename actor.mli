@@ -8,7 +8,7 @@ type dir =
 (** A tuple representing the x, y coordinates of an actor *)
 type pos = int * int
 
-(** The effect of an item block.*)
+(** The effect of a good block.*)
 type effect = 
   | Life of int
   | Adder of int
@@ -21,20 +21,24 @@ type effect =
   | Mystery of int
   | Nothing
 
-(** The type of obstacle block. *)
+(** The type of blocks *)
 type block_type = 
   | SmallB
   | MediumB
   | LargeB
   | GoodB of effect
 
-(** [get_effect b] is the effect associated with block [b] *)
+(** [get_effect b] is the effect associated with block [b].
+    Raises: 
+      Failure "No effect" if the function is applied to anything but a 
+      good block. *)
 val get_effect : block_type -> effect
 
 (** [get_time b] is the time associated with block [b] *)
 val get_time : block_type -> int
 
-(** [is_good b] is whether or not block [b] is a GoodB *)
+(** [is_good b] is true if block [b] is a GoodB and false otherwise*)
 val is_good : block_type -> bool
 
+(** [string_of_eff e] is the string representation of effect e *)
 val string_of_eff : effect -> string

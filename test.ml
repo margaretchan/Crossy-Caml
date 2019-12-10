@@ -3,6 +3,23 @@ open Object
 open Actor
 open Screen
 
+(**
+   Test Approach:
+    Our game is heavily dependent on random generation of obstables and items.
+    As such, it is hard to have a comprehensive test suite that covers 
+    everything in our game. We set up tests for all the deterministic traits of 
+    our game. The functions in modules Actor, Object, Generator, and Screen that
+    don't depend on the Random module have been tested. All the accessor, 
+    modifier, and generation modules (without random traits) have been tested 
+    down below with black box testing and glass box testing. Internal branches 
+    for match statements were tested (glass box) but also just the specification 
+    comments were tested too (black box). 
+    The probablistic things have been rigorously play tested to ensure that the 
+    code works as intended. The row generation, screen updating, and item effects
+    have been play tested. 
+    Since we 
+*)
+
 let add = Adder 500
 let mult = Multiplier 10
 let phas = Phaser 10
@@ -402,9 +419,9 @@ let gen_block_type = Object.get_block gen_block
 
 let gen_block_obj = Object.extract_obj gen_block
 
-let empty_col_row = Generator.generate 10 10 100 1 1
+let empty_col_row = Generator.generate 10 10 100 1 
 
-let non_empty_row = Generator.generate 2 4 0 1 1 
+let non_empty_row = Generator.generate 2 4 0 1  
 
 let generator_tests = [
   "gen_block type test" >:: (fun _ -> 
