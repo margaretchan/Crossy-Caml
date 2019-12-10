@@ -13,89 +13,89 @@ let init_window () =
 let start_page_color = rgb 105 206 236
 
 (** [title_image_name] is the name of the image file for the title screen *)
-let title_image_name = "title.png"
+let title_image_name = "pngs/title.png"
 
 (** [select_image_name] is the name of the image file for the select screen *)
-let select_image_name = "select.png"
+let select_image_name = "pngs/select.png"
 
 (** [gameover_page_color] is the background color of the game over screen *)
 let gameover_page_color = rgb 47 0 31
 
 (** [gameover_image_name] is the name of the image file for the 
     game over screen *)
-let gameover_image_name = "gameover.png"
+let gameover_image_name = "pngs/gameover.png"
 
 (** [pause_page_color] is the background color of the pause screen *)
 let pause_page_color = rgb 255 238 39
 
 (** [pause_image_name] is the name of the image file for the pause screen *)
-let pause_image_name = "pause.png"
+let pause_image_name = "pngs/pause.png"
 
 (** [died_page_color] is the background color of the death screen *)
 let died_page_color = rgb 255 93 147
 
 (** [died_image_name] is the name of the image file for the death screen *)
-let died_image_name = "died.png"
+let died_image_name = "pngs/died.png"
 
 (** [playerL_image_name] is the name of the player image file pointed to the 
     left *)
-let playerL_image_name = "camelL.png"
+let playerL_image_name = "pngs/camelL.png"
 
 (** [playerR_image_name] is the name of the player image file pointed to the 
     right *)
-let playerR_image_name = "camelR.png"
+let playerR_image_name = "pngs/camelR.png"
 
 (** [small_badL_image_name] is the name of the image file for a 
     1-wide bad block facing left *)
-let small_badL_image_name = "onebadL.png"
+let small_badL_image_name = "pngs/onebadL.png"
 
 (** [small_badR_image_name] is the name of the image file for a 
     1-wide bad block facing right *)
-let small_badR_image_name = "onebadR.png"
+let small_badR_image_name = "pngs/onebadR.png"
 
 (** [medium_badL_image_name] is the name of the image file for a 
     2-wide bad block facinig left *)
-let medium_badL_image_name = "twobadL.png"
+let medium_badL_image_name = "pngs/twobadL.png"
 
 (** [medium_badR_image_name] is the name of the image file for a 
     2-wide bad block facinig right *)
-let medium_badR_image_name = "twobadR.png"
+let medium_badR_image_name = "pngs/twobadR.png"
 
 (** [large_badL_image_name] is the name of the image file for a 
     3-wide bad block facing left *)
-let large_badL_image_name = "threebadL.png"
+let large_badL_image_name = "pngs/threebadL.png"
 
 (** [large_badR_image_name] is the name of the image file for a 
     3-wide bad block facing left *)
-let large_badR_image_name = "threebadR.png"
+let large_badR_image_name = "pngs/threebadR.png"
 
 (** [mult_image_name] is the name of the image file for a multiplier item *)
-let mult_image_name = "multiplier.png"
+let mult_image_name = "pngs/multiplier.png"
 
 (** [adder_image_name] is the name of the image file for a adder item *)
-let adder_image_name = "adder.png"
+let adder_image_name = "pngs/adder.png"
 
 (** [freezer_image_name] is the name of the image file for a freezer item *)
-let freezer_image_name = "freezer.png"
+let freezer_image_name = "pngs/freezer.png"
 
 (** [life_image_name] is the name of the image file for a life item *)
-let life_image_name = "life.png"
+let life_image_name = "pngs/life.png"
 
 (** [phaser_image_name] is the name of the image file for a phaser item *)
-let phaser_image_name = "phaser.png"
+let phaser_image_name = "pngs/phaser.png"
 
 (** [clear_image_name] is the name of the image file for a clear item *)
-let clear_image_name = "clear.png"
+let clear_image_name = "pngs/clear.png"
 
 (** [speeder_image_name] is the name of the image file for a speeder item *)
-let speeder_image_name = "speeder.png"
+let speeder_image_name = "pngs/speeder.png"
 
 (** [subtracter_image_name] is the name of the image file for a 
     subtracter item *)
-let subtracter_image_name = "subtractor.png"
+let subtracter_image_name = "pngs/subtractor.png"
 
 (** [mystery_image_name] is the name of the image file for a mystery item *)
-let mystery_image_name = "mystery.png"
+let mystery_image_name = "pngs/mystery.png"
 
 (** [text_color] is the color of the text on the start screen *)
 let text_color = rgb 255 255 255
