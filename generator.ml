@@ -116,7 +116,7 @@ let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
       if (pass_left >= blocks_left || (rand <= num_pass && pass_left > 0)) 
       then 
         (* let () = print_endline ("Generated Generated Item " ^ string_of_bool (pass_left = blocks_left)) in *)
-        let eff = generate_rand_item 10 in
+        let eff = generate_rand_item 1 in
         let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
         gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
           grid_size (pass_block :: list) dir spd
