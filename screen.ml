@@ -9,6 +9,7 @@ module Screen = struct
 
   let empty = create ()
 
+  (** The type of a screen *)
   type q = (Object.collidable list) Queue.t
 
   (** [effect_filter_helper effect] is whether the block [block] is a good block 
@@ -18,26 +19,15 @@ module Screen = struct
     | GoodB _ -> true
     | _ -> false
 
-  (** [get_effect_helper block] is the effect associated with [block]
-      Requires: [block] is of type GoodB *)
-  let get_effect_helper block = 
-    match block with 
-    | GoodB eff -> eff
-    | _ -> failwith "This should never happen, should always be good block"
-
-  (* Returns State.Game if no collision with bad guy
-      Returns State.Lose if collision with bad guy 
-      Also updates player object with appropriate powerups *)
   let process_collision player (s : q) =
     try (
-      let bottom_list = (peek s) in
-      (* filter the list to be only the blocks near the player *)
+      let bottom_list = peek s in
       let collide_with_player = Object.check_collision player in
       let collision_list = List.filter_map collide_with_player bottom_list in
       if (List.exists (fun bt -> bt = LargeB || bt = SmallB) collision_list) 
       then State.Lose
       else 
-        let effect_list = List.map (get_effect_helper) 
+        let effect_list = List.map (Actor.get_effect) 
             (List.filter (effect_filter_helper) (collision_list)) in 
         let obj = Object.extract_obj player in 
         obj.effects <- obj.effects @ effect_list;
@@ -47,7 +37,8 @@ module Screen = struct
 
   (** [shift_down col_lst] is a unit. It modifies all the collidables in 
       [col_lst] to have their position shifted down by their height. 
-      Requires: [col_lst] contains no players *)
+      Requires: [col_lst] contains no players 
+      Raises: Failure "List can't contain player" *)
   let shift_down col_lst =
     let rec helper lst = 
       match lst with 
@@ -59,7 +50,7 @@ module Screen = struct
         helper t in 
     helper (col_lst)
 
-  (** [loop_around_helper x_bound normal] is the new position the 
+  (** [loop_around_helper x_bound normal] is the new x position the 
       bottom left corner of the block should be in after shifting to the side. 
       This also checks for loop around functionality. 
       [normal] is the position the block would've moved to if not accounting 
@@ -67,10 +58,12 @@ module Screen = struct
   let loop_around_helper x_bound normal = 
     if normal < 0 
     then x_bound
-    else (
-      if normal >= x_bound
-      then 0
-      else normal)
+    else 
+      begin
+        if normal >= x_bound
+        then 0
+        else normal
+      end
 
   (** [get_side_step_size badtype obj] is the number of pixels [obj] should be 
       moved to the side. *)
@@ -123,9 +116,9 @@ module Screen = struct
         | Player _ -> failwith "Should have no player in list"
       end
 
-  (** [remove_bottom_row screen] is the updated screen after the bottom row has 
-      been removed from the Queue. This row is only removed if its position is 
-      off the screen. *)
+  (** [remove_bottom_row screen] is the updated screen [screen] after the bottom
+      row has been removed from the Queue. This row is only removed if its 
+      position is off the screen. *)
   let remove_bottom_row screen = 
     let bottom_row = Queue.peek screen in
     if bottom_row = [] then 
@@ -141,21 +134,14 @@ module Screen = struct
       | _ -> screen
 
   let update screen x_bound y_bound num_pass grid_x grid_y toggle_down = 
-    (* shift down *)
     if toggle_down then 
       Queue.iter (shift_down) screen; 
-
-    (* generate new row on top if bad *)
     if num_pass <= (30) then 
       let new_list = 
-        Generator.generate x_bound y_bound num_pass grid_x grid_y in
+        Generator.generate x_bound y_bound num_pass grid_x in
       Queue.push new_list screen; 
     else ();
-
-    (* shift side *)
     Queue.iter (shift_side x_bound) screen;
-
-    (* remove bottom row if applicable *)
     if Queue.length screen > 0 then 
       remove_bottom_row screen
     else screen

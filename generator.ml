@@ -7,7 +7,6 @@ let counter = ref 0
 (** [which_item ()] is an Actor.effect, excluding Nothing, chosen with equal
       probability. *)
 let which_effect () : Actor.effect = 
-  (* let () = Random.self_init () in *)
   let item = Random.int 9 in
   match item with
   | 0 -> Adder 0 
@@ -21,10 +20,9 @@ let which_effect () : Actor.effect =
   | 8 -> Mystery 0
   | _ -> failwith "Should never happen"
 
-(** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - i % 
-    chance. With i% it will choose an effect, excluding Nothing. *)
+(** [generate_rand_item i] is an Actor.effect. It is Nothing with a 100 - [i] % 
+    chance. With [i]% it will choose an effect, excluding Nothing. *)
 let generate_rand_item i : Actor.effect = 
-  (* let () = Random.self_init () in *)
   let chance_of_item = Random.int 100 in
   if chance_of_item < i then 
     which_effect ()
@@ -35,13 +33,11 @@ let generate_rand_item i : Actor.effect =
     given the constraint of blocks left and p_left to ensure there are enough
     passable blocks*)
 let generate_rand_blk_type b_left p_left = 
-  (* let () = Random.self_init () in  *)
-  (* what is the largest possible width of a generated block) *)
-  let possible_not_pass = 
+  let possible_not_pass_width = 
     if b_left - p_left > 3 
     then 3
     else b_left - p_left in
-  let blk_type_rand = Random.int possible_not_pass in 
+  let blk_type_rand = Random.int possible_not_pass_width in 
   let blk_type = 
     if blk_type_rand = 0 then 
       Actor.SmallB
@@ -86,44 +82,40 @@ let generate_block coord grid_size typ dir spd : collidable =
       })
 
 (** [gen_helper coord x_bound cur_pass num_pass grid_size list dir spd] is a 
-    (collidable list) that has generated collidable objects filling up 
-    all the grid spaces from x = 0 to x = [x_bound]. *)
-let rec gen_helper coord x_bound cur_pass num_pass grid_size list dir spd =
-  match coord with
-  | (x, y) -> 
-    let width_left = x_bound - x in
-    let block_width = 2 * grid_size in
-    let blocks_left = width_left / block_width in 
-    let pass_left = num_pass - cur_pass in
-    if (blocks_left <= 0) then list
+    collidable list that has generated collidable objects filling up 
+    all the grid spaces from x = 0 to x = [x_bound] with [num_pass] number of 
+    passable blocks. *)
+let rec gen_helper (x, y) x_bound cur_pass num_pass grid_size list dir spd =
+  let width_left = x_bound - x in
+  let block_width = 2 * grid_size in
+  let blocks_left = width_left / block_width in 
+  let pass_left = num_pass - cur_pass in
+  if (blocks_left <= 0) then list
+  else 
+    let rand = Random.int (x_bound / block_width) in 
+    if (pass_left >= blocks_left || (rand <= num_pass && pass_left > 0)) then 
+      let eff = generate_rand_item 10 in
+      let pass_block = generate_block (x, y) grid_size (GoodB eff) dir spd in
+      gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
+        grid_size (pass_block :: list) dir spd
     else 
-      let rand = Random.int (x_bound / block_width) in 
-      if (pass_left >= blocks_left || (rand <= num_pass && pass_left > 0)) then 
-        let eff = generate_rand_item 10 in
-        let pass_block = generate_block coord grid_size (GoodB eff) dir spd in
-        gen_helper (x + block_width, y) x_bound (cur_pass + 1) num_pass 
-          grid_size (pass_block :: list) dir spd
-      else 
-        let rand_blk_tuple = generate_rand_blk_type blocks_left pass_left in 
-        let new_block = 
-          generate_block coord grid_size (fst rand_blk_tuple) dir spd in
-        gen_helper (x + (snd rand_blk_tuple) * block_width, y) x_bound cur_pass 
-          num_pass grid_size (new_block :: list) dir spd
+      let rand_blk_tuple = generate_rand_blk_type blocks_left pass_left in 
+      let new_block = 
+        generate_block (x, y) grid_size (fst rand_blk_tuple) dir spd in
+      gen_helper (x + (snd rand_blk_tuple) * block_width, y) x_bound cur_pass 
+        num_pass grid_size (new_block :: list) dir spd
 
 let generate (x_bound : int) (y_bound : int) (num_pass : int) (grid_x : int) 
-    (grid_y : int) : Object.collidable list = 
-
+  : Object.collidable list = 
   if num_pass > x_bound/grid_x then [] 
   else 
     let () = Random.self_init () in
-
     let random_dir = 
       let chance_of_dir = Random.int 3 in
       match chance_of_dir with
       | 0 -> Left
       | 1 -> No
       | _ -> Right in
-
     let start_coord = (0, y_bound) in
     let rand_dir = random_dir in
     gen_helper start_coord x_bound 0 num_pass grid_x [] rand_dir 0

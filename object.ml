@@ -16,13 +16,6 @@ type collidable =
   | Player of obj
   | Block of block_type * obj
 
-(** [generate_seed ()] is a unit. It initializes the random module with a seed
-    that's dependent on the current time.  *)
-let generate_seed () : unit = 
-  let flt = Unix.time () in
-  let seed_int = int_of_float flt in
-  Random.init seed_int
-
 let get_block c = 
   match c with 
   | Block (b,_) -> b
@@ -38,7 +31,6 @@ let check_collision (c1: collidable) (c2: collidable): Actor.block_type option =
          ob2.x_pos + ob2.width < ob1.x_pos + ob1.width)
      || ob1.x_pos = ob2.x_pos && ob1.x_pos + ob1.width = ob2.x_pos + ob2.width)) 
     -> Some LargeB   
-
   | Player ob1, Block (SmallB, ob2) when (
     (ob2.y_pos) < (ob1.y_pos + ob1.height) 
     && 
@@ -47,7 +39,6 @@ let check_collision (c1: collidable) (c2: collidable): Actor.block_type option =
          ob2.x_pos + ob2.width < ob1.x_pos + ob1.width)
      || ob1.x_pos = ob2.x_pos && ob1.x_pos + ob1.width = ob2.x_pos + ob2.width))
     -> Some SmallB
-
   | Player ob1, Block (GoodB effect, ob2) when (
     (ob2.y_pos) < (ob1.y_pos + ob1.height) 
     && 
@@ -58,14 +49,6 @@ let check_collision (c1: collidable) (c2: collidable): Actor.block_type option =
     -> Some (GoodB effect)
   | _ -> None 
 
-(* FUNCTION IS NEVER USED *)
-let check_on_screen c xbound = 
-  match c with
-  | Block (_, ob) -> (ob.y_pos + ob.height) > 0
-  | Player ob -> ob.y_pos > 0 
-                 && (ob.x_pos + ob.width) > 0
-                 && ob.x_pos < xbound    
-
 let extract_obj (c : collidable) = 
   match c with 
   | Player obj -> obj 
@@ -73,7 +56,7 @@ let extract_obj (c : collidable) =
 
 (** [mystery_select ()] is an Actor.effect selected at random *)
 let mystery_select () : Actor.effect = 
-  generate_seed ();
+  let () = Random.self_init () in
   let rand_int = Random.int 8 in
   match rand_int with 
   | 0 -> Adder 0 
@@ -87,8 +70,6 @@ let mystery_select () : Actor.effect =
   | _ -> failwith "Random Int should not be > 7"
 
 let update_effects (effs : effect list) : effect list =
-
-  (* change adder helper to go to 0, maybe should make it go to Nothing *)
   let eff_helper = function 
     | Life i when i > 0 -> Life 0
     | Adder i when i > 0 -> Adder 0
