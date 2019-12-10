@@ -15,9 +15,8 @@ open Screen
     for match statements were tested (glass box) but also just the specification 
     comments were tested too (black box). 
     The probablistic things have been rigorously play tested to ensure that the 
-    code works as intended. The row generation, screen updating, and item effects
-    have been play tested. 
-    Since we 
+    code works as intended. The row generation, screen updating, and item 
+    effects have been play tested. 
 *)
 
 let add = Adder 500
